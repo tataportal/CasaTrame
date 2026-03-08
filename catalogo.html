@@ -166,6 +166,9 @@
       color: var(--text-light); margin-top: 28px; margin-bottom: 10px;
     }
     .sidebar__section-title--filtrar { display: none; }
+    /* Desktop: hide mobile toggles, show collapsible content */
+    .sidebar__mobile-toggles { display: none; }
+    .sidebar__collapsible { display: block; }
     .sidebar__sort { display: flex; flex-direction: column; gap: 0; }
     .sidebar__sort a {
       font-size: 0.9rem; color: var(--text); padding: 6px 0;
@@ -663,17 +666,43 @@
     }
     @media (max-width: 768px) {
       :root { --nav-h: 64px; }
-      .nav__inner { padding: 0 16px; grid-template-columns: 1fr auto; }
+      .nav__inner { padding: 0 16px; grid-template-columns: auto 1fr auto; }
       .nav__left { display: none; }
       .nav__right { display: none; }
       .nav__hamburger { display: flex; order: 1; }
       .nav__logo img { height: 22px; }
-      .nav__logo { justify-content: flex-start; }
+      .nav__logo { justify-content: center; }
       .main { grid-template-columns: 1fr; }
-      .sidebar { position: relative; top: 0; padding: 24px 20px; max-height: none; }
-      .sidebar__title { font-size: 2rem; }
-      .sidebar__section-title--filtrar { display: block; }
-      .sidebar__filters { flex-direction: row; flex-wrap: wrap; gap: 4px 16px; }
+      .sidebar { position: relative; top: 0; padding: 20px 20px 12px; max-height: none; text-align: center; }
+      .sidebar__tag { font-size: 0.7rem; }
+      .sidebar__title { font-size: 1.8rem; margin-bottom: 4px; }
+      .sidebar__subtitle { font-size: 0.85rem; margin-bottom: 12px; }
+      /* Mobile toggle buttons */
+      .sidebar__mobile-toggles {
+        display: flex; gap: 8px; margin-bottom: 0;
+      }
+      .sidebar__toggle-btn {
+        flex: 1; padding: 10px 16px;
+        font-size: 0.8rem; font-family: var(--body);
+        text-transform: uppercase; letter-spacing: 0.1em;
+        background: none; border: 1px solid var(--border);
+        color: var(--text); cursor: pointer;
+        display: flex; justify-content: space-between; align-items: center;
+        transition: 0.2s;
+      }
+      .sidebar__toggle-btn.active { border-color: var(--text); }
+      .sidebar__toggle-icon { font-size: 1rem; font-weight: 300; }
+      /* Collapsible sections: hidden by default on mobile */
+      .sidebar__collapsible {
+        display: none;
+        padding: 12px 0 4px;
+      }
+      .sidebar__collapsible.open { display: block; }
+      .sidebar__section-title--filtrar { display: none; }
+      .sidebar__section-title { margin-top: 12px; margin-bottom: 6px; }
+      .sidebar__filters { flex-direction: row; flex-wrap: wrap; gap: 4px 12px; }
+      .sidebar__filters a { font-size: 0.8rem; padding: 4px 0; }
+      .sidebar__sort a { font-size: 0.8rem; padding: 4px 0; }
       .grid-area { padding: 0 12px 40px; }
       .grid-view-toggle {
         display: flex; justify-content: flex-end; gap: 8px;
@@ -755,27 +784,41 @@
       <h1 class="sidebar__title">OTOÑO<br>INVIERNO</h1>
       <p class="sidebar__subtitle">Nuestra primera colección cápsula, descubre la practicidad</p>
 
-      <p class="sidebar__section-title sidebar__section-title--filtrar">Filtrar</p>
-      <div class="sidebar__filters" id="filters">
-        <a href="#" data-filter="all" class="active">VER TODO</a>
-        <a href="#" data-filter="abrigos">ABRIGOS</a>
-        <a href="#" data-filter="blusas">BLUSAS</a>
-        <a href="#" data-filter="buzos">BUZOS</a>
-        <a href="#" data-filter="denim">DENIM</a>
-        <a href="#" data-filter="polos">POLOS</a>
-        <a href="#" data-filter="pantalones">PANTALONES/FALDAS</a>
+      <!-- Mobile: collapsible toggles | Desktop: always visible -->
+      <div class="sidebar__mobile-toggles">
+        <button class="sidebar__toggle-btn" onclick="toggleSidebarSection('filter')">
+          Filtrar <span class="sidebar__toggle-icon" id="filterIcon">+</span>
+        </button>
+        <button class="sidebar__toggle-btn" onclick="toggleSidebarSection('sort')">
+          Ordenar <span class="sidebar__toggle-icon" id="sortIcon">+</span>
+        </button>
       </div>
 
-      <p class="sidebar__section-title">Ordenar por precio</p>
-      <div class="sidebar__sort" id="sortOptions">
-        <a href="#" data-sort="price-asc">Precio ↑</a>
-        <a href="#" data-sort="price-desc">Precio ↓</a>
+      <div class="sidebar__collapsible sidebar__collapsible--filter" id="filterSection">
+        <p class="sidebar__section-title sidebar__section-title--filtrar">Filtrar</p>
+        <div class="sidebar__filters" id="filters">
+          <a href="#" data-filter="all" class="active">VER TODO</a>
+          <a href="#" data-filter="abrigos">ABRIGOS</a>
+          <a href="#" data-filter="blusas">BLUSAS</a>
+          <a href="#" data-filter="buzos">BUZOS</a>
+          <a href="#" data-filter="denim">DENIM</a>
+          <a href="#" data-filter="polos">POLOS</a>
+          <a href="#" data-filter="pantalones">PANTALONES/FALDAS</a>
+        </div>
       </div>
 
-      <p class="sidebar__section-title">Ordenar por color</p>
-      <div class="sidebar__sort" id="colorSortOptions">
-        <a href="#" data-sort="color-dark">Oscuro → Claro</a>
-        <a href="#" data-sort="color-light">Claro → Oscuro</a>
+      <div class="sidebar__collapsible sidebar__collapsible--sort" id="sortSection">
+        <p class="sidebar__section-title">Ordenar por precio</p>
+        <div class="sidebar__sort" id="sortOptions">
+          <a href="#" data-sort="price-asc">Precio ↑</a>
+          <a href="#" data-sort="price-desc">Precio ↓</a>
+        </div>
+
+        <p class="sidebar__section-title">Ordenar por color</p>
+        <div class="sidebar__sort" id="colorSortOptions">
+          <a href="#" data-sort="color-dark">Oscuro → Claro</a>
+          <a href="#" data-sort="color-light">Claro → Oscuro</a>
+        </div>
       </div>
     </aside>
 
@@ -973,6 +1016,34 @@
         document.body.style.overflow = ''; hamburger.classList.remove('is-open');
       }
     });
+
+    /* ---- SIDEBAR TOGGLE (mobile) ---- */
+    function toggleSidebarSection(type) {
+      const filterSection = document.getElementById('filterSection');
+      const sortSection = document.getElementById('sortSection');
+      const filterIcon = document.getElementById('filterIcon');
+      const sortIcon = document.getElementById('sortIcon');
+      const filterBtn = filterIcon.closest('.sidebar__toggle-btn');
+      const sortBtn = sortIcon.closest('.sidebar__toggle-btn');
+
+      if (type === 'filter') {
+        const isOpen = filterSection.classList.toggle('open');
+        filterIcon.textContent = isOpen ? '−' : '+';
+        filterBtn.classList.toggle('active', isOpen);
+        // Close other
+        sortSection.classList.remove('open');
+        sortIcon.textContent = '+';
+        sortBtn.classList.remove('active');
+      } else {
+        const isOpen = sortSection.classList.toggle('open');
+        sortIcon.textContent = isOpen ? '−' : '+';
+        sortBtn.classList.toggle('active', isOpen);
+        // Close other
+        filterSection.classList.remove('open');
+        filterIcon.textContent = '+';
+        filterBtn.classList.remove('active');
+      }
+    }
 
     /* ---- PRODUCT DATA ---- */
     const products = [
