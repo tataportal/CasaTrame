@@ -476,11 +476,19 @@
     .wishlist-card__price { font-size: 1.28rem; color: var(--text); margin-top: 1px; }
 
     @media (max-width: 768px) {
-      .wishlist-page { padding: var(--nav-h) 20px 40px; }
-      .wishlist-page__title { font-size: 3rem; }
-      .wishlist-page__grid { grid-template-columns: repeat(2, 1fr); }
+      .wishlist-page { padding: 16px 16px 40px; top: 0; z-index: 1600; }
+      .wishlist-page__header { padding-top: calc(var(--nav-h) + 8px); }
+      .wishlist-page__close { font-size: 2.4rem; padding: 8px 12px; min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+      .wishlist-page__title { font-size: 1.8rem; }
+      .wishlist-page__count { font-size: 0.9rem; }
+      .wishlist-page__hint { font-size: 0.9rem; margin-bottom: 24px; }
+      .wishlist-page__grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
       .wishlist-page__looks-grid { grid-template-columns: repeat(2, 1fr); }
-      .wishlist-page__looks-title { font-size: 1.95rem; }
+      .wishlist-page__looks-title { font-size: 1.4rem; }
+      .wishlist-page__cta { padding: 14px 32px; font-size: 0.9rem; }
+      .wishlist-card__name { font-size: 0.9rem; }
+      .wishlist-card__price { font-size: 0.9rem; }
+      .wishlist-page__breadcrumb { font-size: 0.85rem; margin-top: 32px; padding-bottom: 20px; }
     }
 
     /* ===========================================
@@ -728,8 +736,21 @@
       .product-grid.cols-3 .product-card__wish svg { width: 16px; height: 16px; }
       .product-grid.cols-3 .product-card__wish { top: 6px; right: 6px; }
       .product-grid.cols-1 { grid-template-columns: 1fr; gap: 24px 8px; }
-      .modal { grid-template-columns: 1fr; }
-      .modal__gallery { min-height: 320px; }
+      .modal-overlay { padding: 0; align-items: flex-end; }
+      .modal { grid-template-columns: 1fr; width: 100%; max-height: 95vh; border-radius: 12px 12px 0 0; }
+      .modal__close { top: 10px; right: 12px; width: 44px; height: 44px; font-size: 2rem; }
+      .modal__gallery { min-height: 280px; max-height: 40vh; position: relative; }
+      .modal__gallery img { object-fit: cover; }
+      .modal__info { padding: 20px 16px 32px; }
+      .modal__cat { font-size: 0.8rem; margin-bottom: 4px; }
+      .modal__name { font-size: 1.4rem; margin-bottom: 8px; }
+      .modal__price { font-size: 1.2rem; margin-bottom: 16px; }
+      .modal__desc { font-size: 0.9rem; margin-bottom: 20px; }
+      .modal__label { font-size: 0.8rem; margin-bottom: 8px; }
+      .size-btn { width: 48px; height: 48px; font-size: 0.9rem; }
+      .modal__actions { flex-direction: column; gap: 8px; }
+      .btn { padding: 16px 24px; font-size: 0.9rem; }
+      .btn--outline { padding: 16px 20px; font-size: 1.2rem; }
       .wish-selector { min-width: auto; width: calc(100vw - 40px); max-width: 340px; right: 0; left: auto; }
       .footer { padding: 32px 20px 20px; }
       .footer__grid { grid-template-columns: 1fr; gap: 24px; }

@@ -364,7 +364,15 @@
       .footer__grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 768px) {
-      :root { --nav-h: 64px; }
+      :root {
+        --nav-h: 64px;
+        --fs-section: 2rem;
+        --fs-subtitle: 1rem;
+        --fs-body: 1rem;
+        --fs-ui: 1rem;
+        --fs-btn: 0.95rem;
+        --fs-label: 0.85rem;
+      }
       .nav__inner { padding: 0 16px; display: flex; align-items: center; justify-content: center; position: relative; }
       .nav__left { display: none; }
       .nav__right { display: none; }
@@ -377,7 +385,7 @@
         position: relative;
         top: 0;
         max-height: none;
-        padding: 24px 20px 40px;
+        padding: 24px 20px 100px;
       }
       .product-breadcrumb { font-size: 0.8rem; margin-bottom: 16px; }
       .product-title { font-size: 1.6rem; margin-bottom: 6px; }
@@ -387,6 +395,19 @@
       .color-swatch { width: 32px; height: 32px; }
       .product-sizes { grid-template-columns: repeat(5, 1fr); }
       .size-option { height: 48px; font-size: 0.85rem; }
+      .size-guide-link { font-size: 0.8rem; margin-bottom: 16px; }
+      /* Sticky add-to-bag on mobile */
+      .add-to-bag {
+        position: fixed; bottom: 0; left: 0; right: 0;
+        z-index: 900; margin: 0; border-radius: 0;
+        padding: 18px 0; font-size: 0.95rem;
+      }
+      .vestidor-link { font-size: 0.9rem; padding: 10px 0; }
+      .wishlist-link { font-size: 0.9rem; padding: 10px 0; margin-bottom: 16px; }
+      .wishlist-link svg { width: 18px; height: 18px; }
+      .product-accordion summary { font-size: 0.9rem; padding: 16px 0; }
+      .product-accordion summary::after { font-size: 1.2rem; }
+      .product-accordion > div { font-size: 0.9rem; }
       .footer { padding: 32px 20px 20px; }
       .footer__grid { grid-template-columns: 1fr; gap: 24px; }
       .footer__col-comprar { display: none; }
