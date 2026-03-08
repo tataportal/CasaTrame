@@ -92,8 +92,11 @@
     .nav__right { display: flex; gap: 36px; align-items: center; justify-content: flex-end; }
     .nav__right button, .nav__right a { font-size: 1.4rem; display: flex; align-items: center; transition: color 0.4s; }
     .nav__right svg { width: 35px; height: 35px; transition: stroke 0.4s; }
-    .nav__hamburger { display: none; flex-direction: column; gap: 8px; }
-    .nav__hamburger span { width: 36px; height: 2.5px; transition: background 0.4s; }
+    .nav__hamburger { display: none; flex-direction: column; gap: 5px; }
+    .nav__hamburger span { width: 28px; height: 2px; background: var(--text); transition: all 0.3s ease; }
+    .nav__hamburger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav__hamburger.is-open span:nth-child(2) { opacity: 0; }
+    .nav__hamburger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
     /* ===========================================
        HERO
@@ -329,29 +332,57 @@
       .footer__grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 768px) {
+      html { scroll-snap-type: none; }
+      :root { --nav-h: 64px; }
+      .nav__inner { padding: 0 16px; grid-template-columns: auto 1fr auto; }
       .nav__left { display: none; }
-      .nav__hamburger { display: flex; }
-      .nav__left.open {
-        display: flex; flex-direction: column; position: absolute;
-        top: var(--nav-h); left: 0; right: 0; background: var(--bg);
-        padding: 20px 24px; gap: 14px; border-bottom: 1px solid var(--border); z-index: 100;
+      .nav__right { display: none; }
+      .nav__hamburger { display: flex; order: -1; background: none; border: none; padding: 8px; cursor: pointer; }
+      .nav__logo img { height: 22px; }
+      .nav__logo { justify-content: center; }
+
+      /* Mobile menu: full links including icons */
+      .nav__mobile-menu {
+        display: none; position: fixed; top: var(--nav-h); left: 0; right: 0; bottom: 0;
+        background: var(--bg); z-index: 999; flex-direction: column;
+        padding: 40px 32px; gap: 28px; overflow-y: auto;
       }
-      .hero__cta { padding: 20px 48px; font-size: 1.2rem; }
+      .nav__mobile-menu.open { display: flex; }
+      .nav__mobile-menu a {
+        font-size: 1.4rem; letter-spacing: 0.08em; text-transform: uppercase;
+        color: var(--text); font-weight: 300; font-family: var(--body);
+      }
+      .nav__mobile-menu a.underlined { text-decoration: underline; text-underline-offset: 5px; }
+      .nav__mobile-menu hr {
+        border: none; border-top: 1px solid var(--border); width: 100%; margin: 4px 0;
+      }
+
+      .hero { min-height: 85vh; }
+      .hero__cta { padding: 14px 32px; font-size: 0.95rem; white-space: nowrap; }
+      .hero__cta svg { width: 22px; height: 22px; }
       .brand-statement { padding: 60px 24px; min-height: 80vh; }
       .brand-statement__title { font-size: 2.2rem; }
       .brand-statement__text { font-size: 1.1rem; }
+      .collection-section { padding: 40px 0; min-height: auto; }
+      .collection-section__title { font-size: 2rem; margin-bottom: 24px; }
       .collection-grid { padding: 0 20px; }
       .collection-card { flex: 0 0 85%; }
+      .collection-section__cta { margin-top: 24px; }
+      .collection-section__cta .btn-outline { padding: 14px 32px; font-size: 0.95rem; white-space: nowrap; }
+      .collection-section__cta .btn-outline svg { width: 22px; height: 22px; }
       .vestidor { padding: 60px 24px 80px; min-height: 80vh; }
-      .vestidor__title { font-size: 2.4rem; }
+      .vestidor__title { font-size: 2rem; }
+      .vestidor__text { font-size: 1rem; padding: 0 10px; }
       .vestidor__mockup { max-width: 100%; }
       .vestidor__mockup img { max-height: 55vh; }
-      .newsletter { padding: 80px 24px; height: 80vh; }
-      .newsletter__title { font-size: 1.6rem; }
+      .vestidor__btn { padding: 14px 32px; font-size: 0.95rem; white-space: nowrap; }
+      .newsletter { padding: 60px 24px; height: auto; min-height: 60vh; }
+      .newsletter__title { font-size: 1.4rem; }
       .newsletter__form { flex-direction: column; gap: 8px; }
       .newsletter__submit { width: 100%; }
       .footer { padding: 32px 20px 20px; }
       .footer__grid { grid-template-columns: 1fr; gap: 24px; }
+      .footer__bottom { flex-direction: column; gap: 12px; text-align: center; }
     }
     /* TOAST */
     .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: #fff; padding: 11px 30px; font-size: 0.82rem; z-index: 9999; opacity: 0; transition: all 0.3s ease; }
@@ -368,7 +399,7 @@
         <a href="index.html" class="underlined">Conócenos</a>
         <a href="vestidor.html">Vestidor&trade;</a>
       </div>
-      <button class="nav__hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+      <button class="nav__hamburger" onclick="toggleMobileMenu()">
         <span></span><span></span><span></span>
       </button>
       <a href="index.html" class="nav__logo"><img src="img/trame_horizontal-black.svg" alt="Casa Tramé"></a>
@@ -388,6 +419,17 @@
       </div>
     </div>
   </nav>
+
+  <!-- Mobile menu (hidden on desktop) -->
+  <div class="nav__mobile-menu" id="mobileMenu">
+    <a href="catalogo.html">Colección</a>
+    <a href="index.html" class="underlined">Conócenos</a>
+    <a href="vestidor.html">Vestidor&trade;</a>
+    <hr>
+    <a href="catalogo.html#favoritos">Favoritos</a>
+    <a href="catalogo.html">Buscar</a>
+    <a href="catalogo.html">Carrito</a>
+  </div>
 
   <!-- ===== HERO ===== -->
   <section class="hero">
@@ -589,6 +631,39 @@
     }
     window.addEventListener('scroll', updateNav, { passive: true });
     updateNav();
+
+    /* ---- Mobile Menu Toggle ---- */
+    const mobileMenu = document.getElementById('mobileMenu');
+    const hamburger = document.querySelector('.nav__hamburger');
+    let menuOpen = false;
+
+    function toggleMobileMenu() {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      document.body.style.overflow = menuOpen ? 'hidden' : '';
+
+      /* Force solid nav when menu is open so text/bg are readable */
+      if (menuOpen) {
+        nav.classList.remove('nav--transparent');
+        nav.classList.add('nav--solid');
+      } else {
+        updateNav(); /* Restore correct state based on scroll */
+      }
+
+      /* Animate hamburger → X */
+      hamburger.classList.toggle('is-open', menuOpen);
+    }
+
+    /* Close menu on resize to desktop */
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && menuOpen) {
+        menuOpen = false;
+        mobileMenu.classList.remove('open');
+        document.body.style.overflow = '';
+        hamburger.classList.remove('is-open');
+        updateNav();
+      }
+    });
 
   </script>
 </body>
