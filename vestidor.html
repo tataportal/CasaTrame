@@ -597,7 +597,7 @@
        RESPONSIVE — MOBILE (≤768px)
        =========================================== */
     @media (max-width: 768px) {
-      .nav__inner { padding: 0 16px; }
+      .nav__inner { padding: 0 14px; }
       .nav__left { display: none; }
       .nav__hamburger { display: flex; }
       .nav__left.open {
@@ -606,6 +606,9 @@
         padding: 20px 24px; gap: 14px; border-bottom: 1px solid var(--border); z-index: 100;
       }
       .nav__left a { font-size: 1.1rem; }
+      .nav__right { gap: 20px; }
+      .nav__right svg { width: 26px; height: 26px; }
+      .nav__logo img { height: 28px; }
 
       .vestidor {
         grid-template-columns: 1fr;
@@ -633,11 +636,15 @@
       .canvas { max-width: 100%; }
       .layer-stack { max-width: 100%; }
 
-      /* Layer chips: stacked compact */
-      .layer-chip { padding: 5px 8px; gap: 6px; grid-template-columns: 16px 28px 1fr auto; }
-      .layer-chip__thumb { width: 28px; height: 34px; }
-      .layer-chip__name { font-size: 1.1rem; }
-      .layer-chip__btn { width: 34px; height: 34px; } /* bigger touch targets */
+      /* Layer chips: compact — hide grip, bigger thumb, show full name */
+      .layer-chip { padding: 8px 10px; gap: 8px; grid-template-columns: 44px 1fr auto; }
+      .layer-chip__grip { display: none; }
+      .layer-chip__thumb { width: 44px; height: 54px; }
+      .layer-chip__name { font-size: 1.05rem; white-space: normal; line-height: 1.2; }
+      .layer-chip__type { font-size: 0.95rem; }
+      .layer-chip__actions { gap: 0; }
+      .layer-chip__btn { width: 36px; height: 36px; }
+      .layer-chip__btn svg { width: 18px; height: 18px; }
 
       /* Toolbar: compact */
       .center-toolbar { flex-wrap: wrap; gap: 6px; }
@@ -658,7 +665,10 @@
       .nav__left a:not(.underlined) { display: none; }
       .panel__item { width: 64px; }
       .panel__item img { width: 64px; height: 80px; }
-      .layer-chip__grip { display: none; }
+      .layer-chip { grid-template-columns: 38px 1fr auto; }
+      .layer-chip__thumb { width: 38px; height: 46px; }
+      .layer-chip__btn { width: 32px; height: 32px; }
+      .layer-chip__btn svg { width: 16px; height: 16px; }
       .center-toolbar { flex-direction: column; width: 100%; }
       .center-toolbar .btn-v { width: 100%; justify-content: center; }
     }
