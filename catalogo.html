@@ -666,10 +666,10 @@
     }
     @media (max-width: 768px) {
       :root { --nav-h: 64px; }
-      .nav__inner { padding: 0 16px; grid-template-columns: auto 1fr auto; }
+      .nav__inner { padding: 0 16px; display: flex; align-items: center; justify-content: center; position: relative; }
       .nav__left { display: none; }
       .nav__right { display: none; }
-      .nav__hamburger { display: flex; order: 1; }
+      .nav__hamburger { display: flex; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); }
       .nav__logo img { height: 22px; }
       .nav__logo { justify-content: center; }
       .main { grid-template-columns: 1fr; }
