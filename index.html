@@ -44,7 +44,7 @@
       --fs-subtitle: 1.8rem;
       --fs-body: 1.4rem;
       --fs-ui: 1.25rem;
-      --fs-btn: 1.1rem;
+      --fs-btn: 1.56rem;
       --fs-label: 0.95rem;
       --fs-micro: 0.7rem;
     }
@@ -128,13 +128,13 @@
       pointer-events: none;
     }
     .hero__content {
-      position: absolute; bottom: 80px; left: 0; right: 0;
+      position: absolute; bottom: 120px; left: 0; right: 0;
       text-align: center; z-index: 2;
     }
     .hero__cta {
       display: inline-flex; align-items: center; gap: 16px;
       padding: 26px 72px; border: 2px solid rgba(255,255,255,0.7);
-      color: #fff; font-size: 1.56rem; letter-spacing: 0.12em;
+      color: #fff; font-size: var(--fs-btn); letter-spacing: 0.12em;
       text-transform: uppercase; font-family: var(--body); font-weight: 300;
       transition: 0.3s; backdrop-filter: blur(2px);
     }
@@ -217,7 +217,7 @@
     }
     .collection-section__cta .btn-outline {
       padding: 26px 72px; border: 2px solid var(--text);
-      font-size: 1.56rem; letter-spacing: 0.12em;
+      font-size: var(--fs-btn); letter-spacing: 0.12em;
     }
     .collection-section__cta .btn-outline svg { width: 28px; height: 28px; stroke-width: 2; }
     .btn-outline {
@@ -256,7 +256,7 @@
     }
     .vestidor__cta {
       padding: 26px 72px; border: 2px solid var(--text);
-      font-size: 1.56rem; letter-spacing: 0.12em;
+      font-size: var(--fs-btn); letter-spacing: 0.12em;
     }
     .vestidor__cta strong { font-weight: 600; }
     .vestidor__cta svg { width: 28px; height: 28px; stroke-width: 2; }
@@ -333,13 +333,23 @@
     }
     @media (max-width: 768px) {
       html { scroll-snap-type: none; }
-      :root { --nav-h: 64px; }
-      .nav__inner { padding: 0 16px; grid-template-columns: auto 1fr auto; }
+      :root {
+        --nav-h: 64px;
+        --fs-hero: 2.8rem;
+        --fs-section: 2rem;
+        --fs-page: 1.8rem;
+        --fs-subtitle: 1rem;
+        --fs-body: 1rem;
+        --fs-ui: 1rem;
+        --fs-btn: 0.95rem;
+        --fs-label: 0.85rem;
+      }
+      .nav__inner { padding: 0 16px; grid-template-columns: 1fr auto; }
       .nav__left { display: none; }
       .nav__right { display: none; }
-      .nav__hamburger { display: flex; order: -1; background: none; border: none; padding: 8px; cursor: pointer; }
+      .nav__hamburger { display: flex; order: 1; background: none; border: none; padding: 8px; cursor: pointer; }
       .nav__logo img { height: 22px; }
-      .nav__logo { justify-content: center; }
+      .nav__logo { justify-content: flex-start; }
 
       /* Mobile menu: full links including icons */
       .nav__mobile-menu {
@@ -358,30 +368,37 @@
       }
 
       .hero { min-height: 85vh; }
-      .hero__cta { padding: 14px 32px; font-size: 0.95rem; white-space: nowrap; }
+      .hero__cta { padding: 14px 32px; font-size: var(--fs-btn); white-space: nowrap; }
       .hero__cta svg { width: 22px; height: 22px; }
-      .brand-statement { padding: 60px 24px; min-height: 80vh; }
-      .brand-statement__title { font-size: 2.2rem; }
-      .brand-statement__text { font-size: 1.1rem; }
+      .brand-statement { padding: 60px 24px; min-height: 100vh; }
+      .brand-statement__text { padding: 0 16px; }
       .collection-section { padding: 40px 0; min-height: auto; }
-      .collection-section__title { font-size: 2rem; margin-bottom: 24px; }
-      .collection-grid { padding: 0 20px; }
-      .collection-card { flex: 0 0 85%; }
+      .collection-section__title { margin-bottom: 24px; }
+      .collection-grid { padding: 0; overflow: visible; height: auto; }
+      .collection-grid__track {
+        animation: none !important; transform: none !important;
+        gap: 3px; padding: 0 16px;
+        overflow-x: auto; -webkit-overflow-scrolling: touch;
+      }
+      .collection-card { flex: 0 0 70vw; height: 55vh; }
+      .collection-card img { filter: saturate(1); }
+      .collection-card::after { background: rgba(0,0,0,0.18); }
       .collection-section__cta { margin-top: 24px; }
-      .collection-section__cta .btn-outline { padding: 14px 32px; font-size: 0.95rem; white-space: nowrap; }
+      .collection-section__cta .btn-outline { padding: 14px 32px; font-size: var(--fs-btn); white-space: nowrap; }
       .collection-section__cta .btn-outline svg { width: 22px; height: 22px; }
       .vestidor { padding: 60px 24px 80px; min-height: 80vh; }
-      .vestidor__title { font-size: 2rem; }
-      .vestidor__text { font-size: 1rem; padding: 0 10px; }
+      .vestidor__subtitle { padding: 0 10px; }
       .vestidor__mockup { max-width: 100%; }
       .vestidor__mockup img { max-height: 55vh; }
-      .vestidor__btn { padding: 14px 32px; font-size: 0.95rem; white-space: nowrap; }
-      .newsletter { padding: 60px 24px; height: auto; min-height: 60vh; }
-      .newsletter__title { font-size: 1.4rem; }
+      .vestidor__cta { padding: 14px 32px; font-size: var(--fs-btn); white-space: nowrap; }
+      .vestidor__cta svg { width: 22px; height: 22px; }
+      .newsletter { padding: 60px 24px; height: 100vh; min-height: 100vh; }
+      .newsletter__title { white-space: normal; }
       .newsletter__form { flex-direction: column; gap: 8px; }
       .newsletter__submit { width: 100%; }
       .footer { padding: 32px 20px 20px; }
       .footer__grid { grid-template-columns: 1fr; gap: 24px; }
+      .footer__col-comprar { display: none; }
       .footer__bottom { flex-direction: column; gap: 12px; text-align: center; }
     }
     /* TOAST */
@@ -449,7 +466,7 @@
 
   <!-- ===== BRAND STATEMENT ===== -->
   <section class="brand-statement">
-    <h2 class="brand-statement__title">Ropa que trasciende el tiempo</h2>
+    <h2 class="brand-statement__title">Ropa que<br>trasciende<br>el tiempo</h2>
     <p class="brand-statement__text">
       Cada prenda de Casa Tramé nace con la intención de permanecer. Diseñamos piezas atemporales
       que combinan técnicas artesanales con una visión contemporánea — para quienes eligen
@@ -567,7 +584,7 @@
         <div class="footer__brand-name">CASA TRAMÉ</div>
         <p>Moda artesanal con visión contemporánea. Diseñada para quienes valoran la calidad y la intención detrás de cada prenda.</p>
       </div>
-      <div>
+      <div class="footer__col-comprar">
         <h4>Comprar</h4>
         <ul>
           <li><a href="catalogo.html">Nueva colección</a></li>

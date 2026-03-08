@@ -165,6 +165,7 @@
       font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
       color: var(--text-light); margin-top: 28px; margin-bottom: 10px;
     }
+    .sidebar__section-title--filtrar { display: none; }
     .sidebar__sort { display: flex; flex-direction: column; gap: 0; }
     .sidebar__sort a {
       font-size: 0.9rem; color: var(--text); padding: 6px 0;
@@ -176,6 +177,7 @@
 
     /* --- GRID AREA --- */
     .grid-area { padding: 0 0 60px 0; border-top: none; }
+    .grid-view-toggle { display: none; }
 
     /* Product grid: 3 columns, no dividers */
     .product-grid {
@@ -661,23 +663,40 @@
     }
     @media (max-width: 768px) {
       :root { --nav-h: 64px; }
-      .nav__inner { padding: 0 16px; grid-template-columns: auto 1fr auto; }
+      .nav__inner { padding: 0 16px; grid-template-columns: 1fr auto; }
       .nav__left { display: none; }
       .nav__right { display: none; }
-      .nav__hamburger { display: flex; order: -1; }
+      .nav__hamburger { display: flex; order: 1; }
       .nav__logo img { height: 22px; }
-      .nav__logo { justify-content: center; }
+      .nav__logo { justify-content: flex-start; }
       .main { grid-template-columns: 1fr; }
       .sidebar { position: relative; top: 0; padding: 24px 20px; max-height: none; }
       .sidebar__title { font-size: 2rem; }
+      .sidebar__section-title--filtrar { display: block; }
       .sidebar__filters { flex-direction: row; flex-wrap: wrap; gap: 4px 16px; }
-      .grid-area { padding: 0 0 40px; }
+      .grid-area { padding: 0 12px 40px; }
+      .grid-view-toggle {
+        display: flex; justify-content: flex-end; gap: 8px;
+        padding: 12px 0; margin-bottom: 4px;
+      }
+      .grid-view-btn {
+        width: 32px; height: 32px; padding: 5px;
+        background: none; border: 1px solid var(--border); border-radius: 4px;
+        color: var(--text-light); cursor: pointer; transition: 0.2s;
+      }
+      .grid-view-btn.active { color: var(--text); border-color: var(--text); }
+      .grid-view-btn svg { width: 100%; height: 100%; }
+      .product-card__quick { display: none; }
       .product-grid { grid-template-columns: repeat(2, 1fr); }
+      .product-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+      .product-grid.cols-1 { grid-template-columns: 1fr; }
       .modal { grid-template-columns: 1fr; }
       .modal__gallery { min-height: 320px; }
       .wish-selector { min-width: auto; width: calc(100vw - 40px); max-width: 340px; right: 0; left: auto; }
       .footer { padding: 32px 20px 20px; }
       .footer__grid { grid-template-columns: 1fr; gap: 24px; }
+      .footer__col-comprar { display: none; }
+      .footer__bottom { flex-direction: column; gap: 12px; text-align: center; }
     }
   </style>
 </head>
@@ -736,6 +755,7 @@
       <h1 class="sidebar__title">OTOÑO<br>INVIERNO</h1>
       <p class="sidebar__subtitle">Nuestra primera colección cápsula, descubre la practicidad</p>
 
+      <p class="sidebar__section-title sidebar__section-title--filtrar">Filtrar</p>
       <div class="sidebar__filters" id="filters">
         <a href="#" data-filter="all" class="active">VER TODO</a>
         <a href="#" data-filter="abrigos">ABRIGOS</a>
@@ -746,13 +766,13 @@
         <a href="#" data-filter="pantalones">PANTALONES/FALDAS</a>
       </div>
 
-      <p class="sidebar__section-title">Ordenar</p>
+      <p class="sidebar__section-title">Ordenar por precio</p>
       <div class="sidebar__sort" id="sortOptions">
         <a href="#" data-sort="price-asc">Precio ↑</a>
         <a href="#" data-sort="price-desc">Precio ↓</a>
       </div>
 
-      <p class="sidebar__section-title">Color</p>
+      <p class="sidebar__section-title">Ordenar por color</p>
       <div class="sidebar__sort" id="colorSortOptions">
         <a href="#" data-sort="color-dark">Oscuro → Claro</a>
         <a href="#" data-sort="color-light">Claro → Oscuro</a>
@@ -761,6 +781,18 @@
 
     <!-- GRID AREA -->
     <div class="grid-area">
+      <!-- GRID VIEW TOGGLE (mobile only) -->
+      <div class="grid-view-toggle" id="gridViewToggle">
+        <button class="grid-view-btn" data-cols="3" title="3 columnas">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="21" height="21" rx="2"/><line x1="8" y1="1.5" x2="8" y2="22.5"/><line x1="16" y1="1.5" x2="16" y2="22.5"/><line x1="1.5" y1="8.5" x2="22.5" y2="8.5"/><line x1="1.5" y1="15.5" x2="22.5" y2="15.5"/></svg>
+        </button>
+        <button class="grid-view-btn active" data-cols="2" title="2 columnas">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="21" height="21" rx="2"/><line x1="12" y1="1.5" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="22.5" y2="12"/></svg>
+        </button>
+        <button class="grid-view-btn" data-cols="1" title="1 columna">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="21" height="21" rx="2"/><line x1="1.5" y1="8.5" x2="22.5" y2="8.5"/><line x1="1.5" y1="15.5" x2="22.5" y2="15.5"/></svg>
+        </button>
+      </div>
       <!-- PRODUCT GRID -->
       <div class="product-grid" id="productGrid"></div>
     </div>
@@ -854,7 +886,7 @@
         <div class="footer__brand-name">CASA TRAMÉ</div>
         <p>Moda artesanal con visión contemporánea. Diseñada para quienes valoran la calidad y la intención detrás de cada prenda.</p>
       </div>
-      <div>
+      <div class="footer__col-comprar">
         <h4>Comprar</h4>
         <ul>
           <li><a href="#">Nueva colección</a></li>
@@ -913,6 +945,18 @@
        JAVASCRIPT
        =========================================== -->
   <script>
+    /* ---- Grid View Toggle (mobile) ---- */
+    document.querySelectorAll('.grid-view-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cols = btn.dataset.cols;
+        const grid = document.getElementById('productGrid');
+        document.querySelectorAll('.grid-view-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        grid.classList.remove('cols-1', 'cols-3');
+        if (cols !== '2') grid.classList.add('cols-' + cols);
+      });
+    });
+
     /* ---- Mobile Menu Toggle ---- */
     const mobileMenu = document.getElementById('mobileMenu');
     const hamburger = document.querySelector('.nav__hamburger');
@@ -1137,8 +1181,16 @@
 
       // Re-bind click + hover
       grid.querySelectorAll('.product-card').forEach(card => {
-        card.querySelector('.product-card__image').addEventListener('click', () => window.open(`producto.html?id=${card.dataset.id}`, '_blank'));
-        card.querySelector('.product-card__text').addEventListener('click', () => window.open(`producto.html?id=${card.dataset.id}`, '_blank'));
+        const isMobile = window.innerWidth <= 768;
+        const goToProduct = () => {
+          if (isMobile) {
+            window.location.href = `producto.html?id=${card.dataset.id}`;
+          } else {
+            window.open(`producto.html?id=${card.dataset.id}`, '_blank');
+          }
+        };
+        card.querySelector('.product-card__image').addEventListener('click', goToProduct);
+        card.querySelector('.product-card__text').addEventListener('click', goToProduct);
         const hoverSrc = card.dataset.hoverImg;
         if (hoverSrc) {
           const preload = new Image(); preload.src = hoverSrc;

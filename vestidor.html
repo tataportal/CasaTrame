@@ -613,75 +613,141 @@
        =========================================== */
     @media (max-width: 768px) {
       :root { --nav-h: 64px; }
-      .nav__inner { padding: 0 16px; grid-template-columns: auto 1fr auto; }
+      .nav__inner { padding: 0 16px; grid-template-columns: 1fr auto; }
       .nav__left { display: none; }
       .nav__right { display: none; }
-      .nav__hamburger { display: flex; order: -1; }
+      .nav__hamburger { display: flex; order: 1; }
       .nav__logo img { height: 22px; }
-      .nav__logo { justify-content: center; }
+      .nav__logo { justify-content: flex-start; }
 
+      /* ── MOBILE LAYOUT: canvas 60% | prendas 20% | propiedades 20% ── */
+      html, body { overflow: auto; }
       .vestidor {
         grid-template-columns: 1fr;
-        min-height: auto;
+        grid-template-rows: 60vh 20vh 1fr;
+        height: calc(100vh - var(--nav-h));
+        overflow: hidden;
       }
 
-      /* Compact left panel: horizontal strips */
+      /* ── CANVAS (60vh) ── */
+      .center {
+        order: 1;
+        height: 100%;
+        padding: 0;
+        overflow: hidden;
+      }
+      .canvas {
+        width: 100%; height: 100%;
+        border: none; border-bottom: 1px solid var(--border);
+      }
+      /* Hide layer stack on mobile — layers managed by tapping */
+      .layer-stack { display: none; }
+      /* Toolbar: compact overlay */
+      .center-toolbar { flex-wrap: wrap; gap: 4px; bottom: 8px; left: 8px; right: 8px; }
+      .btn-v { padding: 8px 14px; font-size: 0.85rem; letter-spacing: 0.06em; }
+      .btn-v svg { width: 14px; height: 14px; }
+      .btn-v--help { width: 34px; height: 34px; min-width: 34px; font-size: 0.85rem; }
+      /* Screenshot button (mobile only) */
+      .btn-v--screenshot { display: inline-flex; }
+
+      /* ── GARMENT ROW (20vh) ── */
       .panel {
-        padding: 12px 0;
+        order: 2;
+        height: 100%;
+        padding: 8px 0;
+        border-right: none;
         border-bottom: 1px solid var(--border);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        max-height: none;
+        position: relative; top: 0;
       }
-      .panel__title { padding: 0 16px; margin-bottom: 10px; font-size: 1rem; }
-      .panel__section { margin-bottom: 12px; }
-      .panel__section-header { padding: 0 16px; margin-bottom: 6px; }
+      .panel__title { display: none; }
+      .panel__section-header { display: none; }
+      .panel__section { margin-bottom: 0; }
+      .panel__section.collapsed .panel__items {
+        max-height: none; opacity: 1; overflow: visible;
+        padding-top: 0; padding-bottom: 0;
+      }
+      /* Flat horizontal row of all garments */
       .panel__items {
-        padding: 0 16px; gap: 6px;
-        max-height: 130px;
+        padding: 0 4px; gap: 4px;
+        max-height: none;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
       }
-      .panel__item { width: 72px; }
-      .panel__item img { width: 72px; height: 90px; }
-      .panel__item__check { width: 15px; height: 15px; font-size: 0.65rem; }
+      .panel__items::-webkit-scrollbar { display: none; }
+      /* Square thumbnails */
+      .panel__item { width: 64px; flex-shrink: 0; }
+      .panel__item img { width: 64px; height: 64px; object-fit: cover; }
+      .panel__item__check { width: 14px; height: 14px; font-size: 0.6rem; top: 2px; right: 2px; }
+      .panel__item__toggle { display: none; }
+      .panel__item__eye { display: none !important; }
+      /* Favoritos section hidden on mobile (items already in categories) */
+      .panel__section--favs { display: none; }
+      /* Make all sections sit in one scrollable row */
+      .panel {
+        flex-direction: row;
+        overflow-x: auto;
+        overflow-y: hidden;
+        gap: 0;
+        align-items: center;
+        padding: 6px 0;
+      }
+      .panel__section {
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: row;
+      }
+      /* Force all collapsed sections open on mobile */
+      .panel__section.collapsed .panel__items {
+        max-height: none !important;
+        opacity: 1 !important;
+        overflow: visible !important;
+        display: flex !important;
+      }
+      /* Canvas empty text */
+      .canvas__empty { font-size: 0.9rem; padding: 20px; }
 
-      /* Center: full width canvas */
-      .center { padding: 12px 12px 24px; }
-      .canvas { max-width: 100%; }
-      .layer-stack { max-width: 100%; }
+      /* ── PROPERTIES PANEL (bottom 20%) ── */
+      .panel--right {
+        order: 3;
+        border-left: none;
+        border-top: 1px solid var(--border);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        height: 100%;
+        padding: 0;
+      }
+      .summary {
+        padding: 12px 16px 16px;
+      }
+      .summary__title { font-size: 0.9rem; margin-bottom: 6px; }
+      .summary__list { min-height: auto; }
+      .summary__item { padding: 8px 0; gap: 10px; }
+      .summary__item-img { width: 32px; height: 40px; }
+      .summary__item-cat { font-size: 0.7rem; }
+      .summary__item-name { font-size: 0.85rem; }
+      .summary__item-price { font-size: 0.85rem; }
+      .summary__item-remove { width: 28px; height: 28px; }
+      .summary__item-remove svg { width: 16px; height: 16px; }
+      .summary__total { padding: 8px 0; margin-top: 4px; }
+      .summary__total-label { font-size: 0.85rem; }
+      .summary__total-value { font-size: 1rem; }
+      .summary__checkout { padding: 10px 0; font-size: 0.85rem; margin-top: 6px; }
+      .summary__empty { font-size: 0.85rem; padding: 10px 0; }
+      /* Hide saved looks and tip on mobile to save space */
+      .saved-looks { display: none; }
+      .summary__tip { display: none; }
 
-      /* Layer chips: compact — hide grip, bigger thumb, show full name */
-      .layer-chip { padding: 8px 10px; gap: 8px; grid-template-columns: 44px 1fr auto; }
-      .layer-chip__grip { display: none; }
-      .layer-chip__thumb { width: 44px; height: 54px; }
-      .layer-chip__name { font-size: 1.05rem; white-space: normal; line-height: 1.2; }
-      .layer-chip__type { font-size: 0.95rem; }
-      .layer-chip__actions { gap: 0; }
-      .layer-chip__btn { width: 36px; height: 36px; }
-      .layer-chip__btn svg { width: 18px; height: 18px; }
-
-      /* Toolbar: compact */
-      .center-toolbar { flex-wrap: wrap; gap: 6px; }
-      .btn-v { padding: 10px 18px; font-size: 1rem; }
-
-      /* Summary panel compact */
-      .summary { padding: 20px 16px; }
-      .summary__item-img { width: 38px; height: 48px; }
-      .summary__item-name { font-size: 1.05rem; }
-
-      .toast { font-size: 1.05rem; padding: 12px 24px; bottom: 16px; }
+      .toast { font-size: 0.9rem; padding: 10px 20px; bottom: 12px; }
     }
 
-    /* ===========================================
-       RESPONSIVE — SMALL MOBILE (≤480px)
-       =========================================== */
-    @media (max-width: 480px) {
-      .nav__left a:not(.underlined) { display: none; }
-      .panel__item { width: 64px; }
-      .panel__item img { width: 64px; height: 80px; }
-      .layer-chip { grid-template-columns: 38px 1fr auto; }
-      .layer-chip__thumb { width: 38px; height: 46px; }
-      .layer-chip__btn { width: 32px; height: 32px; }
-      .layer-chip__btn svg { width: 16px; height: 16px; }
-      .center-toolbar { flex-direction: column; width: 100%; }
-      .center-toolbar .btn-v { width: 100%; justify-content: center; }
-    }
+    /* Hide screenshot button on desktop */
+    .btn-v--screenshot { display: none; }
   </style>
 </head>
 <body>
@@ -806,6 +872,9 @@
           <button class="btn-v btn-v--outline" id="saveLookBtn" onclick="saveLook()" disabled>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
             Guardar
+          </button>
+          <button class="btn-v btn-v--outline btn-v--screenshot" onclick="saveScreenshot()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M5 3v2"/><path d="M19 3v2"/></svg>
           </button>
         </div>
         <!-- Silhouette -->
@@ -1916,6 +1985,99 @@
       const ov = document.getElementById('onboardingOverlay');
       if (ov) ov.remove();
       localStorage.setItem('ct_vestidor_onboarded', '1');
+    }
+
+    /* ============================================
+       SCREENSHOT — 1080x1920 with watermark
+       ============================================ */
+    function saveScreenshot() {
+      if (layers.length === 0) { toast('Agrega prendas primero'); return; }
+
+      const W = 1080;
+      const H = 1920;
+      const offscreen = document.createElement('canvas');
+      offscreen.width = W;
+      offscreen.height = H;
+      const ctx = offscreen.getContext('2d');
+
+      // Background
+      ctx.fillStyle = '#f7f7f7';
+      ctx.fillRect(0, 0, W, H);
+
+      // Collect visible layer images
+      const visibleLayers = layers.filter(l => !l.hidden);
+      const imagesToLoad = [];
+
+      visibleLayers.forEach(l => {
+        const resolved = resolveImages(l.item, l.state);
+        let imgSrc = resolved.img || l.item.img;
+        if (l.layerType === 'coat-back' && resolved.imgBack) imgSrc = resolved.imgBack;
+        if (l.layerType === 'coat-front' && resolved.imgFront) imgSrc = resolved.imgFront;
+        imagesToLoad.push({ src: imgSrc, layer: l });
+      });
+
+      // Load all images then draw
+      let loaded = 0;
+      const images = [];
+
+      if (imagesToLoad.length === 0) { toast('No hay prendas visibles'); return; }
+
+      imagesToLoad.forEach((data, i) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          images[i] = img;
+          loaded++;
+          if (loaded === imagesToLoad.length) drawAndSave();
+        };
+        img.onerror = () => {
+          images[i] = null;
+          loaded++;
+          if (loaded === imagesToLoad.length) drawAndSave();
+        };
+        img.src = data.src;
+      });
+
+      function drawAndSave() {
+        // Draw each layer centered, scaled to fit canvas with padding
+        const padTop = 120;
+        const padBottom = 160;
+        const padSide = 80;
+        const drawW = W - padSide * 2;
+        const drawH = H - padTop - padBottom;
+
+        images.forEach(img => {
+          if (!img) return;
+          // Scale to fit
+          const scale = Math.min(drawW / img.naturalWidth, drawH / img.naturalHeight);
+          const w = img.naturalWidth * scale;
+          const h = img.naturalHeight * scale;
+          const x = (W - w) / 2;
+          const y = padTop + (drawH - h) / 2;
+          ctx.drawImage(img, x, y, w, h);
+        });
+
+        // Watermark: "casatrame.com" at bottom center
+        ctx.fillStyle = '#999999';
+        ctx.font = '300 32px "Goia Display", Georgia, serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('casatrame.com', W / 2, H - 60);
+
+        // Download
+        offscreen.toBlob(blob => {
+          if (!blob) { toast('Error al generar imagen'); return; }
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'mi-outfit-casatrame.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          toast('Screenshot guardado');
+        }, 'image/png');
+      }
     }
 
     /* ============================================

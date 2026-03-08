@@ -365,12 +365,12 @@
     }
     @media (max-width: 768px) {
       :root { --nav-h: 64px; }
-      .nav__inner { padding: 0 16px; grid-template-columns: auto 1fr auto; }
+      .nav__inner { padding: 0 16px; grid-template-columns: 1fr auto; }
       .nav__left { display: none; }
       .nav__right { display: none; }
-      .nav__hamburger { display: flex; order: -1; }
+      .nav__hamburger { display: flex; order: 1; }
       .nav__logo img { height: 22px; }
-      .nav__logo { justify-content: center; }
+      .nav__logo { justify-content: flex-start; }
       .product-page { grid-template-columns: 1fr; }
       .product-info {
         position: relative;
@@ -382,6 +382,8 @@
       .product-sizes { grid-template-columns: repeat(5, 1fr); }
       .footer { padding: 32px 20px 20px; }
       .footer__grid { grid-template-columns: 1fr; gap: 24px; }
+      .footer__col-comprar { display: none; }
+      .footer__bottom { flex-direction: column; gap: 12px; text-align: center; }
     }
   </style>
 </head>
@@ -539,7 +541,7 @@
         <div class="footer__brand-name">CASA TRAMÉ</div>
         <p>Moda artesanal con visión contemporánea. Diseñada para quienes valoran la calidad y la intención detrás de cada prenda.</p>
       </div>
-      <div>
+      <div class="footer__col-comprar">
         <h4>Comprar</h4>
         <ul>
           <li><a href="catalogo.html">Nueva colección</a></li>
