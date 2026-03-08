@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vestidor™ — Casa Tramé</title>
+  <style>
+    /* ===========================================
+       FONTS
+       SHOPIFY: Replace url() with {{ 'font.otf' | asset_url }}
+       or load via Shopify font picker in theme settings
+       =========================================== */
+    @font-face {
+      font-family: 'Goia Display';
+      src: url('fonts/GoiaDisplay-ExtraLightItalic.otf') format('opentype');
+      font-weight: 200; font-style: italic; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Goia Display';
+      src: url('fonts/GoiaDisplay-Bold.otf') format('opentype');
+      font-weight: 700; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Goia Display';
+      src: url('fonts/GoiaDisplay-Light.otf') format('opentype');
+      font-weight: 300; font-style: normal; font-display: swap;
+    }
+
+    /* ===========================================
+       RESET & VARIABLES
+       =========================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; margin: 0; overflow: hidden; }
+    :root {
+      --bg: #ffffff;
+      --text: #111;
+      --text-mid: #555;
+      --text-light: #999;
+      --border: #e0e0e0;
+      --heading: 'Goia Display', Georgia, serif;
+      --body: 'Goia Display', -apple-system, sans-serif;
+      --nav-h: 100px;
+      /* ── Type Scale (vestidor-specific) ── */
+      --fs-body: 1.4rem;
+      --fs-ui: 1.25rem;
+      --fs-btn: 1.1rem;
+      --fs-label: 0.95rem;
+    }
+    html { font-size: 15px; scroll-behavior: smooth; }
+    body {
+      font-family: var(--body); font-weight: 300; background: var(--bg);
+      color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; height: auto; display: block; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+    ul { list-style: none; }
+
+    /* ===========================================
+       NAVBAR
+       =========================================== */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: var(--bg); height: var(--nav-h);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav__inner {
+      max-width: 100%; padding: 0 60px;
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; height: 100%;
+    }
+    .nav__left { display: flex; gap: 48px; align-items: center; justify-content: flex-start; }
+    .nav__left a { font-size: 1.7rem; letter-spacing: 0.03em; line-height: 1; color: var(--text); }
+    .nav__left a.underlined { text-decoration: underline; text-underline-offset: 5px; }
+    .nav__logo { display: flex; align-items: center; justify-content: center; }
+    .nav__logo img { height: 37px; width: auto; transform: translateY(-3px); }
+    .nav__right { display: flex; gap: 36px; align-items: center; justify-content: flex-end; }
+    .nav__right button, .nav__right a { color: var(--text); font-size: 1.4rem; display: flex; align-items: center; }
+    .nav__right svg { width: 35px; height: 35px; }
+    .nav__hamburger { display: none; flex-direction: column; gap: 8px; }
+    .nav__hamburger span { width: 36px; height: 2.5px; background: var(--text); }
+
+    /* ===========================================
+       VESTIDOR 3-COLUMN LAYOUT
+       =========================================== */
+    .vestidor {
+      margin-top: var(--nav-h);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      height: calc(100vh - var(--nav-h));
+      overflow: hidden;
+    }
+
+    /* --- LEFT PANEL: Item picker --- */
+    .panel {
+      border-right: 1px solid var(--border);
+      padding: 32px 0;
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+      max-height: calc(100vh - var(--nav-h));
+      position: sticky; top: var(--nav-h);
+    }
+    .panel--right {
+      border-right: none;
+      border-left: 1px solid var(--border);
+      overflow-y: auto;
+    }
+    .panel__title {
+      font-size: var(--fs-ui); letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--text-light); padding: 0 24px; margin-bottom: 16px;
+    }
+    .panel__section { margin-bottom: 24px; }
+    .panel__section-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 24px; margin-bottom: 10px; cursor: pointer;
+      user-select: none;
+    }
+    .panel__section-header:hover .panel__section-title { opacity: 0.7; }
+    .panel__section-title {
+      font-size: var(--fs-body); letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 700; color: var(--text); transition: 0.15s;
+    }
+    .panel__section-toggle {
+      font-size: var(--fs-ui); color: var(--text-light); transition: transform 0.25s ease;
+    }
+    .panel__section.collapsed .panel__section-toggle { transform: rotate(-90deg); }
+    .panel__section-count {
+      font-size: var(--fs-btn); color: var(--text-light); font-weight: 300;
+      margin-left: 6px;
+    }
+    .panel__items {
+      display: flex; gap: 8px; padding: 0 24px;
+      overflow-x: auto; scrollbar-width: none;
+      max-height: 300px; transition: max-height 0.3s ease, opacity 0.2s ease, padding 0.3s ease;
+      opacity: 1;
+    }
+    .panel__section.collapsed .panel__items {
+      max-height: 0; opacity: 0; overflow: hidden; padding-top: 0; padding-bottom: 0;
+      margin: 0;
+    }
+    .panel__items::-webkit-scrollbar { display: none; }
+
+    .panel__item {
+      flex-shrink: 0; width: 140px; cursor: grab;
+      position: relative; transition: 0.2s;
+      border: 2px solid transparent;
+    }
+    .panel__item:active { cursor: grabbing; }
+    .panel__item:hover { border-color: var(--text); }
+    .panel__item.selected { border-color: var(--text); }
+    .panel__item__check {
+      display: none; position: absolute; top: 4px; right: 4px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--text); color: #fff;
+      font-size: 0.7rem; z-index: 3;
+      align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+    .panel__item.selected .panel__item__check { display: flex; }
+    .panel__item img { width: 140px; height: 175px; object-fit: contain; background: #f5f5f5; }
+    .panel__item__eye {
+      display: none; position: absolute; bottom: 4px; right: 4px;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(255,255,255,0.85); color: var(--text-mid);
+      align-items: center; justify-content: center;
+      border: none; cursor: pointer; z-index: 3;
+      transition: 0.15s;
+    }
+    .panel__item__eye svg { width: 14px; height: 14px; }
+    .panel__item:hover .panel__item__eye { display: flex; }
+    .panel__item__eye:hover { background: var(--text); color: #fff; }
+    /* Toggle o/c button on panel items with states */
+    .panel__item__toggle {
+      position: absolute; bottom: 4px; left: 4px;
+      padding: 2px 6px; border-radius: 10px;
+      background: rgba(255,255,255,0.9); color: var(--text-mid);
+      font-size: 0.65rem; font-family: var(--f-body);
+      border: 1px solid var(--text-muted); cursor: pointer; z-index: 3;
+      text-transform: uppercase; letter-spacing: 0.03em;
+      transition: 0.15s;
+    }
+    .panel__item__toggle:hover { background: var(--text); color: #fff; border-color: var(--text); }
+
+    /* ===========================================
+       CENTER: Canvas / Mannequin
+       =========================================== */
+    .center {
+      display: flex; flex-direction: column;
+      padding: 0; position: relative;
+      overflow: hidden;
+      height: calc(100vh - var(--nav-h));
+    }
+
+    /* --- Canvas area: stacked layers --- */
+    .canvas {
+      position: relative;
+      width: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
+      background: #f7f7f7;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .canvas__silhouette {
+      position: absolute; inset: 0; z-index: 0;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none; opacity: 0.07;
+    }
+    .canvas__empty {
+      position: absolute; inset: 0; z-index: 1;
+      display: flex; align-items: center; justify-content: center;
+      font-size: var(--fs-body); color: var(--text-light); text-align: center;
+      padding: 40px; line-height: 1.6;
+      pointer-events: none;
+    }
+    .canvas__empty.hidden { display: none; }
+
+    /* Each layer in the canvas */
+    .canvas__layer {
+      position: absolute; z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .canvas__layer img {
+      max-width: 100%; max-height: 100%; object-fit: contain;
+      pointer-events: none;
+    }
+    /* All layers same position — composition handled in post-production images */
+    .canvas__layer {
+      top: 0; left: 0; width: 100%; height: 100%;
+    }
+    /* Drop zone overlay when dragging */
+    .canvas__dropzone {
+      position: absolute; inset: 0; z-index: 50;
+      border: 3px dashed transparent;
+      transition: 0.2s;
+      pointer-events: none;
+    }
+    .canvas__dropzone.active {
+      pointer-events: all;
+      border-color: var(--text);
+      background: rgba(0,0,0,0.04);
+    }
+
+    /* --- LAYER STACK (inside column 2, always at bottom) --- */
+    .layer-stack {
+      flex-shrink: 0;
+      display: flex; flex-direction: column; gap: 3px;
+      padding: 8px 6px 12px;
+      border-top: 1px solid var(--border);
+      background: #fafafa;
+      height: 280px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      align-items: center; justify-content: center;
+    }
+    .layer-stack__title {
+      font-size: 1.35rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-light); text-align: center;
+    }
+    .layer-stack.has-layers .layer-stack__title { display: none; }
+    .layer-stack.has-layers { align-items: stretch; justify-content: flex-start; }
+    .layer-chip {
+      display: grid; width: 100%;
+      grid-template-columns: 20px 50px 1fr auto;
+      align-items: center; gap: 14px;
+      padding: 10px 14px; background: #f8f8f8;
+      border: 1px solid #eee; cursor: grab;
+      transition: 0.15s;
+    }
+    .layer-chip:active { cursor: grabbing; }
+    .layer-chip.drag-over { border-color: var(--text); background: #f0f0f0; }
+    .layer-chip__grip {
+      display: flex; flex-direction: column; gap: 4px;
+      color: var(--text-light); font-size: 1.2rem; cursor: grab;
+    }
+    .layer-chip__grip span { display: block; width: 14px; height: 2.5px; background: var(--text-light); }
+    .layer-chip__thumb {
+      width: 50px; height: 62px; object-fit: cover; flex-shrink: 0;
+    }
+    .layer-chip__name {
+      font-size: 1.5rem; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .layer-chip__type {
+      font-size: 1.2rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    .layer-chip__actions { display: flex; gap: 2px; justify-content: flex-end; flex-shrink: 0; }
+    .layer-chip__btn {
+      width: 40px; height: 40px; border: none;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; color: var(--text-mid); background: transparent;
+      border-radius: 6px; transition: 0.15s; cursor: pointer;
+    }
+    .layer-chip__btn:hover { background: #eee; color: var(--text); }
+    .layer-chip__btn svg { width: 22px; height: 22px; }
+    .layer-chip__btn--eye-off { color: var(--text-light); opacity: 0.5; }
+    .layer-chip.layer-hidden { opacity: 0.45; }
+
+    /* --- TOOLBAR OVERLAY (on top of canvas) --- */
+    .center-toolbar {
+      position: absolute; bottom: 10px; left: 10px; right: 10px;
+      display: flex; justify-content: space-between; align-items: flex-end;
+      z-index: 10; pointer-events: none;
+    }
+    .center-toolbar > * { pointer-events: auto; }
+    .center-toolbar__group { display: flex; gap: 6px; align-items: center; }
+    .btn-v {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 18px 36px; font-size: var(--fs-ui);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      font-weight: 500; font-family: var(--body);
+      transition: 0.2s; cursor: pointer;
+    }
+    /* .btn-v--primary reserved for future Shopify "Add to Cart" style CTAs */
+    .btn-v--outline { background: rgba(255,255,255,0.9); color: var(--text); border: 1px solid var(--border); }
+    .btn-v--outline:hover { border-color: var(--text); }
+    .btn-v svg { width: 18px; height: 18px; }
+    .btn-v--help {
+      width: 42px; height: 42px; min-width: 42px; padding: 0;
+      border-radius: 50%; border: 1px solid var(--border);
+      background: rgba(255,255,255,0.9); color: var(--text);
+      font-size: var(--fs-ui); font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: 0.2s; font-family: var(--body);
+    }
+    .btn-v--help:hover { border-color: var(--text); background: var(--text); color: #fff; }
+
+    /* Favoritos section styling */
+    .panel__section--favs {
+      margin-bottom: 6px; padding-bottom: 4px;
+    }
+    .panel__section--favs .panel__section-title { font-weight: 600; }
+    .panel__favs-empty {
+      font-size: 1.15rem; color: var(--text-light);
+      padding: 8px 20px 12px; letter-spacing: 0.02em;
+    }
+
+    /* ===========================================
+       RIGHT PANEL: Outfit summary
+       =========================================== */
+    .summary { padding: 0 24px 28px; }
+    .summary__title {
+      font-size: var(--fs-body); letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text); font-weight: 700; margin-bottom: 10px;
+    }
+    .summary__list { display: flex; flex-direction: column; min-height: 330px; }
+    .summary__item {
+      display: flex; gap: 14px; padding: 14px 0;
+      border-bottom: 1px solid #f0f0f0; align-items: center;
+    }
+    .summary__item-img { width: 60px; height: 76px; object-fit: cover; flex-shrink: 0; }
+    .summary__item-info { flex: 1; }
+    .summary__item-cat {
+      font-size: var(--fs-label); letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-light);
+    }
+    .summary__item-name { font-size: var(--fs-ui); color: var(--text); line-height: 1.3; }
+    .summary__item-price { font-size: var(--fs-ui); color: var(--text); font-weight: 500; }
+    .summary__item-remove {
+      width: 40px; height: 40px; border: none;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-mid); background: transparent;
+      border-radius: 6px; transition: 0.15s; cursor: pointer; flex-shrink: 0;
+    }
+    .summary__item-remove:hover { background: #eee; color: var(--text); }
+    .summary__item-remove svg { width: 22px; height: 22px; }
+    .summary__empty {
+      color: var(--text-light); font-size: var(--fs-ui);
+      font-style: italic; padding: 20px 0;
+      text-align: center;
+    }
+
+    .summary__total {
+      display: flex; justify-content: space-between;
+      padding: 16px 0; margin-top: 6px; border-top: 1px solid var(--border);
+    }
+    .summary__total-label {
+      font-size: var(--fs-ui); letter-spacing: 0.08em;
+      text-transform: uppercase; font-weight: 600;
+    }
+    .summary__total-value { font-size: 1.4rem; font-weight: 700; }
+    .summary__checkout {
+      display: block; width: 100%; padding: 16px 0; margin-top: 10px;
+      text-align: center; background: var(--text); color: #fff;
+      border: none; font-size: var(--fs-ui); text-transform: uppercase;
+      letter-spacing: 0.12em; cursor: pointer; font-family: var(--body);
+      font-weight: 500; transition: 0.2s;
+    }
+    .summary__checkout:hover { background: #333; }
+    .summary__checkout:disabled { background: var(--border); color: var(--text-light); cursor: default; }
+
+    /* ── Outfit Size Popup ── */
+    .outfit-popup-overlay {
+      display: none; position: fixed; inset: 0; z-index: 3000;
+      background: rgba(0,0,0,0.4); backdrop-filter: blur(3px);
+      align-items: center; justify-content: center;
+    }
+    .outfit-popup-overlay.open { display: flex; }
+    .outfit-popup {
+      background: #fff; width: 420px; max-width: 92vw;
+      max-height: 85vh; overflow-y: auto;
+      padding: 32px 28px; position: relative;
+    }
+    .outfit-popup__close {
+      position: absolute; top: 12px; right: 16px;
+      font-size: 1.6rem; cursor: pointer; color: var(--text);
+      background: none; border: none; font-family: var(--body);
+    }
+    .outfit-popup__title {
+      font-size: 1.3rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 24px;
+    }
+    .outfit-popup__item {
+      display: flex; gap: 14px; align-items: center;
+      padding: 14px 0; border-bottom: 1px solid var(--border);
+    }
+    .outfit-popup__item img {
+      width: 56px; height: 70px; object-fit: cover;
+    }
+    .outfit-popup__item-info { flex: 1; }
+    .outfit-popup__item-name {
+      font-size: var(--fs-label); font-weight: 500; margin-bottom: 4px;
+    }
+    .outfit-popup__item-price {
+      font-size: var(--fs-label); color: var(--text-mid); margin-bottom: 8px;
+    }
+    .outfit-popup__sizes { display: flex; gap: 6px; }
+    .outfit-popup__sizes button {
+      width: 36px; height: 30px; border: 1px solid var(--border);
+      background: none; font-size: 0.75rem; cursor: pointer;
+      font-family: var(--body); transition: 0.15s;
+    }
+    .outfit-popup__sizes button.active {
+      background: var(--text); color: #fff; border-color: var(--text);
+    }
+    .outfit-popup__sizes button:hover:not(.active) {
+      border-color: var(--text);
+    }
+    .outfit-popup__submit {
+      display: block; width: 100%; padding: 16px 0; margin-top: 24px;
+      text-align: center; background: var(--text); color: #fff;
+      border: none; font-size: var(--fs-ui); text-transform: uppercase;
+      letter-spacing: 0.12em; cursor: pointer; font-family: var(--body);
+      font-weight: 500; transition: 0.2s;
+    }
+    .outfit-popup__submit:hover { background: #333; }
+
+    .summary__tip {
+      margin-top: 20px; padding: 14px; background: #fafafa;
+      font-size: var(--fs-btn); color: var(--text-mid); line-height: 1.5;
+    }
+    .summary__tip strong { font-weight: 700; }
+
+    /* --- SAVED LOOKS --- */
+    .saved-looks {
+      margin-top: 24px; padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .saved-looks__title {
+      font-size: 1.2rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--text-light); margin-bottom: 14px;
+    }
+    .saved-looks__grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    }
+    .saved-look {
+      position: relative; overflow: hidden;
+      background: #f7f7f7; border: 1px solid #eee;
+      cursor: pointer; transition: 0.15s;
+    }
+    .saved-look:hover { border-color: var(--text); }
+    .saved-look:hover .saved-look__overlay { opacity: 1; }
+    .saved-look__canvas {
+      position: relative; width: 100%; aspect-ratio: 4/5;
+      overflow: hidden;
+    }
+    /* Full overlay on hover — covers entire card */
+    .saved-look__overlay {
+      position: absolute; inset: 0; z-index: 10;
+      background: rgba(255,255,255,0.88);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .saved-look__name {
+      font-size: 1.3rem; font-weight: 700; color: var(--text);
+      text-align: center; padding: 0 8px;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .saved-look__actions {
+      display: flex; gap: 10px;
+    }
+    .saved-look__btn {
+      width: 42px; height: 42px; border: 1.5px solid var(--text);
+      background: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text); cursor: pointer; transition: 0.15s;
+    }
+    .saved-look__btn:hover { background: var(--text); color: #fff; }
+    .saved-look__btn svg { width: 18px; height: 18px; }
+
+    .saved-looks__empty {
+      text-align: center; padding: 20px 10px;
+      color: var(--text-light); font-size: 1.05rem; line-height: 1.6;
+    }
+    .saved-looks__empty strong { font-weight: 600; color: var(--text-mid); }
+    .saved-looks__empty.hidden { display: none; }
+    .saved-looks__cta {
+      display: inline-block; margin-top: 12px;
+      padding: 12px 26px; font-size: 1rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      font-weight: 500; border: 1px solid var(--border);
+      color: var(--text); transition: 0.2s;
+    }
+    .saved-looks__cta:hover { border-color: var(--text); }
+
+    /* --- TOAST --- */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--text); color: #fff; padding: 14px 36px;
+      font-size: var(--fs-ui); z-index: 9999; opacity: 0;
+      transition: all 0.3s ease; pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ===========================================
+       ONBOARDING WALKTHROUGH
+       =========================================== */
+    #onboardingOverlay {
+      position: fixed; inset: 0; z-index: 10000;
+      pointer-events: auto;
+    }
+    .ob-mask {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+    }
+    .ob-highlight {
+      position: absolute; border: 2px solid rgba(255,255,255,0.6);
+      border-radius: 12px; pointer-events: none;
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.15);
+    }
+    .ob-tooltip {
+      position: fixed; background: #fff; color: var(--text);
+      padding: 36px 40px; border-radius: 14px;
+      max-width: 440px; box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+      opacity: 0; transition: opacity 0.3s ease;
+      z-index: 10001;
+    }
+    .ob-tooltip__step {
+      font-size: 1.1rem; text-transform: uppercase;
+      letter-spacing: 0.1em; color: #999; margin-bottom: 10px;
+    }
+    .ob-tooltip__title {
+      font-size: 1.8rem; font-weight: 700; margin-bottom: 12px;
+      letter-spacing: 0.02em;
+    }
+    .ob-tooltip__text {
+      font-size: 1.4rem; line-height: 1.55; color: #555; margin-bottom: 24px;
+    }
+    .ob-tooltip__actions {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .ob-tooltip__skip {
+      background: none; border: none; color: #999;
+      font-size: 1.2rem; cursor: pointer; padding: 8px 0;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .ob-tooltip__skip:hover { color: var(--text); }
+    .ob-tooltip__next {
+      background: var(--text); color: #fff; border: none;
+      padding: 16px 36px; font-size: 1.3rem; cursor: pointer;
+      letter-spacing: 0.04em; transition: 0.15s;
+    }
+    .ob-tooltip__next:hover { opacity: 0.85; }
+
+    /* ===========================================
+       RESPONSIVE — TABLET (≤1100px)
+       =========================================== */
+    @media (max-width: 1100px) {
+      .vestidor { grid-template-columns: 1fr; }
+      .panel {
+        position: relative; top: 0; max-height: none;
+        border-right: none; border-bottom: 1px solid var(--border);
+        padding: 16px 0;
+      }
+      .panel--right { border-left: none; border-top: 1px solid var(--border); }
+      /* Items scroll horizontally on tablet */
+      .panel__items { flex-wrap: nowrap; }
+      .canvas { max-width: 100%; }
+      .layer-stack { max-width: 100%; }
+    }
+
+    /* ===========================================
+       RESPONSIVE — MOBILE (≤768px)
+       =========================================== */
+    @media (max-width: 768px) {
+      .nav__inner { padding: 0 16px; }
+      .nav__left { display: none; }
+      .nav__hamburger { display: flex; }
+      .nav__left.open {
+        display: flex; flex-direction: column; position: absolute;
+        top: var(--nav-h); left: 0; right: 0; background: var(--bg);
+        padding: 20px 24px; gap: 14px; border-bottom: 1px solid var(--border); z-index: 100;
+      }
+      .nav__left a { font-size: 1.1rem; }
+
+      .vestidor {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      /* Compact left panel: horizontal strips */
+      .panel {
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .panel__title { padding: 0 16px; margin-bottom: 10px; font-size: 1rem; }
+      .panel__section { margin-bottom: 12px; }
+      .panel__section-header { padding: 0 16px; margin-bottom: 6px; }
+      .panel__items {
+        padding: 0 16px; gap: 6px;
+        max-height: 130px;
+      }
+      .panel__item { width: 72px; }
+      .panel__item img { width: 72px; height: 90px; }
+      .panel__item__check { width: 15px; height: 15px; font-size: 0.65rem; }
+
+      /* Center: full width canvas */
+      .center { padding: 12px 12px 24px; }
+      .canvas { max-width: 100%; }
+      .layer-stack { max-width: 100%; }
+
+      /* Layer chips: stacked compact */
+      .layer-chip { padding: 5px 8px; gap: 6px; grid-template-columns: 16px 28px 1fr auto; }
+      .layer-chip__thumb { width: 28px; height: 34px; }
+      .layer-chip__name { font-size: 1.1rem; }
+      .layer-chip__btn { width: 34px; height: 34px; } /* bigger touch targets */
+
+      /* Toolbar: compact */
+      .center-toolbar { flex-wrap: wrap; gap: 6px; }
+      .btn-v { padding: 10px 18px; font-size: 1rem; }
+
+      /* Summary panel compact */
+      .summary { padding: 20px 16px; }
+      .summary__item-img { width: 38px; height: 48px; }
+      .summary__item-name { font-size: 1.05rem; }
+
+      .toast { font-size: 1.05rem; padding: 12px 24px; bottom: 16px; }
+    }
+
+    /* ===========================================
+       RESPONSIVE — SMALL MOBILE (≤480px)
+       =========================================== */
+    @media (max-width: 480px) {
+      .nav__left a:not(.underlined) { display: none; }
+      .panel__item { width: 64px; }
+      .panel__item img { width: 64px; height: 80px; }
+      .layer-chip__grip { display: none; }
+      .center-toolbar { flex-direction: column; width: 100%; }
+      .center-toolbar .btn-v { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="nav">
+    <div class="nav__inner">
+      <div class="nav__left" id="navLinks">
+        <!-- SHOPIFY: Replace hrefs with {{ routes.collections_url }}, {{ pages['about'].url }}, etc. -->
+        <a href="catalogo.html">Colección</a>
+        <a href="index.html">Conócenos</a>
+        <a href="vestidor.html" class="underlined">Vestidor™</a>
+      </div>
+      <button class="nav__hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="index.html" class="nav__logo">
+        <img src="img/trame_horizontal-black.svg" alt="Casa Tramé">
+      </a>
+      <div class="nav__right">
+        <button title="Buscar" onclick="window.location.href='catalogo.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <a href="#" title="Cuenta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
+        <a href="catalogo.html#favoritos" title="Favoritos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        </a>
+        <a href="catalogo.html" title="Carrito">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== VESTIDOR LAYOUT ===== -->
+  <div class="vestidor">
+
+    <!-- LEFT: Item picker -->
+    <div class="panel" id="leftPanel">
+
+      <!-- Favoritos section -->
+      <div class="panel__section panel__section--favs" id="section-favoritos">
+        <div class="panel__section-header" onclick="toggleSection('favoritos')">
+          <span>
+            <svg style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            <span class="panel__section-title">Favoritos</span><span class="panel__section-count" id="count-favoritos"></span>
+          </span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-favoritos"></div>
+      </div>
+
+      <div class="panel__section" id="section-abrigos">
+        <div class="panel__section-header" onclick="toggleSection('abrigos')">
+          <span><span class="panel__section-title">Abrigos</span><span class="panel__section-count" id="count-abrigos"></span></span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-abrigos"></div>
+      </div>
+      <div class="panel__section" id="section-jackets">
+        <div class="panel__section-header" onclick="toggleSection('jackets')">
+          <span><span class="panel__section-title">Jackets</span><span class="panel__section-count" id="count-jackets"></span></span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-jackets"></div>
+      </div>
+      <div class="panel__section" id="section-polos">
+        <div class="panel__section-header" onclick="toggleSection('polos')">
+          <span><span class="panel__section-title">Polos / T-Shirts</span><span class="panel__section-count" id="count-polos"></span></span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-polos"></div>
+      </div>
+      <!-- sweaters section removed in v2 -->
+      <div class="panel__section" id="section-faldas">
+        <div class="panel__section-header" onclick="toggleSection('faldas')">
+          <span><span class="panel__section-title">Faldas</span><span class="panel__section-count" id="count-faldas"></span></span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-faldas"></div>
+      </div>
+      <div class="panel__section" id="section-pants">
+        <div class="panel__section-header" onclick="toggleSection('pants')">
+          <span><span class="panel__section-title">Pantalones</span><span class="panel__section-count" id="count-pants"></span></span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-pants"></div>
+      </div>
+    </div>
+
+    <!-- CENTER: Canvas + layers -->
+    <div class="center">
+
+      <div class="canvas" id="canvas">
+        <!-- Toolbar overlay (inside canvas so it positions over it) -->
+        <div class="center-toolbar">
+          <div class="center-toolbar__group">
+            <button class="btn-v btn-v--outline" onclick="randomizeOutfit()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
+                <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
+                <line x1="4" y1="4" x2="9" y2="9"/>
+              </svg>
+              Randomizar
+            </button>
+            <button class="btn-v btn-v--outline" onclick="clearAll()">Limpiar</button>
+            <button class="btn-v btn-v--help" onclick="localStorage.removeItem('ct_vestidor_onboarded'); startOnboarding();" title="Tutorial">?</button>
+          </div>
+          <button class="btn-v btn-v--outline" id="saveLookBtn" onclick="saveLook()" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            Guardar
+          </button>
+        </div>
+        <!-- Silhouette -->
+        <div class="canvas__silhouette">
+          <svg viewBox="0 0 200 400" width="200" height="400" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="100" cy="30" rx="20" ry="26" stroke="#111" stroke-width="1"/>
+            <line x1="100" y1="56" x2="100" y2="72" stroke="#111" stroke-width="1"/>
+            <path d="M58 82 L58 200 Q58 210 68 210 L132 210 Q142 210 142 200 L142 82" stroke="#111" stroke-width="1"/>
+            <line x1="58" y1="82" x2="142" y2="82" stroke="#111" stroke-width="1"/>
+            <path d="M58 82 L32 155" stroke="#111" stroke-width="1"/>
+            <path d="M142 82 L168 155" stroke="#111" stroke-width="1"/>
+            <path d="M78 210 L68 385" stroke="#111" stroke-width="1"/>
+            <path d="M122 210 L132 385" stroke="#111" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="canvas__empty" id="canvasEmpty">
+          Haz click o arrastra prendas desde el panel izquierdo
+        </div>
+        <!-- Layers rendered here by JS -->
+        <div class="canvas__dropzone" id="canvasDropzone"></div>
+      </div>
+
+      <!-- LAYER STACK: reorderable chips at bottom of column 2 -->
+      <div class="layer-stack" id="layerStack">
+        <div class="layer-stack__title">Orden de capas (arrastra para reordenar)</div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Summary -->
+    <div class="panel panel--right">
+      <div class="summary">
+        <div class="summary__title">Tu outfit</div>
+        <div class="summary__list" id="summaryList">
+          <div class="summary__empty">Empieza eligiendo prendas</div>
+        </div>
+        <div class="summary__total">
+          <span class="summary__total-label">Total outfit</span>
+          <span class="summary__total-value" id="summaryTotal">$ 0</span>
+        </div>
+        <button class="summary__checkout" id="btnAddOutfit" disabled onclick="openOutfitSizePopup()">Agregar outfit al carrito</button>
+        <!-- Saved Looks -->
+        <div class="saved-looks" id="savedLooksSection">
+          <div class="saved-looks__title">Looks guardados</div>
+          <div class="saved-looks__grid" id="savedLooksGrid"></div>
+          <div class="saved-looks__empty" id="savedLooksEmpty">
+            <p>Aún no tienes looks guardados.</p>
+            <p>Guarda combinaciones con el botón <strong>Guardar</strong> y compáralas aquí.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toastEl"></div>
+
+
+  <!-- ===========================================
+       JAVASCRIPT
+       =========================================== -->
+  <script>
+    /* ============================================
+       PRODUCT DATA — NAMING CONVENTION:
+
+       SHOPIFY: Replace this hardcoded catalog with Liquid loop:
+       {% for product in collections['vestidor'].products %}
+       Then use product.images, product.price, product.handle, etc.
+       Image paths become {{ product.featured_image | img_url: '300x' }}
+
+       Formato: {prenda}_{modelo}_{color}_{estado}_{cara}.png
+
+       Partes (separadas por underscore):
+         {prenda}  → coat, jacket, falda, pantalon, polo, blouse...
+         {modelo}  → 3 dígitos: 001, 002, 003...
+         {color}   → 1 palabra en español: verde, marron, beige, blanco, gris...
+         {estado}  → c = cerrado, o = abierto (omitir si pieza simple)
+         {cara}    → f = front, b = back (solo si hay imágenes separadas)
+
+       Ejemplos v2:
+         coat_001_marron_c_f.png     → Abrigo 001, marrón, cerrado, front
+         coat_001_marron_c_b.png     → Abrigo 001, marrón, cerrado, back
+         coat_001_marron_o_f.png     → Abrigo 001, marrón, abierto, front
+         coat_001_marron_o_b.png     → Abrigo 001, marrón, abierto, back
+         coat_001_marron_o_mini.png  → Miniatura del abrigo (panel)
+         jacket_001_verde_c_f.png    → Jacket 001, verde, cerrada, front
+         jacket_001_verde_c_b.png    → Jacket 001, verde, cerrada, back
+         jacket_001_verde_c_mini.png → Miniatura jacket (panel)
+         falda_001_verde.png         → Falda 001, verde (pieza simple)
+         pantalon_001_beige.png      → Pantalón 001, beige (pieza simple)
+         polo_001_blanco.png         → Polo 001, blanco (pieza simple)
+
+       Catalog fields:
+         img         → imagen principal (cerrada, o abierta con 1 sola foto)
+         imgBack     → _b — imagen de la espalda
+         imgFront    → _f — imagen del frente
+         doubleLayer → true = se divide en capa-espalda + capa-frente
+       ============================================ */
+    const catalog = {
+      /* SHOPIFY: Replace this hardcoded catalog with Liquid loop
+         {% for product in collections['vestidor'].products %} ... {% endfor %} */
+      abrigos: [
+        { id:101, name:"Abrigo Marrón", cat:"abrigos", price:2150,
+          imgThumb:"img/vestidor/coat_001_marron_o_mini.png",
+          doubleLayer:true,
+          defaultState:'cerrado',
+          states: {
+            cerrado: { img:"img/vestidor/coat_001_marron_c_f.png",
+                       imgFront:"img/vestidor/coat_001_marron_c_f.png",
+                       imgBack:"img/vestidor/coat_001_marron_c_b.png" },
+            abierto: { img:"img/vestidor/coat_001_marron_o_f.png",
+                       imgFront:"img/vestidor/coat_001_marron_o_f.png",
+                       imgBack:"img/vestidor/coat_001_marron_o_b.png" }
+          }
+        },
+      ],
+      jackets: [
+        { id:201, name:"Jacket Verde Cerrada", cat:"jackets", price:1450,
+          img:"img/vestidor/jacket_001_verde_c_f.png",
+          imgThumb:"img/vestidor/jacket_001_verde_c_mini.png",
+          imgFront:"img/vestidor/jacket_001_verde_c_f.png",
+          imgBack:"img/vestidor/jacket_001_verde_c_b.png",
+          doubleLayer:true },
+      ],
+      polos: [
+        { id:601, name:"Polo Blanco", cat:"polos", price:650,
+          img:"img/vestidor/polo_001_blanco.png" },
+        { id:602, name:"Polo Marrón", cat:"polos", price:650,
+          img:"img/vestidor/polo_001_marron.png" },
+      ],
+      faldas: [
+        { id:301, name:"Falda Verde", cat:"faldas", price:850,
+          img:"img/vestidor/falda_001_verde.png" },
+      ],
+      pants: [
+        { id:501, name:"Pantalón Beige", cat:"pants", price:1050,
+          img:"img/vestidor/pantalon_001_beige.png" },
+        { id:502, name:"Pantalón Marrón", cat:"pants", price:1050,
+          img:"img/vestidor/pantalon_002_marron.png" },
+      ]
+    };
+
+    /* ============================================
+       STATE
+       layers: ordered array, index 0 = back, last = front
+       Each layer: { id, item, isCoatFront? }
+       ============================================ */
+    let layers = []; // [{uid, item, layerType:'normal'|'coat-back'|'coat-front', hidden, state}]
+    let uidCounter = 0;
+
+    /* Resolve images for items with toggle states (o/c) */
+    function resolveImages(item, state) {
+      if (item.states && state && item.states[state]) return item.states[state];
+      return item; // fallback: item's own img/imgFront/imgBack
+    }
+
+    /* Track current state per item id (shared between panel + canvas) */
+    const itemStates = {};
+    function initItemStates() {
+      Object.keys(catalog).forEach(cat => catalog[cat].forEach(item => {
+        if (item.states) itemStates[item.id] = item.defaultState;
+      }));
+    }
+
+    /* Toggle o/c state from panel card */
+    function togglePanelState(itemId, event) {
+      event.stopPropagation();
+      const item = getAllItems().find(i => i.id === itemId);
+      if (!item || !item.states) return;
+      const keys = Object.keys(item.states);
+      const curIdx = keys.indexOf(itemStates[itemId]);
+      itemStates[itemId] = keys[(curIdx + 1) % keys.length];
+      // Update canvas layers if item is on canvas
+      layers.filter(l => l.item.id === itemId).forEach(l => { l.state = itemStates[itemId]; });
+      renderPanels();
+      renderFavoritos();
+      if (layers.some(l => l.item.id === itemId)) {
+        renderCanvas();
+        renderLayerStack();
+      }
+    }
+
+    let dragItemData = null; // for panel→canvas drag
+    let dragChipUid = null;  // for layer reorder drag
+
+    /* ── DEMO: Read favoritos from catalog wishlist — BORRAR CUANDO HAYA SHOPIFY ── */
+    let favoritos = [];
+    try {
+      const stored = JSON.parse(localStorage.getItem('ct_wishlist') || '[]');
+      favoritos = [...new Set(stored.map(w => w.vid || w.id))]; // vid = vestidor ID
+    } catch(e) {}
+    if (favoritos.length === 0) favoritos = [101, 201, 601];
+    /* ── FIN DEMO ── */
+
+    function getAllItems() {
+      const all = [];
+      Object.keys(catalog).forEach(cat => catalog[cat].forEach(item => all.push(item)));
+      return all;
+    }
+
+    function renderFavoritos() {
+      const container = document.getElementById('items-favoritos');
+      const countEl = document.getElementById('count-favoritos');
+      const items = favoritos.map(id => getAllItems().find(i => i.id === id)).filter(Boolean);
+      countEl.textContent = items.length > 0 ? ` (${items.length})` : '';
+
+      if (items.length === 0) {
+        container.innerHTML = '<div class="panel__favs-empty">Marca favoritos en el catálogo para verlos aquí.</div>';
+        return;
+      }
+
+      container.innerHTML = items.map(item => {
+        const cat = item.cat;
+        return `
+          <div class="panel__item" draggable="true"
+               data-cat="${cat}" data-id="${item.id}"
+               onclick="toggleItemOnCanvas('${cat}', ${item.id})">
+            <span class="panel__item__check">&#10003;</span>
+            <img src="${item.imgThumb || item.img}" alt="${item.name}" draggable="false">
+            <!-- SHOPIFY: Replace with /products/{{ product.handle }} -->
+            <button class="panel__item__eye" title="Ver producto" onclick="event.stopPropagation(); window.open('producto.html?id=${item.id}', '_blank')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>`;
+      }).join('');
+
+      // Attach drag handlers
+      container.querySelectorAll('.panel__item').forEach(el => {
+        el.addEventListener('dragstart', onItemDragStart);
+        el.addEventListener('dragend', onItemDragEnd);
+      });
+    }
+
+    /* ============================================
+       RENDER PANELS
+       ============================================ */
+    function renderPanels() {
+      Object.keys(catalog).forEach(cat => {
+        const container = document.getElementById(`items-${cat}`);
+        container.innerHTML = catalog[cat].map(item => {
+          const resolved = resolveImages(item, itemStates[item.id]);
+          const thumbSrc = item.imgThumb || resolved.img || item.img;
+          const toggleBtn = item.states
+            ? `<button class="panel__item__toggle" onclick="togglePanelState(${item.id}, event)">${itemStates[item.id] || ''}</button>`
+            : '';
+          return `
+          <div class="panel__item" draggable="true"
+               data-cat="${cat}" data-id="${item.id}"
+               onclick="toggleItemOnCanvas('${cat}', ${item.id})">
+            <span class="panel__item__check">&#10003;</span>
+            <img src="${thumbSrc}" alt="${item.name}" draggable="false">
+            ${toggleBtn}
+            <button class="panel__item__eye" title="Ver producto" onclick="event.stopPropagation(); window.open('producto.html?id=${item.id}', '_blank')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>`;
+        }).join('');
+
+        container.querySelectorAll('.panel__item').forEach(el => {
+          el.addEventListener('dragstart', onItemDragStart);
+          el.addEventListener('dragend', onItemDragEnd);
+        });
+      });
+    }
+
+    /* ---- TOGGLE SECTION COLLAPSE ---- */
+    function toggleSection(cat) {
+      document.getElementById(`section-${cat}`).classList.toggle('collapsed');
+    }
+
+    /* ---- UPDATE SELECTED COUNTS ---- */
+    function updateCounts() {
+      Object.keys(catalog).forEach(cat => {
+        const count = new Set(layers.filter(l => l.item.cat === cat).map(l => l.item.id)).size;
+        const el = document.getElementById(`count-${cat}`);
+        el.textContent = count > 0 ? ` (${count})` : '';
+      });
+    }
+
+    /* ============================================
+       PANEL → CANVAS DRAG
+       ============================================ */
+    function onItemDragStart(e) {
+      const cat = e.currentTarget.dataset.cat;
+      const id = parseInt(e.currentTarget.dataset.id);
+      const item = catalog[cat].find(i => i.id === id);
+      dragItemData = { cat, item };
+      e.dataTransfer.effectAllowed = 'copy';
+      e.currentTarget.style.opacity = '0.4';
+      document.getElementById('canvasDropzone').classList.add('active');
+    }
+
+    function onItemDragEnd(e) {
+      e.currentTarget.style.opacity = '1';
+      dragItemData = null;
+      document.getElementById('canvasDropzone').classList.remove('active');
+    }
+
+    // Canvas drop zone
+    const dropzone = document.getElementById('canvasDropzone');
+    dropzone.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (dragItemData) e.dataTransfer.dropEffect = 'copy';
+    });
+    dropzone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropzone.classList.remove('active');
+      if (dragItemData) {
+        toggleItemOnCanvas(dragItemData.cat, dragItemData.item.id);
+        dragItemData = null;
+      }
+    });
+
+    /* ============================================
+       ADD ITEM ON CANVAS (click = add only, remove via layer stack)
+       ============================================ */
+    function toggleItemOnCanvas(cat, id) {
+      const existing = layers.find(l => l.item.id === id);
+      if (existing) {
+        removeLayer(existing.uid);
+        return;
+      }
+      addItemToCanvas(cat, id);
+    }
+
+    /* ============================================
+       ADD ITEM TO CANVAS (stacks, no replace)
+       ============================================ */
+    /* Slot groups: only 1 item per group allowed on canvas */
+    const slotGroups = [
+      ['abrigos', 'jackets'],
+      ['polos', 'blusas'],
+      ['pants', 'faldas'],
+    ];
+    function getSlotGroup(cat) { return slotGroups.find(g => g.includes(cat)); }
+
+    function addItemToCanvas(cat, id) {
+      const item = catalog[cat].find(i => i.id === id);
+      if (!item) return;
+
+      // Don't add if already present
+      if (layers.some(l => l.item.id === id)) return;
+
+      // Slot group: only 1 allowed per group — remove existing before adding new
+      const group = getSlotGroup(cat);
+      if (group) {
+        const existing = layers.filter(l => group.includes(l.item.cat));
+        existing.forEach(l => {
+          document.querySelectorAll(`.panel__item[data-id="${l.item.id}"]`).forEach(el => el.classList.remove('selected'));
+        });
+        layers = layers.filter(l => !group.includes(l.item.cat));
+      }
+
+      const st = itemStates[item.id] || item.defaultState || null;
+
+      if (item.doubleLayer) {
+        // Back → always at the very bottom (index 0)
+        layers.unshift({ uid: ++uidCounter, item, layerType: 'coat-back', state: st });
+        // Front → always at the very top (end)
+        layers.push({ uid: ++uidCounter, item, layerType: 'coat-front', state: st });
+      } else {
+        // Normal items go just before any coat-front layers (so they stay "embraced")
+        const lastNormalIdx = layers.reduce((acc, l, i) => l.layerType !== 'coat-front' ? i : acc, -1);
+        layers.splice(lastNormalIdx + 1, 0, { uid: ++uidCounter, item, layerType: 'normal', state: st });
+      }
+
+      // Mark as selected (both in catalog and favoritos)
+      document.querySelectorAll(`.panel__item[data-id="${id}"]`).forEach(el => el.classList.add('selected'));
+
+      renderCanvas();
+      renderLayerStack();
+      renderSummary();
+      updateCounts();
+    }
+
+    /* ============================================
+       RENDER CANVAS LAYERS
+       ============================================ */
+    function renderCanvas() {
+      document.querySelectorAll('.canvas__layer').forEach(el => el.remove());
+
+      const canvas = document.getElementById('canvas');
+      const emptyMsg = document.getElementById('canvasEmpty');
+      emptyMsg.classList.toggle('hidden', layers.length > 0);
+
+      layers.forEach((l, i) => {
+        if (l.hidden) return; // skip hidden layers
+        const div = document.createElement('div');
+        div.className = 'canvas__layer';
+        div.setAttribute('data-cat', l.item.cat);
+        div.setAttribute('data-uid', l.uid);
+        if (l.layerType === 'coat-back') div.classList.add('canvas__layer--coat-back');
+        if (l.layerType === 'coat-front') div.classList.add('canvas__layer--coat-front');
+
+        // z-index follows array order: index 0 = back, last = front
+        div.style.zIndex = i + 2;
+
+        // Pick correct image: resolve state, then separate back/front if available
+        const resolved = resolveImages(l.item, l.state);
+        let imgSrc = resolved.img || l.item.img;
+        if (l.layerType === 'coat-back' && resolved.imgBack) imgSrc = resolved.imgBack;
+        if (l.layerType === 'coat-front' && resolved.imgFront) imgSrc = resolved.imgFront;
+
+        div.innerHTML = `<img src="${imgSrc}" alt="${l.item.name}">`;
+        canvas.insertBefore(div, document.getElementById('canvasDropzone'));
+
+
+      });
+    }
+
+    /* ============================================
+       RENDER LAYER STACK (reorderable chips)
+       ============================================ */
+    function renderLayerStack() {
+      const stack = document.getElementById('layerStack');
+      stack.innerHTML = '<div class="layer-stack__title">Orden de capas (arrastra para reordenar)</div>';
+
+      if (layers.length === 0) {
+        stack.classList.remove('has-layers');
+        return;
+      }
+      stack.classList.add('has-layers');
+
+      // Render from top (front) to bottom (back), skip coat-back layers
+      const reversed = [...layers].reverse().filter(l => l.layerType !== 'coat-back');
+      reversed.forEach(l => {
+        const chip = document.createElement('div');
+        chip.className = 'layer-chip' + (l.hidden ? ' layer-hidden' : '');
+        chip.draggable = true;
+        chip.dataset.uid = l.uid;
+
+        const typeLabel = l.layerType === 'coat-front' ? 'Abrigo' :
+                          l.item.cat === 'abrigos' ? 'Abrigo' :
+                          l.item.cat === 'jackets' ? 'Jacket' :
+                          l.item.cat === 'faldas' ? 'Falda' :
+                          l.item.cat === 'pants' ? 'Pantalón' : l.item.cat;
+
+        const eyeIcon = l.hidden
+          ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+          : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+        const resolved = resolveImages(l.item, l.state);
+        const thumbSrc = l.item.imgThumb || resolved.img || l.item.img;
+        const stateLabel = l.state ? ` (${l.state})` : '';
+        const hasToggle = !!l.item.states;
+        const toggleBtn = hasToggle
+          ? `<button class="layer-chip__btn layer-chip__btn--toggle" title="Cambiar estado" onclick="toggleItemState(${l.uid})">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
+             </button>` : '';
+
+        chip.innerHTML = `
+          <div class="layer-chip__grip"><span></span><span></span><span></span></div>
+          <img class="layer-chip__thumb" src="${thumbSrc}" alt="">
+          <div>
+            <div class="layer-chip__name">${l.item.name}${stateLabel}</div>
+            <div class="layer-chip__type">${typeLabel}</div>
+          </div>
+
+          <div class="layer-chip__actions">
+            ${toggleBtn}
+            <button class="layer-chip__btn${l.hidden ? ' layer-chip__btn--eye-off' : ''}" title="${l.hidden ? 'Mostrar' : 'Ocultar'}" onclick="toggleLayerVisibility(${l.uid})">
+              ${eyeIcon}
+            </button>
+            <button class="layer-chip__btn" title="Subir capa" onclick="moveLayer(${l.uid}, 1)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+            </button>
+            <button class="layer-chip__btn" title="Bajar capa" onclick="moveLayer(${l.uid}, -1)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <button class="layer-chip__btn" title="Quitar" onclick="removeLayer(${l.uid})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        `;
+
+        // Drag reorder
+        chip.addEventListener('dragstart', e => {
+          dragChipUid = l.uid;
+          e.dataTransfer.effectAllowed = 'move';
+          chip.style.opacity = '0.4';
+        });
+        chip.addEventListener('dragend', () => {
+          chip.style.opacity = '1';
+          dragChipUid = null;
+          document.querySelectorAll('.layer-chip').forEach(c => c.classList.remove('drag-over'));
+        });
+        chip.addEventListener('dragover', e => {
+          e.preventDefault();
+          if (dragChipUid !== null && dragChipUid !== l.uid) {
+            chip.classList.add('drag-over');
+          }
+        });
+        chip.addEventListener('dragleave', () => chip.classList.remove('drag-over'));
+        chip.addEventListener('drop', e => {
+          e.preventDefault();
+          chip.classList.remove('drag-over');
+          if (dragChipUid !== null && dragChipUid !== l.uid) {
+            reorderLayers(dragChipUid, l.uid);
+            dragChipUid = null;
+          }
+        });
+
+        stack.appendChild(chip);
+      });
+    }
+
+    /* ============================================
+       LAYER MANIPULATION
+       ============================================ */
+    function moveLayer(uid, direction) {
+      const idx = layers.findIndex(l => l.uid === uid);
+      if (idx < 0) return;
+      const newIdx = idx + direction;
+      if (newIdx < 0 || newIdx >= layers.length) return;
+      [layers[idx], layers[newIdx]] = [layers[newIdx], layers[idx]];
+      renderCanvas();
+      renderLayerStack();
+    }
+
+    function reorderLayers(fromUid, toUid) {
+      const fromIdx = layers.findIndex(l => l.uid === fromUid);
+      const toIdx = layers.findIndex(l => l.uid === toUid);
+      if (fromIdx < 0 || toIdx < 0) return;
+      const [moved] = layers.splice(fromIdx, 1);
+      layers.splice(toIdx, 0, moved);
+      renderCanvas();
+      renderLayerStack();
+    }
+
+    function removeLayer(uid) {
+      const layer = layers.find(l => l.uid === uid);
+      if (!layer) return;
+      const itemId = layer.item.id;
+
+      if (layer.item.doubleLayer) {
+        layers = layers.filter(l => l.item.id !== itemId);
+      } else {
+        layers = layers.filter(l => l.uid !== uid);
+      }
+
+      // Deselect panel item if no more layers for this specific item
+      if (!layers.some(l => l.item.id === itemId)) {
+        document.querySelectorAll(`.panel__item[data-id="${itemId}"]`).forEach(el => el.classList.remove('selected'));
+      }
+
+      renderCanvas();
+      renderLayerStack();
+      renderSummary();
+      updateCounts();
+    }
+
+    /* ============================================
+       RENDER SUMMARY
+       ============================================ */
+    function renderSummary() {
+      const list = document.getElementById('summaryList');
+      // Get unique items (avoid counting coat twice)
+      const uniqueItems = [];
+      const seen = new Set();
+      layers.forEach(l => {
+        if (!seen.has(l.item.id)) {
+          seen.add(l.item.id);
+          uniqueItems.push(l.item);
+        }
+      });
+
+      if (uniqueItems.length === 0) {
+        list.innerHTML = '<div class="summary__empty">Empieza eligiendo prendas</div>';
+      } else {
+        list.innerHTML = uniqueItems.map(item => `
+          <div class="summary__item" style="cursor:pointer" onclick="window.open('producto.html?id=${item.id}','_blank')">
+            <img class="summary__item-img" src="${item.imgThumb || item.img}" alt="${item.name}">
+            <div class="summary__item-info">
+              <div class="summary__item-cat">${item.cat}</div>
+              <div class="summary__item-name">${item.name}</div>
+              <div class="summary__item-price">$ ${item.price.toLocaleString()}</div>
+            </div>
+            <button class="summary__item-remove" onclick="event.stopPropagation(); removeItemById(${item.id})" title="Quitar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </div>
+        `).join('');
+      }
+
+      const total = uniqueItems.reduce((s, i) => s + i.price, 0);
+      // SHOPIFY: Use Shopify.formatMoney(total * 100, theme.moneyFormat) instead
+      document.getElementById('summaryTotal').textContent = '$ ' + total.toLocaleString();
+
+      const hasItems = uniqueItems.length > 0;
+      document.getElementById('saveLookBtn').disabled = !hasItems;
+      document.getElementById('btnAddOutfit').disabled = !hasItems;
+    }
+
+    /* ── OUTFIT SIZE POPUP + ADD TO CART ── */
+    function getOutfitItems() {
+      const uniqueItems = [];
+      const seen = new Set();
+      layers.forEach(l => {
+        if (!seen.has(l.item.id)) { seen.add(l.item.id); uniqueItems.push(l.item); }
+      });
+      return uniqueItems;
+    }
+
+    function openOutfitSizePopup() {
+      const items = getOutfitItems();
+      if (items.length === 0) return;
+      const sizes = ['XS','S','M','L','XL'];
+      const container = document.getElementById('outfitPopupItems');
+      container.innerHTML = items.map(item => `
+        <div class="outfit-popup__item" data-item-id="${item.id}">
+          <img src="${item.imgThumb || item.img}" alt="${item.name}">
+          <div class="outfit-popup__item-info">
+            <div class="outfit-popup__item-name">${item.name}</div>
+            <div class="outfit-popup__item-price">$ ${item.price.toLocaleString()}</div>
+            <div class="outfit-popup__sizes">
+              ${sizes.map((s, i) => `<button ${i === 2 ? 'class="active"' : ''} data-size="${s}" onclick="selectOutfitSize(this)">${s}</button>`).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('outfitPopupOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeOutfitPopup() {
+      document.getElementById('outfitPopupOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function selectOutfitSize(btn) {
+      btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function submitOutfitToCart() {
+      const items = getOutfitItems();
+      const rows = document.querySelectorAll('#outfitPopupItems .outfit-popup__item');
+      const cartItems = [];
+      rows.forEach(row => {
+        const id = parseInt(row.dataset.itemId);
+        const item = items.find(i => i.id === id);
+        if (!item) return;
+        const sizeBtn = row.querySelector('.outfit-popup__sizes button.active');
+        const size = sizeBtn ? sizeBtn.dataset.size : 'M';
+        cartItems.push({
+          id: item.id, color: item.colors ? item.colors[0] : '#000',
+          size, img: item.img, name: item.name, price: item.price, qty: 1
+        });
+      });
+
+      // Save to localStorage for the catalog cart
+      let existingCart = [];
+      try { existingCart = JSON.parse(localStorage.getItem('ct_cart') || '[]'); } catch(e) {}
+      cartItems.forEach(newItem => {
+        const existing = existingCart.find(c => c.id === newItem.id && c.color === newItem.color && c.size === newItem.size);
+        if (existing) { existing.qty++; }
+        else { existingCart.push(newItem); }
+      });
+      localStorage.setItem('ct_cart', JSON.stringify(existingCart));
+
+      closeOutfitPopup();
+      toast(`${cartItems.length} prendas agregadas al carrito`);
+
+      // Redirect to catalog cart after short delay
+      setTimeout(() => { window.location.href = 'catalogo.html?opencart=1'; }, 800);
+    }
+
+    function removeItemById(id) {
+      layers = layers.filter(l => l.item.id !== id);
+      document.querySelectorAll(`.panel__item[data-id="${id}"]`).forEach(el => el.classList.remove('selected'));
+      renderCanvas();
+      renderLayerStack();
+      renderSummary();
+      updateCounts();
+    }
+
+    /* ============================================
+       RANDOMIZE
+       ============================================ */
+    function randomizeOutfit() {
+      // Clear first
+      layers = [];
+      document.querySelectorAll('.panel__item').forEach(el => el.classList.remove('selected'));
+
+      const pick = arr => arr.length ? arr[Math.floor(Math.random() * arr.length)] : null;
+
+      // Build outfit: 1 outerwear (coat OR jacket) + 1 top (polo OR blusa) + 1 bottom (pantalón, short OR falda)
+      const picks = [];
+
+      // 1. Outerwear: coat OR jacket (random)
+      const outerCats = ['abrigos', 'jackets'].filter(c => catalog[c]?.length);
+      if (outerCats.length) {
+        const outerCat = pick(outerCats);
+        const outerItem = pick(catalog[outerCat]);
+        if (outerItem) picks.push({ cat: outerCat, item: outerItem });
+      }
+
+      // 2. Top: polo OR blusa (random)
+      const topCats = ['polos', 'blusas'].filter(c => catalog[c]?.length);
+      if (topCats.length) {
+        const topCat = pick(topCats);
+        const topItem = pick(catalog[topCat]);
+        if (topItem) picks.push({ cat: topCat, item: topItem });
+      }
+
+      // 3. Bottom: pantalón, short OR falda (random)
+      const bottomCats = ['pants', 'shorts', 'faldas'].filter(c => catalog[c]?.length);
+      if (bottomCats.length) {
+        const bottomCat = pick(bottomCats);
+        const bottomItem = pick(catalog[bottomCat]);
+        if (bottomItem) picks.push({ cat: bottomCat, item: bottomItem });
+      }
+
+      // Randomize state for items with o/c toggle
+      picks.forEach(p => {
+        if (p.item.states) {
+          const keys = Object.keys(p.item.states);
+          itemStates[p.item.id] = pick(keys);
+        }
+      });
+
+      // Add with staggered animation
+      picks.forEach((p, i) => {
+        setTimeout(() => addItemToCanvas(p.cat, p.item.id), i * 180);
+      });
+      renderPanels();
+
+      toast('¡Outfit aleatorio!');
+    }
+
+    /* ============================================
+       CLEAR ALL
+       ============================================ */
+    function clearAll() {
+      layers = [];
+      document.querySelectorAll('.panel__item').forEach(el => el.classList.remove('selected'));
+      renderCanvas();
+      renderLayerStack();
+      renderSummary();
+      updateCounts();
+      toast('Outfit limpiado');
+    }
+
+    /* ============================================
+       SAVED LOOKS SYSTEM
+       ============================================ */
+    let savedLooks = []; // [{id, name, layers: [{item, layerType, scale, offsetX, offsetY}]}]
+    let savedLookCounter = 0;
+
+    // SHOPIFY: localStorage works fine but consider customer metafields for logged-in users
+    function syncLooksToStorage() {
+      try {
+        const data = savedLooks.map(l => ({
+          id: l.id, name: l.name, total: l.total,
+          visualLayers: l.visualLayers,
+          itemCount: l.items ? l.items.length : 0,
+          // Save layer snapshots so looks can be restored cross-page
+          layers: l.layers ? l.layers.map(snap => ({
+            itemId: snap.item.id,
+            itemCat: snap.item.cat,
+            layerType: snap.layerType,
+            state: snap.state || null
+          })) : []
+        }));
+        localStorage.setItem('ct_saved_looks', JSON.stringify(data));
+      } catch(e) {}
+    }
+
+    function saveLook() {
+      if (layers.length === 0) return;
+
+      // --- Capture visual layout from DOM (no canvas export needed) ---
+      const canvasEl = document.getElementById('canvas');
+      const canvasRect = canvasEl.getBoundingClientRect();
+      const cW = canvasRect.width;
+      const cH = canvasRect.height;
+
+      // Store each layer's visual position as % of canvas size
+      const visualLayers = [];
+      const layerEls = canvasEl.querySelectorAll('.canvas__layer');
+      for (const layerEl of layerEls) {
+        const uid = parseInt(layerEl.getAttribute('data-uid'));
+        const layer = layers.find(l => l.uid === uid);
+        if (!layer || layer.hidden) continue;
+
+        const imgEl = layerEl.querySelector('img');
+        if (!imgEl) continue;
+
+        const r = layerEl.getBoundingClientRect();
+        // Get image src (resolve state for items with o/c toggle)
+        const res = resolveImages(layer.item, layer.state);
+        let imgSrc = res.img || layer.item.img;
+        if (layer.layerType === 'coat-back' && res.imgBack) imgSrc = res.imgBack;
+        else if (layer.layerType === 'coat-front' && res.imgFront) imgSrc = res.imgFront;
+
+        visualLayers.push({
+          img: imgSrc,
+          left: ((r.left - canvasRect.left) / cW * 100),
+          top: ((r.top - canvasRect.top) / cH * 100),
+          width: (r.width / cW * 100),
+          height: (r.height / cH * 100),
+          zIndex: layerEl.style.zIndex || 1
+        });
+      }
+
+      // Deep copy layer data
+      const snapshot = layers.map(l => ({
+        item: l.item,
+        layerType: l.layerType,
+        state: l.state || null
+      }));
+
+      // Unique items for display
+      const uniqueItems = [];
+      const seen = new Set();
+      snapshot.forEach(l => {
+        if (!seen.has(l.item.id)) { seen.add(l.item.id); uniqueItems.push(l.item); }
+      });
+
+      const total = uniqueItems.reduce((s, i) => s + i.price, 0);
+      savedLookCounter++;
+      savedLooks.push({
+        id: savedLookCounter,
+        name: `Look ${savedLookCounter}`,
+        layers: snapshot,
+        items: uniqueItems,
+        total,
+        visualLayers: visualLayers
+      });
+
+      renderSavedLooks();
+      syncLooksToStorage();
+      toast(`Look ${savedLookCounter} guardado`);
+    }
+
+    function loadLook(lookId) {
+      const look = savedLooks.find(l => l.id === lookId);
+      if (!look) return;
+
+      // Clear current
+      layers = [];
+      document.querySelectorAll('.panel__item').forEach(el => el.classList.remove('selected'));
+
+      // Restore from snapshot
+      look.layers.forEach(snap => {
+        uidCounter++;
+        layers.push({
+          uid: uidCounter,
+          item: snap.item,
+          layerType: snap.layerType,
+          state: snap.state || null,
+          hidden: false
+        });
+        document.querySelectorAll(`.panel__item[data-id="${snap.item.id}"]`).forEach(el => el.classList.add('selected'));
+      });
+
+      renderCanvas();
+      renderLayerStack();
+      renderSummary();
+      updateCounts();
+      renderSavedLooks();
+      toast(`Cargado: ${look.name}`);
+    }
+
+    function deleteLook(lookId) {
+      savedLooks = savedLooks.filter(l => l.id !== lookId);
+      renderSavedLooks();
+      syncLooksToStorage();
+      toast('Look eliminado');
+    }
+
+    function renderSavedLooks() {
+      const grid = document.getElementById('savedLooksGrid');
+      const emptyEl = document.getElementById('savedLooksEmpty');
+
+      if (savedLooks.length === 0) {
+        grid.innerHTML = '';
+        emptyEl.classList.remove('hidden');
+        return;
+      }
+
+      emptyEl.classList.add('hidden');
+      grid.innerHTML = savedLooks.map(look => {
+        // Build DOM-based outfit miniature from stored visual positions
+        const layerImgs = (look.visualLayers || []).map(vl =>
+          `<img src="${vl.img}" alt="" style="position:absolute;left:${vl.left}%;top:${vl.top}%;width:${vl.width}%;height:${vl.height}%;object-fit:contain;z-index:${vl.zIndex};">`
+        ).join('');
+
+        return `
+        <div class="saved-look" onclick="loadLook(${look.id})">
+          <div class="saved-look__canvas">
+            ${layerImgs}
+          </div>
+          <div class="saved-look__overlay">
+            <div class="saved-look__name">${look.name}</div>
+            <div class="saved-look__actions">
+              <button class="saved-look__btn" title="Editar" onclick="event.stopPropagation(); loadLook(${look.id})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <button class="saved-look__btn" title="Descargar" onclick="event.stopPropagation(); toast('Disponible al subir a Vercel')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </button>
+              <button class="saved-look__btn" title="Borrar" onclick="event.stopPropagation(); deleteLook(${look.id})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    /* ============================================
+       TOAST
+       ============================================ */
+    function toast(msg) {
+      const el = document.getElementById('toastEl');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.remove('show'), 2200);
+    }
+
+
+    /* ---- Toggle layer visibility (eye button) ---- */
+    function toggleLayerVisibility(uid) {
+      const layer = layers.find(l => l.uid === uid);
+      if (!layer) return;
+      const newHidden = !layer.hidden;
+      // Toggle this layer + paired coat layers
+      if (layer.item.doubleLayer) {
+        layers.filter(l => l.item.id === layer.item.id).forEach(l => { l.hidden = newHidden; });
+      } else {
+        layer.hidden = newHidden;
+      }
+      renderCanvas();
+      renderLayerStack();
+    }
+
+    /* Toggle open/closed state for items with states (e.g. coat abierto/cerrado) */
+    function toggleItemState(uid) {
+      const layer = layers.find(l => l.uid === uid);
+      if (!layer || !layer.item.states) return;
+      const stateKeys = Object.keys(layer.item.states);
+      const curIdx = stateKeys.indexOf(layer.state);
+      const nextState = stateKeys[(curIdx + 1) % stateKeys.length];
+      // Sync everywhere: layers + itemStates + panel
+      itemStates[layer.item.id] = nextState;
+      layers.filter(l => l.item.id === layer.item.id).forEach(l => { l.state = nextState; });
+      renderCanvas();
+      renderLayerStack();
+      renderPanels();
+      renderSummary();
+    }
+
+
+    /* ============================================
+       ONBOARDING WALKTHROUGH
+       ============================================ */
+    const onboardingSteps = [
+      {
+        target: '#section-favoritos',
+        title: 'Tus Favoritos',
+        text: 'Las prendas que marcaste como favoritas en el catálogo aparecen aquí para acceso rápido.',
+        position: 'right'
+      },
+      {
+        target: '#leftPanel',
+        title: 'Tu Armario',
+        text: 'Todas las prendas organizadas por categoría. Haz click o arrastra cualquier prenda hacia el canvas.',
+        position: 'right'
+      },
+      {
+        target: '#canvas',
+        title: 'El Canvas',
+        text: 'Este es tu espacio de trabajo. Las prendas que selecciones aparecerán aquí superpuestas automáticamente.',
+        position: 'bottom'
+      },
+      {
+        target: '.center-toolbar',
+        title: 'Herramientas',
+        text: 'Genera outfits aleatorios, limpia el canvas o guarda tus looks favoritos.',
+        position: 'bottom'
+      },
+      {
+        target: '#layerStack',
+        title: 'Orden de Capas',
+        text: 'Controla qué prenda va delante o detrás. Arrastra para reordenar las capas de tu outfit.',
+        position: 'top'
+      },
+      {
+        target: '.panel--right',
+        title: 'Tu Outfit',
+        text: 'Aquí ves el resumen: prendas seleccionadas, precio total y tus looks guardados.',
+        position: 'left'
+      }
+    ];
+
+    let onboardingIdx = 0;
+
+    function startOnboarding() {
+      onboardingIdx = 0;
+      showOnboardingStep();
+    }
+
+    function showOnboardingStep() {
+      // Remove previous overlay
+      const prev = document.getElementById('onboardingOverlay');
+      if (prev) prev.remove();
+
+      if (onboardingIdx >= onboardingSteps.length) {
+        localStorage.setItem('ct_vestidor_onboarded', '1');
+        return;
+      }
+
+      const step = onboardingSteps[onboardingIdx];
+      const targetEl = document.querySelector(step.target);
+      if (!targetEl) { onboardingIdx++; showOnboardingStep(); return; }
+
+      const rect = targetEl.getBoundingClientRect();
+      const pad = 8;
+
+      // Create overlay
+      const overlay = document.createElement('div');
+      overlay.id = 'onboardingOverlay';
+      overlay.innerHTML = `
+        <svg class="ob-mask" width="100%" height="100%">
+          <defs>
+            <mask id="obMask">
+              <rect width="100%" height="100%" fill="white"/>
+              <rect x="${rect.left - pad}" y="${rect.top - pad}"
+                    width="${rect.width + pad*2}" height="${rect.height + pad*2}"
+                    rx="12" fill="black"/>
+            </mask>
+          </defs>
+          <rect width="100%" height="100%" fill="rgba(0,0,0,0.65)" mask="url(#obMask)"/>
+        </svg>
+        <div class="ob-highlight" style="
+          left:${rect.left - pad}px; top:${rect.top - pad}px;
+          width:${rect.width + pad*2}px; height:${rect.height + pad*2}px;
+        "></div>
+        <div class="ob-tooltip ob-tooltip--${step.position}" id="obTooltip">
+          <div class="ob-tooltip__step">${onboardingIdx + 1} / ${onboardingSteps.length}</div>
+          <div class="ob-tooltip__title">${step.title}</div>
+          <div class="ob-tooltip__text">${step.text}</div>
+          <div class="ob-tooltip__actions">
+            <button class="ob-tooltip__skip" onclick="endOnboarding()">Saltar</button>
+            <button class="ob-tooltip__next" onclick="nextOnboardingStep()">
+              ${onboardingIdx === onboardingSteps.length - 1 ? 'Empezar' : 'Siguiente →'}
+            </button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      // Position tooltip
+      requestAnimationFrame(() => {
+        const tip = document.getElementById('obTooltip');
+        if (!tip) return;
+        const tipRect = tip.getBoundingClientRect();
+        let tx, ty;
+
+        if (step.position === 'right') {
+          tx = rect.right + pad + 16;
+          ty = rect.top + rect.height / 2 - tipRect.height / 2;
+        } else if (step.position === 'left') {
+          tx = rect.left - pad - 16 - tipRect.width;
+          ty = rect.top + rect.height / 2 - tipRect.height / 2;
+        } else if (step.position === 'bottom') {
+          tx = rect.left + rect.width / 2 - tipRect.width / 2;
+          ty = rect.bottom + pad + 16;
+        } else {
+          tx = rect.left + rect.width / 2 - tipRect.width / 2;
+          ty = rect.top - pad - 16 - tipRect.height;
+        }
+
+        // Clamp to viewport
+        tx = Math.max(12, Math.min(tx, window.innerWidth - tipRect.width - 12));
+        ty = Math.max(12, Math.min(ty, window.innerHeight - tipRect.height - 12));
+
+        tip.style.left = tx + 'px';
+        tip.style.top = ty + 'px';
+        tip.style.opacity = '1';
+      });
+    }
+
+    function nextOnboardingStep() {
+      onboardingIdx++;
+      showOnboardingStep();
+    }
+
+    function endOnboarding() {
+      const ov = document.getElementById('onboardingOverlay');
+      if (ov) ov.remove();
+      localStorage.setItem('ct_vestidor_onboarded', '1');
+    }
+
+    /* ============================================
+       INIT
+       ============================================ */
+    initItemStates();
+
+    // Load saved looks from localStorage
+    try {
+      const storedLooks = JSON.parse(localStorage.getItem('ct_saved_looks') || '[]');
+      storedLooks.forEach(sl => {
+        // Reconstruct layers from saved item IDs
+        const restoredLayers = (sl.layers || []).map(snap => {
+          const allItems = getAllItems();
+          const item = allItems.find(i => i.id === snap.itemId);
+          if (!item) return null;
+          return { item, layerType: snap.layerType, state: snap.state || null };
+        }).filter(Boolean);
+
+        const uniqueItems = [];
+        const seen = new Set();
+        restoredLayers.forEach(l => {
+          if (!seen.has(l.item.id)) { seen.add(l.item.id); uniqueItems.push(l.item); }
+        });
+
+        savedLookCounter = Math.max(savedLookCounter, sl.id);
+        savedLooks.push({
+          id: sl.id,
+          name: sl.name,
+          layers: restoredLayers,
+          items: uniqueItems,
+          total: sl.total || uniqueItems.reduce((s, i) => s + i.price, 0),
+          visualLayers: sl.visualLayers || []
+        });
+      });
+    } catch(e) {}
+
+    renderPanels();
+    renderFavoritos();
+    renderSavedLooks();
+    renderSummary();
+
+    // Auto-add item from URL param: vestidor.html?add=abrigos,101
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlAdd = urlParams.get('add');
+    if (urlAdd) {
+      const [cat, idStr] = urlAdd.split(',');
+      const id = parseInt(idStr);
+      if (cat && id && catalog[cat]) {
+        setTimeout(() => addItemToCanvas(cat, id), 300);
+      }
+    }
+
+    // Auto-load look from URL param: vestidor.html?look=1
+    const urlLook = urlParams.get('look');
+    if (urlLook) {
+      const lookId = parseInt(urlLook);
+      if (lookId) setTimeout(() => loadLook(lookId), 400);
+    }
+
+    // Show onboarding on first visit
+    if (!localStorage.getItem('ct_vestidor_onboarded')) {
+      setTimeout(startOnboarding, 600);
+    }
+  </script>
+
+  <!-- ── Outfit Size Popup ── -->
+  <div class="outfit-popup-overlay" id="outfitPopupOverlay" onclick="if(event.target===this)closeOutfitPopup()">
+    <div class="outfit-popup">
+      <button class="outfit-popup__close" onclick="closeOutfitPopup()">&times;</button>
+      <div class="outfit-popup__title">Elegí tus tallas</div>
+      <div id="outfitPopupItems"></div>
+      <button class="outfit-popup__submit" onclick="submitOutfitToCart()">Agregar todo al carrito</button>
+    </div>
+  </div>
+</body>
+</html>

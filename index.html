@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Casa Tramé — Moda Artesanal Contemporánea</title>
+  <style>
+    /* ===========================================
+       FONTS — Goia Display
+       =========================================== */
+    @font-face {
+      font-family: 'Goia Display';
+      src: url('fonts/GoiaDisplay-ExtraLightItalic.otf') format('opentype');
+      font-weight: 200; font-style: italic; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Goia Display';
+      src: url('fonts/GoiaDisplay-Bold.otf') format('opentype');
+      font-weight: 700; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Goia Display';
+      src: url('fonts/GoiaDisplay-Light.otf') format('opentype');
+      font-weight: 300; font-style: normal; font-display: swap;
+    }
+
+    /* ===========================================
+       RESET & VARIABLES
+       =========================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff;
+      --text: #111;
+      --text-mid: #555;
+      --text-light: #999;
+      --border: #e0e0e0;
+      --heading: 'Goia Display', Georgia, serif;
+      --body: 'Goia Display', -apple-system, sans-serif;
+      --nav-h: 100px;
+      /* ── Type Scale ── */
+      --fs-hero: 4.4rem;
+      --fs-section: 3.6rem;
+      --fs-page: 2.8rem;
+      --fs-subtitle: 1.8rem;
+      --fs-body: 1.4rem;
+      --fs-ui: 1.25rem;
+      --fs-btn: 1.1rem;
+      --fs-label: 0.95rem;
+      --fs-micro: 0.7rem;
+    }
+    html { font-size: 15px; scroll-behavior: smooth; scroll-snap-type: y mandatory; overflow-y: scroll; }
+    body { font-family: var(--body); font-weight: 300; background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    button { background: none; border: none; cursor: pointer; font-family: inherit; }
+    ul { list-style: none; }
+
+    /* ===========================================
+       NAVBAR
+       =========================================== */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      height: var(--nav-h); transition: background 0.4s;
+    }
+    .nav--transparent { background: transparent; }
+    .nav--transparent .nav__left a,
+    .nav--transparent .nav__right a,
+    .nav--transparent .nav__right button { text-shadow: 0 2px 8px rgba(0,0,0,0.7), 0 0 2px rgba(0,0,0,0.4); }
+    .nav--transparent .nav__right svg { filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); }
+    .nav--solid { background: var(--bg); }
+    .nav--transparent .nav__left a,
+    .nav--transparent .nav__right button,
+    .nav--transparent .nav__right a { color: #fff; }
+    .nav--transparent .nav__right svg { stroke: #fff; }
+    .nav--transparent .nav__hamburger span { background: #fff; }
+    .nav--solid .nav__left a,
+    .nav--solid .nav__right button,
+    .nav--solid .nav__right a { color: var(--text); }
+    .nav--solid .nav__right svg { stroke: var(--text); }
+
+    .nav__inner {
+      max-width: 100%; padding: 0 60px;
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; height: 100%;
+    }
+    .nav__left { display: flex; gap: 48px; align-items: center; justify-content: flex-start; }
+    .nav__left a { font-size: 1.7rem; letter-spacing: 0.03em; line-height: 1; transition: color 0.4s; }
+    .nav__left a.underlined { text-decoration: underline; text-underline-offset: 5px; }
+    .nav__logo { display: flex; align-items: center; justify-content: center; }
+    .nav__logo img { height: 37px; width: auto; transition: filter 0.4s; transform: translateY(-3px); }
+    .nav--transparent .nav__logo img { filter: brightness(0) invert(1) drop-shadow(0 2px 6px rgba(0,0,0,0.7)); }
+    .nav--solid .nav__logo img { filter: none; }
+    .nav__right { display: flex; gap: 36px; align-items: center; justify-content: flex-end; }
+    .nav__right button, .nav__right a { font-size: 1.4rem; display: flex; align-items: center; transition: color 0.4s; }
+    .nav__right svg { width: 35px; height: 35px; transition: stroke 0.4s; }
+    .nav__hamburger { display: none; flex-direction: column; gap: 8px; }
+    .nav__hamburger span { width: 36px; height: 2.5px; transition: background 0.4s; }
+
+    /* ===========================================
+       HERO
+       =========================================== */
+    .hero {
+      position: relative; width: 100%; height: 100vh; min-height: 600px;
+      overflow: hidden; scroll-snap-align: start;
+    }
+    .hero__video {
+      position: absolute; inset: 0; z-index: 0;
+      overflow: hidden; pointer-events: none;
+      filter: saturate(0.3);
+    }
+    .hero__video video {
+      position: absolute;
+      top: 50%; left: 50%;
+      min-width: 100%; min-height: 100%;
+      width: auto; height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+    }
+    .hero__overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(to bottom,
+        rgba(0,0,0,0.65) 0%,
+        rgba(0,0,0,0.30) 30%,
+        rgba(0,0,0,0.05) 55%,
+        rgba(0,0,0,0.35) 100%);
+      pointer-events: none;
+    }
+    .hero__content {
+      position: absolute; bottom: 80px; left: 0; right: 0;
+      text-align: center; z-index: 2;
+    }
+    .hero__cta {
+      display: inline-flex; align-items: center; gap: 16px;
+      padding: 26px 72px; border: 2px solid rgba(255,255,255,0.7);
+      color: #fff; font-size: 1.56rem; letter-spacing: 0.12em;
+      text-transform: uppercase; font-family: var(--body); font-weight: 300;
+      transition: 0.3s; backdrop-filter: blur(2px);
+    }
+    .hero__cta:hover { background: rgba(255,255,255,0.15); border-color: #fff; }
+    .hero__cta svg { width: 28px; height: 28px; stroke: #fff; fill: none; stroke-width: 2; }
+
+    /* ===========================================
+       BRAND STATEMENT
+       =========================================== */
+    .brand-statement {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 80px 48px; text-align: center;
+      max-width: 1200px; margin: 0 auto;
+      scroll-snap-align: start;
+    }
+    .brand-statement__title {
+      font-family: var(--heading); font-weight: 200; font-style: italic;
+      font-size: var(--fs-hero); line-height: 1.25; margin-bottom: 32px;
+      letter-spacing: -0.01em;
+    }
+    .brand-statement__text {
+      font-size: var(--fs-subtitle); color: var(--text-mid); line-height: 1.8;
+      font-weight: 300; max-width: 900px; margin: 0 auto;
+    }
+
+    /* ===========================================
+       COLLECTION SECTION
+       =========================================== */
+    .collection-section {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 60px 0; scroll-snap-align: start;
+    }
+    .collection-section__title {
+      text-align: center; font-family: var(--heading); font-weight: 200; font-style: italic;
+      font-size: var(--fs-section); letter-spacing: 0.04em;
+      margin-bottom: 40px; color: var(--text);
+    }
+    .collection-grid {
+      display: flex; gap: 2px; width: 100%;
+      padding: 0; overflow: hidden;
+      height: 55vh; position: relative;
+    }
+    .collection-grid__track {
+      display: flex; gap: 2px;
+      animation: marquee 40s linear infinite;
+    }
+    .collection-grid__track:hover { animation-play-state: paused; }
+    @keyframes marquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .collection-card {
+      flex: 0 0 auto; min-width: 0;
+      position: relative; aspect-ratio: 2/3; height: 100%; overflow: hidden;
+      cursor: pointer; display: block;
+    }
+    .collection-card img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.6s ease, filter 0.6s ease;
+      filter: saturate(0.2);
+    }
+    .collection-card:hover img { transform: scale(1.03); filter: saturate(1); }
+    .collection-card::after {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(0,0,0,0.25);
+      transition: background 0.3s;
+    }
+    .collection-card:hover::after { background: rgba(0,0,0,0.15); }
+    .collection-card__name {
+      position: absolute; inset: 0; z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-family: var(--heading); font-weight: 700;
+      font-size: 2.4rem; letter-spacing: 0.08em; text-transform: uppercase;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    }
+    .collection-section__cta {
+      display: flex; justify-content: center; margin-top: 40px;
+    }
+    .collection-section__cta .btn-outline {
+      padding: 26px 72px; border: 2px solid var(--text);
+      font-size: 1.56rem; letter-spacing: 0.12em;
+    }
+    .collection-section__cta .btn-outline svg { width: 28px; height: 28px; stroke-width: 2; }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 32px; border: 1px solid var(--text);
+      font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text); font-family: var(--body); font-weight: 300;
+      transition: 0.2s;
+    }
+    .btn-outline:hover { background: var(--text); color: #fff; }
+    .btn-outline svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    /* ===========================================
+       VESTIDOR SECTION
+       =========================================== */
+    .vestidor {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 120px 48px 80px; text-align: center;
+      background: #fafafa; scroll-snap-align: start;
+    }
+    .vestidor__title {
+      font-family: var(--heading); font-weight: 200; font-style: italic;
+      font-size: var(--fs-section); line-height: 1.2; margin-bottom: 20px;
+    }
+    .vestidor__subtitle {
+      font-size: var(--fs-subtitle); color: var(--text-mid); font-weight: 300;
+      max-width: 600px; margin: 0 auto 24px; line-height: 1.6;
+    }
+    .vestidor__mockup {
+      display: flex; align-items: center; justify-content: center;
+      max-width: 100%; width: 100%; margin: 0 auto 40px;
+    }
+    .vestidor__mockup img {
+      max-width: 100%; max-height: 80vh; object-fit: contain;
+    }
+    .vestidor__cta {
+      padding: 26px 72px; border: 2px solid var(--text);
+      font-size: 1.56rem; letter-spacing: 0.12em;
+    }
+    .vestidor__cta strong { font-weight: 600; }
+    .vestidor__cta svg { width: 28px; height: 28px; stroke-width: 2; }
+
+    /* ===========================================
+       NEWSLETTER
+       =========================================== */
+    .newsletter {
+      position: relative; padding: 80px 48px; text-align: center;
+      overflow: hidden; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      scroll-snap-align: start;
+    }
+    .newsletter__bg {
+      position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1686530489698-d74e6f165b87?w=1920&q=80&fit=crop') center 30% / cover no-repeat;
+      filter: saturate(0.2);
+    }
+    .newsletter__bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,1) 100%);
+    }
+    .newsletter__content {
+      position: relative; z-index: 2; max-width: 900px;
+    }
+    .newsletter__title {
+      font-family: var(--heading); font-weight: 200; font-style: italic;
+      font-size: var(--fs-hero); color: #fff; margin-bottom: 40px;
+      line-height: 1.25; white-space: nowrap;
+    }
+    .newsletter__form {
+      display: flex; gap: 0; max-width: 600px; margin: 0 auto 20px;
+    }
+    .newsletter__input {
+      flex: 1; padding: 22px 28px; border: 2px solid rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.08); color: #fff; font-size: 1.5rem;
+      font-family: var(--body); font-weight: 300; outline: none;
+      backdrop-filter: blur(4px);
+    }
+    .newsletter__input::placeholder { color: rgba(255,255,255,0.5); }
+    .newsletter__input:focus { border-color: #fff; }
+    .newsletter__submit {
+      padding: 22px 40px; background: #fff; color: var(--text);
+      border: 2px solid #fff; font-size: 1.3rem; letter-spacing: 0.1em;
+      text-transform: uppercase; font-family: var(--body); font-weight: 500;
+      cursor: pointer; transition: 0.2s;
+    }
+    .newsletter__submit:hover { background: var(--text); color: #fff; border-color: var(--text); }
+    .newsletter__legal {
+      font-size: 1.1rem; color: rgba(255,255,255,0.5); line-height: 1.5;
+    }
+
+    /* ===========================================
+       FOOTER
+       =========================================== */
+    .footer { background: #000; color: #fff; border-top: none; padding: 60px 48px 32px; text-align: left; scroll-snap-align: start; }
+    .footer__grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 32px; }
+    .footer__brand-name { font-family: var(--heading); font-size: var(--fs-subtitle); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 14px; font-weight: 700; color: #fff; }
+    .footer__brand p { color: rgba(255,255,255,0.55); font-size: var(--fs-body); max-width: 360px; line-height: 1.6; }
+    .footer h4 { font-family: var(--body); font-size: var(--fs-body); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; margin-bottom: 14px; color: #fff; }
+    .footer ul { display: flex; flex-direction: column; gap: 10px; }
+    .footer ul a { font-size: var(--fs-body); color: rgba(255,255,255,0.55); transition: 0.2s; }
+    .footer ul a:hover { color: #fff; }
+    .footer__bottom { border-top: 1px solid rgba(255,255,255,0.15); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: var(--fs-ui); color: rgba(255,255,255,0.4); }
+    .footer__social { display: flex; gap: 12px; }
+    .footer__social a { width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; font-size: var(--fs-ui); color: rgba(255,255,255,0.55); transition: 0.2s; }
+    .footer__social a:hover { background: #fff; color: #000; border-color: #fff; }
+
+    /* ===========================================
+       RESPONSIVE
+       =========================================== */
+    @media (max-width: 1024px) {
+      .footer__grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .nav__left { display: none; }
+      .nav__hamburger { display: flex; }
+      .nav__left.open {
+        display: flex; flex-direction: column; position: absolute;
+        top: var(--nav-h); left: 0; right: 0; background: var(--bg);
+        padding: 20px 48px; gap: 14px; border-bottom: 1px solid var(--border); z-index: 100;
+      }
+      .brand-statement { padding: 60px 24px; min-height: 80vh; }
+      .brand-statement__title { font-size: 2.8rem; }
+      .brand-statement__text { font-size: 1.3rem; }
+      .collection-grid { padding: 0 20px; }
+      .collection-card { flex: 0 0 85%; }
+      .vestidor { padding: 60px 24px 80px; min-height: 80vh; }
+      .vestidor__title { font-size: 2.4rem; }
+      .vestidor__mockup { max-width: 100%; }
+      .vestidor__mockup img { max-height: 55vh; }
+      .newsletter { padding: 80px 24px; height: 80vh; }
+      .newsletter__title { font-size: 1.6rem; }
+      .newsletter__form { flex-direction: column; gap: 8px; }
+      .newsletter__submit { width: 100%; }
+      .footer { padding: 32px 20px 20px; }
+      .footer__grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    /* TOAST */
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: #fff; padding: 11px 30px; font-size: 0.82rem; z-index: 9999; opacity: 0; transition: all 0.3s ease; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="nav nav--transparent" id="mainNav">
+    <div class="nav__inner">
+      <div class="nav__left" id="navLinks">
+        <a href="catalogo.html">Colección</a>
+        <a href="index.html" class="underlined">Conócenos</a>
+        <a href="vestidor.html">Vestidor&trade;</a>
+      </div>
+      <button class="nav__hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="index.html" class="nav__logo"><img src="img/trame_horizontal-black.svg" alt="Casa Tramé"></a>
+      <div class="nav__right">
+        <button title="Buscar" onclick="window.location.href='catalogo.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <a href="#" onclick="event.preventDefault(); toast('Cuenta — próximamente');" title="Cuenta">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
+        <a href="catalogo.html#favoritos" title="Favoritos">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        </a>
+        <a href="catalogo.html" title="Carrito">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero__video">
+      <video autoplay muted loop playsinline>
+        <source src="img/hero_video_opt.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <a href="catalogo.html" class="hero__cta">
+        Conoce la colección
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== BRAND STATEMENT ===== -->
+  <section class="brand-statement">
+    <h2 class="brand-statement__title">Ropa que trasciende el tiempo</h2>
+    <p class="brand-statement__text">
+      Cada prenda de Casa Tramé nace con la intención de permanecer. Diseñamos piezas atemporales
+      que combinan técnicas artesanales con una visión contemporánea — para quienes eligen
+      calidad sobre cantidad y construyen un guardarropa con propósito.
+    </p>
+  </section>
+
+  <!-- ===== COLLECTION 2026 I ===== -->
+  <section class="collection-section">
+    <h3 class="collection-section__title">Colección 2026 I</h3>
+    <div class="collection-grid">
+      <div class="collection-grid__track">
+        <a href="catalogo.html" class="collection-card">
+          <img src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=600&h=800&fit=crop" alt="Abrigos">
+          <span class="collection-card__name">Abrigos</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&h=800&fit=crop" alt="Blusas">
+          <span class="collection-card__name">Blusas</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&h=800&fit=crop" alt="Denim">
+          <span class="collection-card__name">Denim</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600&h=800&fit=crop" alt="Buzos">
+          <span class="collection-card__name">Buzos</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <img src="https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=600&h=800&fit=crop" alt="Polos">
+          <span class="collection-card__name">Polos</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <img src="https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=600&h=800&fit=crop" alt="Faldas">
+          <span class="collection-card__name">Faldas</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=800&fit=crop" alt="Pantalones">
+          <span class="collection-card__name">Pantalones</span>
+        </a>
+        <!-- Duplicados para loop infinito -->
+        <a href="catalogo.html" class="collection-card">
+          <img src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=600&h=800&fit=crop" alt="Abrigos">
+          <span class="collection-card__name">Abrigos</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&h=800&fit=crop" alt="Blusas">
+          <span class="collection-card__name">Blusas</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&h=800&fit=crop" alt="Denim">
+          <span class="collection-card__name">Denim</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600&h=800&fit=crop" alt="Buzos">
+          <span class="collection-card__name">Buzos</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <img src="https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=600&h=800&fit=crop" alt="Polos">
+          <span class="collection-card__name">Polos</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <img src="https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=600&h=800&fit=crop" alt="Faldas">
+          <span class="collection-card__name">Faldas</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=800&fit=crop" alt="Pantalones">
+          <span class="collection-card__name">Pantalones</span>
+        </a>
+      </div>
+    </div>
+    <div class="collection-section__cta">
+      <a href="catalogo.html" class="btn-outline">
+        Ver todos
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== VESTIDOR ===== -->
+  <section class="vestidor">
+    <h2 class="vestidor__title">Pocas prendas,<br>Muchas combinaciones</h2>
+    <p class="vestidor__subtitle">
+      Explora, combina y encuentra el punto exacto con nuestra app de Vestidor.
+    </p>
+    <div class="vestidor__mockup">
+      <picture>
+        <source srcset="img/app.webp" type="image/webp">
+        <img src="img/app.png" alt="Vestidor App">
+      </picture>
+    </div>
+    <a href="vestidor.html" class="btn-outline vestidor__cta">
+      Ir al <strong>Vestidor</strong>
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </section>
+
+  <!-- ===== NEWSLETTER ===== -->
+  <section class="newsletter">
+    <div class="newsletter__bg"></div>
+    <div class="newsletter__content">
+      <h2 class="newsletter__title">Sé parte de Casa Tramé</h2>
+      <form class="newsletter__form" onsubmit="event.preventDefault(); this.querySelector('input').value=''; toast('Gracias por suscribirte!');">
+        <input class="newsletter__input" type="email" placeholder="Tu email" required>
+        <button class="newsletter__submit" type="submit">Enviar</button>
+      </form>
+      <p class="newsletter__legal">Al suscribirte aceptas recibir mensajes y bases legales.</p>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <div class="footer__brand-name">CASA TRAMÉ</div>
+        <p>Moda artesanal con visión contemporánea. Diseñada para quienes valoran la calidad y la intención detrás de cada prenda.</p>
+      </div>
+      <div>
+        <h4>Comprar</h4>
+        <ul>
+          <li><a href="catalogo.html">Nueva colección</a></li>
+          <li><a href="catalogo.html">Abrigos</a></li>
+          <li><a href="catalogo.html">Buzos</a></li>
+          <li><a href="catalogo.html">Denim</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Info</h4>
+        <ul>
+          <li><a href="index.html">Conócenos</a></li>
+          <li><a href="#">Sustentabilidad</a></li>
+          <li><a href="#">Guía de tallas</a></li>
+          <li><a href="#">Envíos y devoluciones</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Atención</h4>
+        <ul>
+          <li><a href="#">Contacto</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Términos</a></li>
+          <li><a href="#">Privacidad</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Casa Tramé. Todos los derechos reservados.</span>
+      <div class="footer__social">
+        <a href="#" title="Instagram">IG</a>
+        <a href="#" title="Pinterest">PI</a>
+        <a href="#" title="TikTok">TK</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toastEl"></div>
+
+  <script>
+    /* ---- Toast ---- */
+    function toast(msg) {
+      const el = document.getElementById('toastEl');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2200);
+    }
+
+    /* ---- Navbar: transparent over hero, solid after ---- */
+    const nav = document.getElementById('mainNav');
+    const hero = document.querySelector('.hero');
+    function updateNav() {
+      const threshold = hero.offsetHeight - 100;
+      if (window.scrollY > threshold) {
+        nav.classList.remove('nav--transparent');
+        nav.classList.add('nav--solid');
+      } else {
+        nav.classList.remove('nav--solid');
+        nav.classList.add('nav--transparent');
+      }
+    }
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+
+  </script>
+</body>
+</html>
