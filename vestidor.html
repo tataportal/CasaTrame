@@ -878,7 +878,7 @@
 
     <!-- Mobile category filter (hidden on desktop) -->
     <div class="cat-filter" id="catFilter">
-      <button class="cat-filter__btn" id="catFilterBtn" onclick="toggleCatFilter()">
+      <button class="cat-filter__btn" id="catFilterBtn" onclick="toggleCatFilter(event)">
         <span id="catFilterLabel">Todas las prendas</span>
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
@@ -1061,7 +1061,8 @@
     let catFilterOpen = false;
     let activeCat = 'all';
 
-    function toggleCatFilter() {
+    function toggleCatFilter(e) {
+      e.stopPropagation();
       catFilterOpen = !catFilterOpen;
       document.getElementById('catFilterBtn').classList.toggle('open', catFilterOpen);
       document.getElementById('catFilterMenu').classList.toggle('open', catFilterOpen);
