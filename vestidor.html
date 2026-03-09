@@ -713,13 +713,20 @@
       .panel--right {
         order: 3;
         border-left: none;
+        border-right: none;
         border-top: 1px solid var(--border);
+        border-bottom: none;
         overflow-y: auto;
+        overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
         height: auto;
         min-height: auto;
         padding: 0;
         width: 100%;
+        /* Reset garment-row overrides from .panel */
+        display: flex;
+        flex-direction: column;
+        max-height: none;
       }
       .summary {
         padding: 16px 16px 24px;
