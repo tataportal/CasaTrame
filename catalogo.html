@@ -670,7 +670,40 @@
        =========================================== */
     /* ── Laptops (≤1800px) — covers 13" @1440 and 16" @1728 ── */
     @media (max-width: 1800px) {
-      html { font-size: 8px; }
+      html { font-size: 10px; }
+
+      /* ── Sidebar: proporcional al alto del viewport ── */
+      .sidebar {
+        padding: 3.5vh 20px 4vh 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      .sidebar__tag {
+        font-size: max(0.7rem, 9px);
+        margin-bottom: 2vh;
+      }
+      .sidebar__title {
+        font-size: max(var(--fs-page), 22px);
+        margin-bottom: 1.8vh;
+      }
+      .sidebar__subtitle {
+        font-size: max(0.87rem, 11px);
+        margin-bottom: 4vh;
+      }
+      .sidebar__filters a {
+        font-size: max(0.9rem, 11px);
+        padding: 1vh 0;
+      }
+      .sidebar__section-title {
+        font-size: max(0.7rem, 9px);
+        margin-top: 3vh;
+        margin-bottom: 1.2vh;
+      }
+      .sidebar__sort a {
+        font-size: max(0.9rem, 11px);
+        padding: 0.8vh 0;
+      }
     }
     @media (max-width: 1024px) {
       .product-grid { grid-template-columns: repeat(2, 1fr); }
