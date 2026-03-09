@@ -545,6 +545,11 @@
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
     /* ===========================================
+       CATEGORY FILTER (mobile only)
+       =========================================== */
+    .cat-filter { display: none; }
+
+    /* ===========================================
        ONBOARDING WALKTHROUGH
        =========================================== */
     #onboardingOverlay {
@@ -626,7 +631,7 @@
       html, body { overflow: auto; height: auto; }
       .vestidor {
         grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
+        grid-template-rows: auto auto auto auto;
         height: auto;
         min-height: calc(100vh - var(--nav-h));
         overflow: visible;
@@ -653,9 +658,55 @@
       /* Screenshot button (mobile only) */
       .btn-v--screenshot { display: inline-flex; }
 
+      /* ── CATEGORY FILTER ── */
+      .cat-filter {
+        display: block;
+        order: 2;
+        position: relative;
+        z-index: 100;
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border);
+        background: #fff;
+      }
+      .cat-filter__btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        background: none; border: 1px solid var(--border);
+        border-radius: 100px; padding: 8px 18px;
+        font-family: var(--body); font-size: 0.85rem;
+        letter-spacing: 0.06em; color: var(--text);
+        cursor: pointer; transition: 0.15s;
+      }
+      .cat-filter__btn.open { border-color: var(--text); }
+      .cat-filter__btn.open svg { transform: rotate(180deg); }
+      .cat-filter__btn svg { transition: transform 0.2s; }
+      .cat-filter__menu {
+        display: none;
+        position: absolute; top: 100%; left: 16px; right: 16px;
+        background: #fff; border: 1px solid var(--border);
+        border-radius: 12px; margin-top: 4px;
+        padding: 6px 0;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        max-height: 60vh; overflow-y: auto;
+      }
+      .cat-filter__menu.open { display: block; }
+      .cat-filter__option {
+        display: flex; align-items: center;
+        width: 100%; padding: 12px 20px;
+        background: none; border: none;
+        font-family: var(--body); font-size: 0.9rem;
+        color: var(--text); cursor: pointer;
+        text-align: left; letter-spacing: 0.03em;
+        transition: background 0.1s;
+      }
+      .cat-filter__option:active { background: #f5f5f5; }
+      .cat-filter__option--active {
+        font-weight: 600;
+        color: var(--text);
+      }
+
       /* ── GARMENT ROW ── */
       .panel {
-        order: 2;
+        order: 3;
         height: auto;
         padding: 8px 0;
         border-right: none;
@@ -711,7 +762,7 @@
 
       /* ── PROPERTIES PANEL (full-width bottom) ── */
       .panel--right {
-        order: 3;
+        order: 4;
         border-left: none;
         border-right: none;
         border-top: 1px solid var(--border);
@@ -824,6 +875,26 @@
 
   <!-- ===== VESTIDOR LAYOUT ===== -->
   <div class="vestidor">
+
+    <!-- Mobile category filter (hidden on desktop) -->
+    <div class="cat-filter" id="catFilter">
+      <button class="cat-filter__btn" id="catFilterBtn" onclick="toggleCatFilter()">
+        <span id="catFilterLabel">Todas las prendas</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="cat-filter__menu" id="catFilterMenu">
+        <button class="cat-filter__option cat-filter__option--active" data-cat="all" onclick="selectCatFilter('all')">Todas las prendas</button>
+        <button class="cat-filter__option" data-cat="favoritos" onclick="selectCatFilter('favoritos')">
+          <svg style="width:12px;height:12px;vertical-align:-1px;margin-right:4px;" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          Mis Favoritos
+        </button>
+        <button class="cat-filter__option" data-cat="abrigos" onclick="selectCatFilter('abrigos')">Abrigos</button>
+        <button class="cat-filter__option" data-cat="jackets" onclick="selectCatFilter('jackets')">Casacas</button>
+        <button class="cat-filter__option" data-cat="polos" onclick="selectCatFilter('polos')">Polos / T-Shirts</button>
+        <button class="cat-filter__option" data-cat="faldas" onclick="selectCatFilter('faldas')">Faldas</button>
+        <button class="cat-filter__option" data-cat="pants" onclick="selectCatFilter('pants')">Pantalones</button>
+      </div>
+    </div>
 
     <!-- LEFT: Item picker -->
     <div class="panel" id="leftPanel">
@@ -983,6 +1054,70 @@
       if (window.innerWidth > 768 && menuOpen) {
         menuOpen = false; mobileMenu.classList.remove('open');
         document.body.style.overflow = ''; hamburger.classList.remove('is-open');
+      }
+    });
+
+    /* ---- Mobile Category Filter ---- */
+    let catFilterOpen = false;
+    let activeCat = 'all';
+
+    function toggleCatFilter() {
+      catFilterOpen = !catFilterOpen;
+      document.getElementById('catFilterBtn').classList.toggle('open', catFilterOpen);
+      document.getElementById('catFilterMenu').classList.toggle('open', catFilterOpen);
+    }
+
+    function selectCatFilter(cat) {
+      activeCat = cat;
+      catFilterOpen = false;
+      document.getElementById('catFilterBtn').classList.remove('open');
+      document.getElementById('catFilterMenu').classList.remove('open');
+
+      // Update label
+      const labels = {
+        all: 'Todas las prendas',
+        favoritos: 'Mis Favoritos',
+        abrigos: 'Abrigos',
+        jackets: 'Casacas',
+        polos: 'Polos / T-Shirts',
+        faldas: 'Faldas',
+        pants: 'Pantalones'
+      };
+      document.getElementById('catFilterLabel').textContent = labels[cat] || cat;
+
+      // Update active state on options
+      document.querySelectorAll('.cat-filter__option').forEach(opt => {
+        opt.classList.toggle('cat-filter__option--active', opt.dataset.cat === cat);
+      });
+
+      // Show/hide sections in garment row
+      const sections = document.querySelectorAll('#leftPanel .panel__section');
+      sections.forEach(sec => {
+        if (cat === 'all') {
+          // Show all except favoritos on mobile (favoritos hidden by default)
+          sec.style.display = '';
+        } else {
+          const sectionId = sec.id.replace('section-', '');
+          sec.style.display = sectionId === cat ? '' : 'none';
+        }
+      });
+
+      // On favoritos: show the favs section, hide others
+      if (cat === 'favoritos') {
+        const favSection = document.getElementById('section-favoritos');
+        if (favSection) favSection.style.display = 'flex';
+        sections.forEach(sec => {
+          if (sec.id !== 'section-favoritos') sec.style.display = 'none';
+        });
+      }
+    }
+
+    // Close filter dropdown when tapping outside
+    document.addEventListener('click', (e) => {
+      if (catFilterOpen && !e.target.closest('.cat-filter')) {
+        catFilterOpen = false;
+        document.getElementById('catFilterBtn').classList.remove('open');
+        document.getElementById('catFilterMenu').classList.remove('open');
       }
     });
 
