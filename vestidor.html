@@ -729,10 +729,10 @@
         max-height: none;
       }
       .summary {
-        padding: 16px 16px 24px;
+        padding: 16px 0 0;
       }
-      .summary__title { font-size: 0.95rem; margin-bottom: 10px; }
-      .summary__list { min-height: auto; }
+      .summary__title { font-size: 0.95rem; margin-bottom: 10px; padding: 0 16px; }
+      .summary__list { min-height: auto; padding: 0 16px; }
       .summary__item { padding: 10px 0; gap: 12px; }
       .summary__item-img { width: 48px; height: 60px; }
       .summary__item-cat { font-size: 0.75rem; }
@@ -740,10 +740,10 @@
       .summary__item-price { font-size: 0.9rem; }
       .summary__item-remove { width: 36px; height: 36px; }
       .summary__item-remove svg { width: 18px; height: 18px; }
-      .summary__total { padding: 12px 0; margin-top: 6px; }
+      .summary__total { padding: 14px 16px; margin-top: 6px; border-top: 1px solid var(--border); }
       .summary__total-label { font-size: 0.9rem; }
       .summary__total-value { font-size: 1.1rem; }
-      .summary__checkout { padding: 14px 0; font-size: 0.9rem; margin-top: 8px; }
+      .summary__checkout { padding: 16px 0; font-size: 0.9rem; margin: 0; border-radius: 0; }
       .summary__empty { font-size: 0.9rem; padding: 12px 0; }
       /* Hide saved looks and tip on mobile to save space */
       .saved-looks { display: none; }
