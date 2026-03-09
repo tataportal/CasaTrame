@@ -230,6 +230,8 @@
       pointer-events: none;
     }
     .canvas__empty.hidden { display: none; }
+    .mobile-only { display: none; }
+    .desktop-only { display: inline; }
 
     /* Each layer in the canvas */
     .canvas__layer {
@@ -703,6 +705,9 @@
       .panel__section--favs { display: none; }
       /* Canvas empty text */
       .canvas__empty { font-size: 0.9rem; padding: 20px; }
+      /* Mobile/desktop text toggles */
+      .desktop-only { display: none; }
+      .mobile-only { display: inline; }
 
       /* ── PROPERTIES PANEL (full-width bottom) ── */
       .panel--right {
@@ -909,7 +914,8 @@
           </svg>
         </div>
         <div class="canvas__empty" id="canvasEmpty">
-          Haz click o arrastra prendas desde el panel izquierdo
+          <span class="desktop-only">Haz click o arrastra prendas desde el panel izquierdo</span>
+          <span class="mobile-only">Toca una prenda de abajo para agregarla</span>
         </div>
         <!-- Layers rendered here by JS -->
         <div class="canvas__dropzone" id="canvasDropzone"></div>
@@ -1867,49 +1873,85 @@
     /* ============================================
        ONBOARDING WALKTHROUGH
        ============================================ */
-    const onboardingSteps = [
-      {
-        target: '#section-favoritos',
-        title: 'Tus Favoritos',
-        text: 'Las prendas que marcaste como favoritas en el catálogo aparecen aquí para acceso rápido.',
-        position: 'right'
-      },
-      {
-        target: '#leftPanel',
-        title: 'Tu Armario',
-        text: 'Todas las prendas organizadas por categoría. Haz click o arrastra cualquier prenda hacia el canvas.',
-        position: 'right'
-      },
-      {
-        target: '#canvas',
-        title: 'El Canvas',
-        text: 'Este es tu espacio de trabajo. Las prendas que selecciones aparecerán aquí superpuestas automáticamente.',
-        position: 'bottom'
-      },
-      {
-        target: '.center-toolbar',
-        title: 'Herramientas',
-        text: 'Genera outfits aleatorios, limpia el canvas o guarda tus looks favoritos.',
-        position: 'bottom'
-      },
-      {
-        target: '#layerStack',
-        title: 'Orden de Capas',
-        text: 'Controla qué prenda va delante o detrás. Arrastra para reordenar las capas de tu outfit.',
-        position: 'top'
-      },
-      {
-        target: '.panel--right',
-        title: 'Tu Outfit',
-        text: 'Aquí ves el resumen: prendas seleccionadas, precio total y tus looks guardados.',
-        position: 'left'
+    const isMobileOnboarding = () => window.innerWidth <= 768;
+
+    function getOnboardingSteps() {
+      if (isMobileOnboarding()) {
+        return [
+          {
+            target: '#canvas',
+            title: 'Tu Canvas',
+            text: 'Aquí aparecerán las prendas que elijas, superpuestas sobre la silueta.',
+            position: 'bottom'
+          },
+          {
+            target: '.center-toolbar',
+            title: 'Herramientas',
+            text: 'Randomiza outfits, limpia el canvas, guarda looks, descarga o comparte en IG Stories.',
+            position: 'bottom'
+          },
+          {
+            target: '#leftPanel',
+            title: 'Tu Armario',
+            text: 'Desliza para explorar las categorías. Toca cualquier prenda para agregarla al canvas.',
+            position: 'top'
+          },
+          {
+            target: '.panel--right',
+            title: 'Tu Outfit',
+            text: 'El resumen de tu look: prendas, precio total y tus looks guardados. Agrega todo al carrito desde aquí.',
+            position: 'top'
+          }
+        ];
       }
-    ];
+      return [
+        {
+          target: '#section-favoritos',
+          title: 'Tus Favoritos',
+          text: 'Las prendas que marcaste como favoritas en el catálogo aparecen aquí para acceso rápido.',
+          position: 'right'
+        },
+        {
+          target: '#leftPanel',
+          title: 'Tu Armario',
+          text: 'Todas las prendas organizadas por categoría. Haz click o arrastra cualquier prenda hacia el canvas.',
+          position: 'right'
+        },
+        {
+          target: '#canvas',
+          title: 'El Canvas',
+          text: 'Este es tu espacio de trabajo. Las prendas que selecciones aparecerán aquí superpuestas automáticamente.',
+          position: 'bottom'
+        },
+        {
+          target: '.center-toolbar',
+          title: 'Herramientas',
+          text: 'Genera outfits aleatorios, limpia el canvas o guarda tus looks favoritos.',
+          position: 'bottom'
+        },
+        {
+          target: '#layerStack',
+          title: 'Orden de Capas',
+          text: 'Controla qué prenda va delante o detrás. Arrastra para reordenar las capas de tu outfit.',
+          position: 'top'
+        },
+        {
+          target: '.panel--right',
+          title: 'Tu Outfit',
+          text: 'Aquí ves el resumen: prendas seleccionadas, precio total y tus looks guardados.',
+          position: 'left'
+        }
+      ];
+    }
 
     let onboardingIdx = 0;
+    let currentSteps = [];
 
     function startOnboarding() {
       onboardingIdx = 0;
+      currentSteps = getOnboardingSteps();
+      // On mobile, scroll to top so canvas is visible for step 1
+      if (isMobileOnboarding()) window.scrollTo({ top: 0, behavior: 'instant' });
       showOnboardingStep();
     }
 
@@ -1918,80 +1960,100 @@
       const prev = document.getElementById('onboardingOverlay');
       if (prev) prev.remove();
 
-      if (onboardingIdx >= onboardingSteps.length) {
+      if (onboardingIdx >= currentSteps.length) {
         localStorage.setItem('ct_vestidor_onboarded', '1');
         return;
       }
 
-      const step = onboardingSteps[onboardingIdx];
+      const step = currentSteps[onboardingIdx];
       const targetEl = document.querySelector(step.target);
       if (!targetEl) { onboardingIdx++; showOnboardingStep(); return; }
 
-      const rect = targetEl.getBoundingClientRect();
-      const pad = 8;
+      // On mobile, scroll target into view before measuring
+      if (isMobileOnboarding()) {
+        targetEl.scrollIntoView({ behavior: 'instant', block: 'center' });
+      }
 
-      // Create overlay
-      const overlay = document.createElement('div');
-      overlay.id = 'onboardingOverlay';
-      overlay.innerHTML = `
-        <svg class="ob-mask" width="100%" height="100%">
-          <defs>
-            <mask id="obMask">
-              <rect width="100%" height="100%" fill="white"/>
-              <rect x="${rect.left - pad}" y="${rect.top - pad}"
-                    width="${rect.width + pad*2}" height="${rect.height + pad*2}"
-                    rx="12" fill="black"/>
-            </mask>
-          </defs>
-          <rect width="100%" height="100%" fill="rgba(0,0,0,0.65)" mask="url(#obMask)"/>
-        </svg>
-        <div class="ob-highlight" style="
-          left:${rect.left - pad}px; top:${rect.top - pad}px;
-          width:${rect.width + pad*2}px; height:${rect.height + pad*2}px;
-        "></div>
-        <div class="ob-tooltip ob-tooltip--${step.position}" id="obTooltip">
-          <div class="ob-tooltip__step">${onboardingIdx + 1} / ${onboardingSteps.length}</div>
-          <div class="ob-tooltip__title">${step.title}</div>
-          <div class="ob-tooltip__text">${step.text}</div>
-          <div class="ob-tooltip__actions">
-            <button class="ob-tooltip__skip" onclick="endOnboarding()">Saltar</button>
-            <button class="ob-tooltip__next" onclick="nextOnboardingStep()">
-              ${onboardingIdx === onboardingSteps.length - 1 ? 'Empezar' : 'Siguiente →'}
-            </button>
+      // Small delay to let scroll settle, then measure and render
+      setTimeout(() => {
+        const rect = targetEl.getBoundingClientRect();
+        const pad = 8;
+
+        // Create overlay
+        const overlay = document.createElement('div');
+        overlay.id = 'onboardingOverlay';
+        overlay.innerHTML = `
+          <svg class="ob-mask" width="100%" height="100%">
+            <defs>
+              <mask id="obMask">
+                <rect width="100%" height="100%" fill="white"/>
+                <rect x="${rect.left - pad}" y="${rect.top - pad}"
+                      width="${rect.width + pad*2}" height="${rect.height + pad*2}"
+                      rx="12" fill="black"/>
+              </mask>
+            </defs>
+            <rect width="100%" height="100%" fill="rgba(0,0,0,0.65)" mask="url(#obMask)"/>
+          </svg>
+          <div class="ob-highlight" style="
+            left:${rect.left - pad}px; top:${rect.top - pad}px;
+            width:${rect.width + pad*2}px; height:${rect.height + pad*2}px;
+          "></div>
+          <div class="ob-tooltip ob-tooltip--${step.position}" id="obTooltip">
+            <div class="ob-tooltip__step">${onboardingIdx + 1} / ${currentSteps.length}</div>
+            <div class="ob-tooltip__title">${step.title}</div>
+            <div class="ob-tooltip__text">${step.text}</div>
+            <div class="ob-tooltip__actions">
+              <button class="ob-tooltip__skip" onclick="endOnboarding()">Saltar</button>
+              <button class="ob-tooltip__next" onclick="nextOnboardingStep()">
+                ${onboardingIdx === currentSteps.length - 1 ? 'Empezar' : 'Siguiente →'}
+              </button>
+            </div>
           </div>
-        </div>
-      `;
-      document.body.appendChild(overlay);
+        `;
+        document.body.appendChild(overlay);
 
-      // Position tooltip
-      requestAnimationFrame(() => {
-        const tip = document.getElementById('obTooltip');
-        if (!tip) return;
-        const tipRect = tip.getBoundingClientRect();
-        let tx, ty;
+        // Position tooltip
+        requestAnimationFrame(() => {
+          const tip = document.getElementById('obTooltip');
+          if (!tip) return;
+          const tipRect = tip.getBoundingClientRect();
+          let tx, ty;
+          const mobile = isMobileOnboarding();
 
-        if (step.position === 'right') {
-          tx = rect.right + pad + 16;
-          ty = rect.top + rect.height / 2 - tipRect.height / 2;
-        } else if (step.position === 'left') {
-          tx = rect.left - pad - 16 - tipRect.width;
-          ty = rect.top + rect.height / 2 - tipRect.height / 2;
-        } else if (step.position === 'bottom') {
-          tx = rect.left + rect.width / 2 - tipRect.width / 2;
-          ty = rect.bottom + pad + 16;
-        } else {
-          tx = rect.left + rect.width / 2 - tipRect.width / 2;
-          ty = rect.top - pad - 16 - tipRect.height;
-        }
+          if (mobile) {
+            // Mobile: center horizontally, place above or below target
+            tx = (window.innerWidth - tipRect.width) / 2;
+            if (step.position === 'top') {
+              ty = rect.top - pad - 12 - tipRect.height;
+            } else {
+              ty = rect.bottom + pad + 12;
+            }
+          } else {
+            // Desktop: original positioning logic
+            if (step.position === 'right') {
+              tx = rect.right + pad + 16;
+              ty = rect.top + rect.height / 2 - tipRect.height / 2;
+            } else if (step.position === 'left') {
+              tx = rect.left - pad - 16 - tipRect.width;
+              ty = rect.top + rect.height / 2 - tipRect.height / 2;
+            } else if (step.position === 'bottom') {
+              tx = rect.left + rect.width / 2 - tipRect.width / 2;
+              ty = rect.bottom + pad + 16;
+            } else {
+              tx = rect.left + rect.width / 2 - tipRect.width / 2;
+              ty = rect.top - pad - 16 - tipRect.height;
+            }
+          }
 
-        // Clamp to viewport
-        tx = Math.max(12, Math.min(tx, window.innerWidth - tipRect.width - 12));
-        ty = Math.max(12, Math.min(ty, window.innerHeight - tipRect.height - 12));
+          // Clamp to viewport
+          tx = Math.max(8, Math.min(tx, window.innerWidth - tipRect.width - 8));
+          ty = Math.max(8, Math.min(ty, window.innerHeight - tipRect.height - 8));
 
-        tip.style.left = tx + 'px';
-        tip.style.top = ty + 'px';
-        tip.style.opacity = '1';
-      });
+          tip.style.left = tx + 'px';
+          tip.style.top = ty + 'px';
+          tip.style.opacity = '1';
+        });
+      }, isMobileOnboarding() ? 120 : 0);
     }
 
     function nextOnboardingStep() {
