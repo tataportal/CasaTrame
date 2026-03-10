@@ -722,6 +722,14 @@
       grid.addEventListener('mouseenter', function() { hovered = true; });
       grid.addEventListener('mouseleave', function() { hovered = false; });
 
+      // trackpad / mouse wheel → horizontal scroll
+      grid.addEventListener('wheel', function(e) {
+        var dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+        pos += dx;
+        dragVelocity = 0;
+        e.preventDefault();
+      }, { passive: false });
+
       requestAnimationFrame(loop);
     })();
 
