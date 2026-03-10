@@ -625,8 +625,20 @@
       }
       /* Canvas ocupa lo que sobra */
       .canvas { min-height: 0; flex: 1 1 0; }
-      /* Layer stack visible al fondo */
-      .layer-stack { height: 550px; flex-shrink: 0; }
+      /* Layer stack: 3 slots + textos 20% más grandes */
+      .layer-stack { height: 550px; flex-shrink: 0; gap: 5px; padding: 12px 10px 16px; }
+      .layer-chip { padding: 14px 18px; gap: 16px; grid-template-columns: 24px 60px 1fr auto; }
+      .layer-chip__name { font-size: 1.8rem; }
+      .layer-chip__type { font-size: 1.45rem; }
+      .layer-chip__thumb { width: 60px; height: 75px; }
+      .layer-chip__btn { width: 48px; height: 48px; }
+      .layer-chip__btn svg { width: 26px; height: 26px; }
+      .layer-chip__grip span { width: 17px; height: 3px; }
+      .layer-stack__title { font-size: 1.6rem; }
+      /* Toolbar 20% más grande */
+      .btn-v { padding: 22px 44px; font-size: 1.5rem; }
+      .btn-v svg { width: 22px; height: 22px; }
+      .btn-v--help { width: 50px; height: 50px; min-width: 50px; font-size: 1.5rem; }
       /* Agrandar prendas (220 × 0.5 = 110px visual) */
       .panel__item { width: 220px; }
       .panel__item img { width: 220px; height: 275px; }
