@@ -504,94 +504,94 @@
     .cart-overlay.open { display: block; }
     .cart-drawer {
       position: fixed; top: 0; right: 0; bottom: 0;
-      width: 38rem; max-width: 90vw; z-index: 2000;
+      width: 50rem; max-width: 90vw; z-index: 2000;
       background: var(--bg); display: flex; flex-direction: column;
       transform: translateX(100%); transition: transform 0.3s ease;
     }
     .cart-drawer.open { transform: translateX(0); }
     .cart-drawer__header {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 1.867rem 1.867rem 1.333rem; border-bottom: 1px solid var(--border);
+      padding: 2.4rem 2.4rem 1.6rem; border-bottom: 1px solid var(--border);
     }
     .cart-drawer__title {
-      font-family: var(--body); font-size: 0.85rem; font-weight: 700;
+      font-family: var(--body); font-size: 1.1rem; font-weight: 700;
       text-transform: uppercase; letter-spacing: 0.12em;
     }
     .cart-drawer__close {
-      font-size: 1.6rem; color: var(--text); background: none; border: none;
+      font-size: 2rem; color: var(--text); background: none; border: none;
       cursor: pointer; line-height: 1;
     }
     .cart-drawer__items {
       flex: 1; overflow-y: auto; padding: 0;
     }
     .cart-drawer__empty {
-      padding: 4rem 1.867rem; text-align: center;
-      font-size: 0.88rem; color: var(--text-light);
+      padding: 5rem 2.4rem; text-align: center;
+      font-size: 1.1rem; color: var(--text-light);
     }
     .cart-item {
-      display: grid; grid-template-columns: 6.667rem 1fr; gap: 1.067rem;
-      padding: 1.333rem 1.867rem; border-bottom: 1px solid #f0f0f0;
+      display: grid; grid-template-columns: 9rem 1fr; gap: 1.6rem;
+      padding: 1.8rem 2.4rem; border-bottom: 1px solid #f0f0f0;
     }
     .cart-item__img {
       aspect-ratio: 4/5; overflow: hidden; background: #fafafa;
     }
     .cart-item__img img { width: 100%; height: 100%; object-fit: cover; }
-    .cart-item__details { display: flex; flex-direction: column; justify-content: center; gap: 0.267rem; }
-    .cart-item__name { font-size: 0.82rem; color: var(--text); line-height: 1.3; }
-    .cart-item__meta { font-size: 0.72rem; color: var(--text-light); display: flex; align-items: center; gap: 0.4rem; }
+    .cart-item__details { display: flex; flex-direction: column; justify-content: center; gap: 0.4rem; }
+    .cart-item__name { font-size: 1.05rem; color: var(--text); line-height: 1.3; }
+    .cart-item__meta { font-size: 0.9rem; color: var(--text-light); display: flex; align-items: center; gap: 0.4rem; }
     .cart-item__meta-dot {
-      display: inline-block; width: 0.667rem; height: 0.667rem;
+      display: inline-block; width: 0.8rem; height: 0.8rem;
       border-radius: 50%; vertical-align: middle;
     }
-    .cart-item__price { font-size: 0.82rem; color: var(--text); margin-top: 2px; }
+    .cart-item__price { font-size: 1.05rem; color: var(--text); margin-top: 4px; }
     .cart-item__qty {
-      display: flex; align-items: center; gap: 0; margin-top: 0.4rem;
+      display: flex; align-items: center; gap: 0; margin-top: 0.6rem;
     }
     .cart-item__qty button {
-      width: 1.867rem; height: 1.867rem; border: 1px solid var(--border);
-      background: none; font-size: 0.85rem; cursor: pointer;
+      width: 2.4rem; height: 2.4rem; border: 1px solid var(--border);
+      background: none; font-size: 1.05rem; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       color: var(--text); font-family: var(--body);
     }
     .cart-item__qty button:hover { border-color: var(--text); }
     .cart-item__qty span {
-      width: 2.133rem; height: 1.867rem; border-top: 1px solid var(--border);
+      width: 2.8rem; height: 2.4rem; border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.78rem; color: var(--text);
+      font-size: 1rem; color: var(--text);
     }
     .cart-item__remove {
-      font-size: 0.68rem; color: var(--text-light); text-decoration: underline;
-      cursor: pointer; background: none; border: none; margin-top: 0.267rem;
+      font-size: 0.85rem; color: var(--text-light); text-decoration: underline;
+      cursor: pointer; background: none; border: none; margin-top: 0.4rem;
       font-family: var(--body); text-align: left; padding: 0;
     }
     .cart-item__remove:hover { color: var(--text); }
     .cart-drawer__footer {
-      padding: 1.333rem 1.867rem 1.867rem; border-top: 1px solid var(--border);
+      padding: 1.8rem 2.4rem 2.4rem; border-top: 1px solid var(--border);
     }
     .cart-drawer__subtotal {
       display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 1.067rem;
+      margin-bottom: 1.4rem;
     }
     .cart-drawer__subtotal-label {
-      font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em;
+      font-size: 1rem; text-transform: uppercase; letter-spacing: 0.08em;
       color: var(--text);
     }
     .cart-drawer__subtotal-value {
-      font-size: 0.95rem; font-weight: 700; color: var(--text);
+      font-size: 1.2rem; font-weight: 700; color: var(--text);
     }
     .cart-drawer__checkout {
-      display: block; width: 100%; padding: 0.933rem 0; text-align: center;
-      background: var(--text); color: #fff; border: none; font-size: 0.78rem;
+      display: block; width: 100%; padding: 1.2rem 0; text-align: center;
+      background: var(--text); color: #fff; border: none; font-size: 1rem;
       text-transform: uppercase; letter-spacing: 0.12em; cursor: pointer;
       font-family: var(--body); font-weight: 500; transition: 0.2s;
     }
     .cart-drawer__checkout:hover { background: #333; }
     .cart-drawer__continue {
-      display: block; width: 100%; padding: 0.667rem 0; text-align: center;
-      background: none; color: var(--text); border: none; font-size: 0.72rem;
+      display: block; width: 100%; padding: 0.8rem 0; text-align: center;
+      background: none; color: var(--text); border: none; font-size: 0.9rem;
       text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer;
-      font-family: var(--body); margin-top: 0.533rem; text-decoration: underline;
+      font-family: var(--body); margin-top: 0.667rem; text-decoration: underline;
     }
     .wishlist-card__cart-btn {
       display: block; width: 100%; padding: 0.6rem 0; margin-top: 0.533rem;
