@@ -359,6 +359,15 @@
     /* ===========================================
        RESPONSIVE
        =========================================== */
+    /* ── Laptop ≤1440px: scale everything to 75% ── */
+    @media (max-width: 1440px) {
+      html { font-size: 11.25px; }
+      .nav__inner { padding: 0 40px; }
+      .nav__right svg { width: 26px; height: 26px; }
+      .nav__logo img { height: 28px; }
+      .product-info { padding: 36px 45px 45px 39px; }
+      .footer { padding: 45px 36px 24px; }
+    }
     @media (max-width: 1024px) {
       .product-page { grid-template-columns: 1fr 1fr; }
       .product-info { padding: 32px 32px 40px 28px; }
