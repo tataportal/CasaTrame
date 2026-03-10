@@ -4,15 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vestidor™ — Casa Tramé</title>
-  <script>
-    // Laptop zoom: se aplica una vez via JS para evitar conflicto con media queries
-    (function(){
-      if (screen.width <= 1800) {
-        document.documentElement.style.zoom = '0.5';
-        document.documentElement.classList.add('laptop-zoom');
-      }
-    })();
-  </script>
   <style>
     /* ===========================================
        FONTS
@@ -611,53 +602,6 @@
     /* ===========================================
        RESPONSIVE
        =========================================== */
-    /* ── Laptops: zoom via JS class, solo fixes estructurales ── */
-    html.laptop-zoom .vestidor {
-      height: calc(100vh / 0.5 - var(--nav-h));
-      overflow: hidden;
-    }
-    html.laptop-zoom .panel {
-      position: relative; top: 0;
-      height: 100%; max-height: 100%;
-      overflow-y: auto;
-    }
-    html.laptop-zoom .center {
-      height: 100%; overflow: hidden;
-    }
-    html.laptop-zoom .canvas { min-height: 0; flex: 1 1 0; }
-
-    /* ── Laptop text: ×1.6 base (×1.6 × zoom 0.5 = 0.8× visual) ── */
-    html.laptop-zoom .panel__section-title { font-size: calc(var(--fs-body) * 1.6); }
-    html.laptop-zoom .panel__section-count { font-size: calc(var(--fs-btn) * 1.6); }
-    html.laptop-zoom .panel__title { font-size: calc(var(--fs-ui) * 1.6); }
-    html.laptop-zoom .panel__favs-empty { font-size: 1.84rem; }
-    /* Layer-chips: base × 1.6 */
-    html.laptop-zoom .layer-chip__name { font-size: 2.4rem; }
-    html.laptop-zoom .layer-chip__type { font-size: 1.92rem; }
-    html.laptop-zoom .layer-chip__btn { font-size: 2.08rem; }
-    html.laptop-zoom .layer-chip__btn svg { width: 35px; height: 35px; }
-    html.laptop-zoom .layer-stack__title { font-size: 2.16rem; }
-    html.laptop-zoom .btn-v { font-size: calc(var(--fs-ui) * 1.6); }
-    /* Right panel: base × 1.6 */
-    html.laptop-zoom .summary__title { font-size: calc(var(--fs-body) * 1.6); }
-    html.laptop-zoom .summary__item-cat { font-size: calc(var(--fs-label) * 1.6); }
-    html.laptop-zoom .summary__item-name { font-size: calc(var(--fs-ui) * 1.6); }
-    html.laptop-zoom .summary__item-price { font-size: calc(var(--fs-ui) * 1.6); }
-    html.laptop-zoom .summary__item-remove svg { width: 35px; height: 35px; }
-    html.laptop-zoom .summary__total-label { font-size: calc(var(--fs-ui) * 1.6); }
-    html.laptop-zoom .summary__total-value { font-size: 2.24rem; }
-    html.laptop-zoom .summary__checkout { font-size: calc(var(--fs-ui) * 1.6); }
-    html.laptop-zoom .summary__empty { font-size: calc(var(--fs-ui) * 1.6); }
-    html.laptop-zoom .saved-looks__title { font-size: 1.92rem; }
-    html.laptop-zoom .outfit-popup__title { font-size: 2.08rem; }
-
-    /* ── Laptop layer-stack: 3 slots visible ── */
-    html.laptop-zoom .layer-stack { height: 400px; }
-
-    /* ── Laptop left panel: bigger thumbnails ── */
-    html.laptop-zoom .panel__item { width: 180px; }
-    html.laptop-zoom .panel__item img { width: 180px; height: 225px; }
-
     /* ── Tablet (≤1100px) ── */
     @media (max-width: 1100px) {
       .vestidor { grid-template-columns: 1fr; }

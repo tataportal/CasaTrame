@@ -4,14 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Casa Tramé — Moda Artesanal Contemporánea</title>
-  <script>
-    (function(){
-      if (screen.width <= 1800) {
-        document.documentElement.style.zoom = '0.5';
-        document.documentElement.classList.add('laptop-zoom');
-      }
-    })();
-  </script>
   <style>
     /* ===========================================
        FONTS — Goia Display
@@ -332,33 +324,6 @@
     /* ===========================================
        RESPONSIVE
        =========================================== */
-    /* ── Laptops: zoom via JS, solo fixes vh ── */
-    html.laptop-zoom .hero { height: calc(100vh / 0.5); min-height: auto; }
-    html.laptop-zoom .hero__video video { min-width: 0; min-height: 0; width: 100%; height: calc(100vh / 0.5); object-fit: cover; }
-    html.laptop-zoom .brand-statement { min-height: calc(100vh / 0.5); }
-    html.laptop-zoom .collection-section { min-height: calc(100vh / 0.5); }
-    html.laptop-zoom .collection-grid { height: calc(55vh / 0.5); }
-    html.laptop-zoom .vestidor { min-height: calc(100vh / 0.5); }
-    html.laptop-zoom .vestidor__mockup img { max-height: calc(80vh / 0.5); }
-    html.laptop-zoom .newsletter { height: calc(100vh / 0.5); }
-    /* ── Laptop text: ×1.6 base (×1.6 × zoom 0.5 = 0.8× visual) ── */
-    html.laptop-zoom .hero__cta { font-size: calc(var(--fs-btn) * 1.6); padding: 42px 115px; }
-    html.laptop-zoom .hero__cta svg { width: 45px; height: 45px; }
-    html.laptop-zoom .brand-statement__title { font-size: calc(var(--fs-hero) * 1.6); }
-    html.laptop-zoom .brand-statement__text { font-size: calc(var(--fs-subtitle) * 1.6); max-width: 1440px; }
-    html.laptop-zoom .collection-section__title { font-size: calc(var(--fs-section) * 1.6); }
-    html.laptop-zoom .collection-card__name { font-size: 3.84rem; }
-    html.laptop-zoom .collection-section__cta .btn-outline { font-size: calc(var(--fs-btn) * 1.6); padding: 42px 115px; }
-    html.laptop-zoom .collection-section__cta .btn-outline svg { width: 45px; height: 45px; }
-    html.laptop-zoom .vestidor__title { font-size: calc(var(--fs-section) * 1.6); }
-    html.laptop-zoom .vestidor__subtitle { font-size: calc(var(--fs-subtitle) * 1.6); max-width: 960px; }
-    html.laptop-zoom .vestidor__cta { font-size: calc(var(--fs-btn) * 1.6); padding: 42px 115px; }
-    html.laptop-zoom .vestidor__cta svg { width: 45px; height: 45px; }
-    html.laptop-zoom .newsletter__title { font-size: calc(var(--fs-hero) * 1.6); }
-    html.laptop-zoom .newsletter__input { font-size: 2.4rem; padding: 35px 45px; }
-    html.laptop-zoom .newsletter__submit { font-size: 2.08rem; padding: 35px 64px; }
-    html.laptop-zoom .newsletter__legal { font-size: 1.76rem; }
-    html.laptop-zoom .footer { font-size: 1.6rem; }
     @media (max-width: 1024px) {
       .footer__grid { grid-template-columns: 1fr 1fr; }
     }

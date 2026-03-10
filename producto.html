@@ -359,30 +359,6 @@
     /* ===========================================
        RESPONSIVE
        =========================================== */
-    /* ── Laptops (≤1800px) — JS zoom approach ── */
-    html.laptop-zoom .product-page { min-height: calc(100vh / 0.5); }
-    html.laptop-zoom .product-images {
-      max-height: calc(100vh / 0.5 - var(--nav-h));
-      position: relative; top: 0;
-      height: 100%;
-      overflow-y: auto;
-    }
-    /* ── Laptop text: ×1.6 base (×1.6 × zoom 0.5 = 0.8× visual) ── */
-    html.laptop-zoom .product-breadcrumb { font-size: 1.5rem; }
-    html.laptop-zoom .product-title { font-size: calc(var(--fs-section) * 1.6); }
-    html.laptop-zoom .product-price { font-size: calc(var(--fs-subtitle) * 1.6); }
-    html.laptop-zoom .product-section-label { font-size: calc(var(--fs-btn) * 1.6); }
-    html.laptop-zoom .color-swatch { width: 64px; height: 64px; }
-    html.laptop-zoom .size-option { height: 99px; font-size: 1.71rem; }
-    html.laptop-zoom .size-guide-link { font-size: 1.5rem; }
-    html.laptop-zoom .add-to-bag { font-size: 1.82rem; padding: 37px 0; }
-    html.laptop-zoom .vestidor-link { font-size: 1.62rem; }
-    html.laptop-zoom .wishlist-link { font-size: 1.62rem; }
-    html.laptop-zoom .wishlist-link svg { width: 37px; height: 37px; }
-    html.laptop-zoom .product-accordion summary { font-size: 1.62rem; }
-    html.laptop-zoom .product-accordion summary::after { font-size: 2.5rem; }
-    html.laptop-zoom .product-accordion > div { font-size: 1.71rem; }
-
     @media (max-width: 1024px) {
       .product-page { grid-template-columns: 1fr 1fr; }
       .product-info { padding: 32px 32px 40px 28px; }
@@ -439,14 +415,6 @@
       .footer__bottom { flex-direction: column; gap: 12px; text-align: center; }
     }
   </style>
-  <script>
-    (function(){
-      if (screen.width <= 1800) {
-        document.documentElement.style.zoom = '0.5';
-        document.documentElement.classList.add('laptop-zoom');
-      }
-    })();
-  </script>
 </head>
 <body>
 
