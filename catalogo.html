@@ -117,7 +117,7 @@
 
     /* --- SIDEBAR --- */
     .sidebar {
-      padding: 2.4rem 1.6rem 2.667rem 2.133rem;
+      padding: 3.2rem 2rem 3.2rem 2.8rem;
       position: sticky; top: var(--nav-h);
       align-self: start;
       max-height: calc(100vh - var(--nav-h));
@@ -126,45 +126,45 @@
 
     .sidebar__tag {
       display: inline-block;
-      font-size: 0.7rem; letter-spacing: 0.22em;
-      border: 1.5px solid var(--text); padding: 0.2rem 0.8rem;
-      margin-bottom: 1.2rem; font-weight: 300;
+      font-size: 0.9rem; letter-spacing: 0.22em;
+      border: 1.5px solid var(--text); padding: 0.3rem 1rem;
+      margin-bottom: 1.6rem; font-weight: 300;
     }
 
     .sidebar__title {
       font-family: var(--heading);
       font-style: italic;
-      font-size: var(--fs-page);
+      font-size: var(--fs-section);
       line-height: 1.0;
       font-weight: 200;
       text-transform: uppercase;
-      margin-bottom: 1.067rem;
+      margin-bottom: 1.4rem;
     }
 
     .sidebar__subtitle {
-      font-size: 0.87rem; color: var(--text);
-      line-height: 1.55; margin-bottom: 2.4rem;
-      max-width: 13.333rem;
+      font-size: var(--fs-body); color: var(--text);
+      line-height: 1.55; margin-bottom: 3.2rem;
+      max-width: 18rem;
     }
 
     .sidebar__filters { display: flex; flex-direction: column; gap: 0; }
     .sidebar__filters a {
-      font-size: 0.9rem; color: var(--text);
-      padding: 0.533rem 0; display: block;
+      font-size: var(--fs-body); color: var(--text);
+      padding: 0.7rem 0; display: block;
       text-transform: uppercase; letter-spacing: 0.02em;
       border-bottom: 1px solid transparent;
       transition: 0.2s ease;
     }
     .sidebar__filters a.active {
       border-bottom: 1.5px solid var(--text);
-      padding-bottom: 0.4rem;
+      padding-bottom: 0.533rem;
     }
     .sidebar__filters a:hover { opacity: 0.7; }
 
     /* Sort & Color filter */
     .sidebar__section-title {
-      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
-      color: var(--text-light); margin-top: 1.867rem; margin-bottom: 0.667rem;
+      font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text-light); margin-top: 2.4rem; margin-bottom: 0.8rem;
     }
     .sidebar__section-title--filtrar { display: none; }
     /* Desktop: hide mobile toggles, show collapsible content */
@@ -172,11 +172,11 @@
     .sidebar__collapsible { display: block; }
     .sidebar__sort { display: flex; flex-direction: column; gap: 0; }
     .sidebar__sort a {
-      font-size: 0.9rem; color: var(--text); padding: 0.4rem 0;
+      font-size: var(--fs-body); color: var(--text); padding: 0.6rem 0;
       text-transform: uppercase; letter-spacing: 0.02em;
       cursor: pointer; transition: 0.2s;
     }
-    .sidebar__sort a.active { border-bottom: 1.5px solid var(--text); padding-bottom: 0.267rem; }
+    .sidebar__sort a.active { border-bottom: 1.5px solid var(--text); padding-bottom: 0.4rem; }
     .sidebar__sort a:hover { opacity: 0.7; }
     .sidebar__sort-arrow { display: inline-block; transition: transform 0.2s; }
     .sidebar__sort-toggle.flipped .sidebar__sort-arrow { transform: rotate(180deg); }
