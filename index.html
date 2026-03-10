@@ -146,7 +146,7 @@
        BRAND STATEMENT
        =========================================== */
     .brand-statement {
-      min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 100vh; display: grid; grid-template-columns: 2fr 1fr;
       align-items: center;
       background: #f5f5f3;
     }
@@ -161,12 +161,12 @@
     }
     .brand-statement__title {
       font-family: var(--heading); font-weight: 200;
-      font-size: 6.67rem; line-height: 1.1; margin-bottom: 2.67rem;
+      font-size: var(--fs-section); line-height: 1.1; margin-bottom: 1.333rem;
       letter-spacing: -0.01em;
     }
     .brand-statement__text {
-      font-size: 2.53rem; color: var(--text-mid); line-height: 1.75;
-      font-weight: 300; max-width: 50rem;
+      font-size: var(--fs-subtitle); color: var(--text-mid); line-height: 1.75;
+      font-weight: 300; max-width: 30rem;
     }
 
     /* ===========================================
@@ -430,7 +430,7 @@
       </button>
       <a href="#hero" class="nav__logo"><img src="img/trame_horizontal-black.svg" alt="Casa Tramé"></a>
       <div class="nav__right">
-        <button title="Buscar" onclick="window.location.href='catalogo.html'">
+        <button title="Buscar" onclick="window.location.href='catalogo.html?search=1'">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </button>
         <a href="#" onclick="event.preventDefault(); toast('Cuenta — próximamente');" title="Cuenta">

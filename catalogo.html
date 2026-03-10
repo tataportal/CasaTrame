@@ -610,7 +610,7 @@
     }
     .search-overlay.open { display: flex; align-items: flex-start; justify-content: center; padding-top: 8rem; }
     .search-modal {
-      background: #fff; width: 90%; max-width: 42.667rem;
+      background: #fff; width: 95%; max-width: 90rem;
       box-shadow: 0 1.333rem 4rem rgba(0,0,0,0.15);
       animation: searchSlide 0.25s ease;
     }
@@ -1811,6 +1811,7 @@
     function closeSearch() {
       document.getElementById('searchOverlay').classList.remove('open');
     }
+    if (new URLSearchParams(window.location.search).has('search')) openSearch();
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeSearch();
       // Ctrl+K or Cmd+K to open search
