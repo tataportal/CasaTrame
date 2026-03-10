@@ -625,6 +625,35 @@
       height: 100%; overflow: hidden;
     }
     html.laptop-zoom .canvas { min-height: 0; flex: 1 1 0; }
+
+    /* ── Laptop text bump: +30% ── */
+    html.laptop-zoom .panel__section-title { font-size: calc(var(--fs-body) * 1.3); }
+    html.laptop-zoom .panel__section-count { font-size: calc(var(--fs-btn) * 1.3); }
+    html.laptop-zoom .panel__title { font-size: calc(var(--fs-ui) * 1.3); }
+    html.laptop-zoom .panel__favs-empty { font-size: 1.5rem; }
+    html.laptop-zoom .layer-chip__name { font-size: 1.95rem; }
+    html.laptop-zoom .layer-chip__type { font-size: 1.56rem; }
+    html.laptop-zoom .layer-chip__btn { font-size: 1.69rem; }
+    html.laptop-zoom .layer-chip__btn svg { width: 28px; height: 28px; }
+    html.laptop-zoom .layer-stack__title { font-size: 1.76rem; }
+    html.laptop-zoom .btn-v { font-size: calc(var(--fs-ui) * 1.3); }
+    html.laptop-zoom .summary__title { font-size: calc(var(--fs-body) * 1.3); }
+    html.laptop-zoom .summary__item-cat { font-size: calc(var(--fs-label) * 1.3); }
+    html.laptop-zoom .summary__item-name { font-size: calc(var(--fs-ui) * 1.3); }
+    html.laptop-zoom .summary__item-price { font-size: calc(var(--fs-ui) * 1.3); }
+    html.laptop-zoom .summary__total-label { font-size: calc(var(--fs-ui) * 1.3); }
+    html.laptop-zoom .summary__total-value { font-size: 1.82rem; }
+    html.laptop-zoom .summary__checkout { font-size: calc(var(--fs-ui) * 1.3); }
+    html.laptop-zoom .summary__empty { font-size: calc(var(--fs-ui) * 1.3); }
+    html.laptop-zoom .nav__left a { font-size: 2.21rem; }
+    html.laptop-zoom .nav__right button,
+    html.laptop-zoom .nav__right a { font-size: 1.82rem; }
+    html.laptop-zoom .nav__right svg { width: 45px; height: 45px; }
+    html.laptop-zoom .saved-looks__title { font-size: calc(1.2rem * 1.3); }
+    html.laptop-zoom .outfit-popup__title { font-size: calc(1.3rem * 1.3); }
+
+    /* ── Laptop layer-stack: exactly 3 slots ── */
+    html.laptop-zoom .layer-stack { height: 270px; }
     /* ── Tablet (≤1100px) ── */
     @media (max-width: 1100px) {
       .vestidor { grid-template-columns: 1fr; }
