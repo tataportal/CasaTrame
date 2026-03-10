@@ -176,15 +176,12 @@
       display: flex; gap: 2px; width: 100%;
       padding: 0; overflow: hidden;
       height: 55vh; position: relative;
+      cursor: grab;
     }
+    .collection-grid.is-dragging { cursor: grabbing; }
     .collection-grid__track {
       display: flex; gap: 2px;
-      animation: marquee 40s linear infinite;
-    }
-    .collection-grid__track:hover { animation-play-state: paused; }
-    @keyframes marquee {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+      will-change: transform;
     }
     .collection-card {
       flex: 0 0 auto; min-width: 0;
@@ -646,6 +643,113 @@
     }
     window.addEventListener('scroll', updateNav, { passive: true });
     updateNav();
+
+    /* ---- Collection Carousel: auto-scroll + drag ---- */
+    (function() {
+      const grid = document.querySelector('.collection-grid');
+      const track = document.querySelector('.collection-grid__track');
+      if (!grid || !track) return;
+
+      let pos = 0;
+      let speed = 0.5;          // px per frame
+      let dragging = false;
+      let startX = 0;
+      let dragStartPos = 0;
+      let rafId = null;
+      let lastDragX = 0;
+      let dragVelocity = 0;
+
+      // half-width = where the duplicate starts
+      function halfWidth() { return track.scrollWidth / 2; }
+
+      function loop() {
+        if (!dragging) {
+          // apply inertia from drag release
+          if (Math.abs(dragVelocity) > 0.5) {
+            pos -= dragVelocity;
+            dragVelocity *= 0.95;
+          } else {
+            dragVelocity = 0;
+            pos += speed;
+          }
+        }
+        // seamless loop
+        const hw = halfWidth();
+        if (hw > 0) {
+          if (pos >= hw) pos -= hw;
+          if (pos < 0) pos += hw;
+        }
+        track.style.transform = 'translateX(' + (-pos) + 'px)';
+        rafId = requestAnimationFrame(loop);
+      }
+
+      // mouse drag
+      grid.addEventListener('mousedown', function(e) {
+        dragging = true;
+        grid.classList.add('is-dragging');
+        startX = e.clientX;
+        dragStartPos = pos;
+        lastDragX = e.clientX;
+        dragVelocity = 0;
+        e.preventDefault();
+      });
+      window.addEventListener('mousemove', function(e) {
+        if (!dragging) return;
+        const dx = e.clientX - lastDragX;
+        dragVelocity = dx;
+        lastDragX = e.clientX;
+        pos = dragStartPos - (e.clientX - startX);
+      });
+      window.addEventListener('mouseup', function() {
+        if (!dragging) return;
+        dragging = false;
+        grid.classList.remove('is-dragging');
+      });
+
+      // touch drag
+      grid.addEventListener('touchstart', function(e) {
+        dragging = true;
+        startX = e.touches[0].clientX;
+        dragStartPos = pos;
+        lastDragX = e.touches[0].clientX;
+        dragVelocity = 0;
+      }, { passive: true });
+      grid.addEventListener('touchmove', function(e) {
+        if (!dragging) return;
+        const dx = e.touches[0].clientX - lastDragX;
+        dragVelocity = dx;
+        lastDragX = e.touches[0].clientX;
+        pos = dragStartPos - (e.touches[0].clientX - startX);
+      }, { passive: true });
+      grid.addEventListener('touchend', function() {
+        dragging = false;
+      });
+
+      // prevent click on cards after drag
+      grid.addEventListener('click', function(e) {
+        if (Math.abs(dragVelocity) > 2) e.preventDefault();
+      }, true);
+
+      // pause auto-scroll on hover (no drag)
+      let hovered = false;
+      grid.addEventListener('mouseenter', function() { hovered = true; });
+      grid.addEventListener('mouseleave', function() { hovered = false; });
+
+      // override speed when hovered but not dragging
+      const origSpeed = speed;
+      const _loop = loop;
+      speed = 0;
+      loop = function() {
+        if (!dragging && !hovered && Math.abs(dragVelocity) < 0.5) {
+          speed = origSpeed;
+        } else if (hovered && !dragging && Math.abs(dragVelocity) < 0.5) {
+          speed = 0;
+        }
+        _loop();
+      };
+
+      rafId = requestAnimationFrame(loop);
+    })();
 
     /* ---- Mobile Menu Toggle ---- */
     const mobileMenu = document.getElementById('mobileMenu');
