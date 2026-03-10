@@ -359,12 +359,13 @@
     /* ===========================================
        RESPONSIVE
        =========================================== */
-    /* ── Laptops (≤1800px) — covers 13" @1440 and 16" @1728 ── */
-    @media (max-width: 1800px) {
-      html { zoom: 0.5; }
-      /* Compensar zoom en elementos 100vh */
-      .product-page { min-height: calc(100vh / 0.5); }
-      .product-images { max-height: calc(100vh / 0.5 - var(--nav-h)); }
+    /* ── Laptops (≤1800px) — JS zoom approach ── */
+    html.laptop-zoom .product-page { min-height: calc(100vh / 0.5); }
+    html.laptop-zoom .product-images {
+      max-height: calc(100vh / 0.5 - var(--nav-h));
+      position: relative; top: 0;
+      height: 100%;
+      overflow-y: auto;
     }
     @media (max-width: 1024px) {
       .product-page { grid-template-columns: 1fr 1fr; }
@@ -422,6 +423,14 @@
       .footer__bottom { flex-direction: column; gap: 12px; text-align: center; }
     }
   </style>
+  <script>
+    (function(){
+      if (screen.width <= 1800) {
+        document.documentElement.style.zoom = '0.5';
+        document.documentElement.classList.add('laptop-zoom');
+      }
+    })();
+  </script>
 </head>
 <body>
 

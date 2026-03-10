@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vestidor™ — Casa Tramé</title>
+  <script>
+    // Laptop zoom: se aplica una vez via JS para evitar conflicto con media queries
+    (function(){
+      if (screen.width <= 1800) {
+        document.documentElement.style.zoom = '0.5';
+        document.documentElement.classList.add('laptop-zoom');
+      }
+    })();
+  </script>
   <style>
     /* ===========================================
        FONTS
@@ -602,61 +611,20 @@
     /* ===========================================
        RESPONSIVE
        =========================================== */
-    /* ── Laptops (≤1800px) — covers 13" @1440 and 16" @1728 ── */
-    @media (max-width: 1800px) {
-      html { zoom: 0.5; }
-      /* Grid: compensar zoom para llenar viewport */
-      .vestidor {
-        height: calc(100vh / 0.5 - var(--nav-h));
-        overflow: hidden;
-      }
-      /* Panel izq: altura fija = grid track, scroll interno */
-      .panel {
-        position: relative;
-        top: 0;
-        height: 100%;
-        max-height: 100%;
-        overflow-y: auto;
-      }
-      /* Center: altura fija = grid track, contiene canvas + layer-stack */
-      .center {
-        height: 100%;
-        overflow: hidden;
-      }
-      /* Canvas ocupa lo que sobra */
-      .canvas { min-height: 0; flex: 1 1 0; }
-      /* Layer stack: 3 slots + textos 20% más grandes */
-      .layer-stack { height: 550px; flex-shrink: 0; gap: 5px; padding: 12px 10px 16px; }
-      .layer-chip { padding: 14px 18px; gap: 16px; grid-template-columns: 24px 60px 1fr auto; }
-      .layer-chip__name { font-size: 1.8rem; }
-      .layer-chip__type { font-size: 1.45rem; }
-      .layer-chip__thumb { width: 60px; height: 75px; }
-      .layer-chip__btn { width: 48px; height: 48px; }
-      .layer-chip__btn svg { width: 26px; height: 26px; }
-      .layer-chip__grip span { width: 17px; height: 3px; }
-      .layer-stack__title { font-size: 1.6rem; }
-      /* Toolbar 20% más grande */
-      .btn-v { padding: 22px 44px; font-size: 1.5rem; }
-      .btn-v svg { width: 22px; height: 22px; }
-      .btn-v--help { width: 50px; height: 50px; min-width: 50px; font-size: 1.5rem; }
-      /* Agrandar prendas (220 × 0.5 = 110px visual) */
-      .panel__item { width: 220px; }
-      .panel__item img { width: 220px; height: 275px; }
-      .panel__items { gap: 12px; padding: 0 32px; }
-      .panel__section-header { padding: 0 32px; }
-      .panel__title { padding: 0 32px; }
-      /* Panel derecho: texto 15% más grande */
-      .summary__title { font-size: 1.5rem; }
-      .summary__item-cat { font-size: 1rem; }
-      .summary__item-name { font-size: 1.5rem; }
-      .summary__item-price { font-size: 1.5rem; }
-      .summary__item-img { width: 72px; height: 90px; }
-      .summary__total-label { font-size: 1.5rem; }
-      .summary__total-value { font-size: 1.7rem; }
-      .summary__checkout { font-size: 1.3rem; }
-      .saved-looks__title { font-size: 1.2rem; }
-      .summary__tip { font-size: 1.2rem; }
+    /* ── Laptops: zoom via JS class, solo fixes estructurales ── */
+    html.laptop-zoom .vestidor {
+      height: calc(100vh / 0.5 - var(--nav-h));
+      overflow: hidden;
     }
+    html.laptop-zoom .panel {
+      position: relative; top: 0;
+      height: 100%; max-height: 100%;
+      overflow-y: auto;
+    }
+    html.laptop-zoom .center {
+      height: 100%; overflow: hidden;
+    }
+    html.laptop-zoom .canvas { min-height: 0; flex: 1 1 0; }
     /* ── Tablet (≤1100px) ── */
     @media (max-width: 1100px) {
       .vestidor { grid-template-columns: 1fr; }

@@ -669,12 +669,13 @@
     /* ===========================================
        RESPONSIVE
        =========================================== */
-    /* ── Laptops (≤1800px) — covers 13" @1440 and 16" @1728 ── */
-    @media (max-width: 1800px) {
-      html { zoom: 0.5; }
-      /* Compensar zoom en elementos 100vh */
-      .main { min-height: calc(100vh / 0.5); }
-      .sidebar { max-height: calc(100vh / 0.5 - var(--nav-h)); }
+    /* ── Laptops (≤1800px) — JS zoom approach ── */
+    html.laptop-zoom .main { min-height: calc(100vh / 0.5); }
+    html.laptop-zoom .sidebar {
+      max-height: calc(100vh / 0.5 - var(--nav-h));
+      position: relative; top: 0;
+      height: 100%;
+      overflow-y: auto;
     }
     @media (max-width: 1024px) {
       .product-grid { grid-template-columns: repeat(2, 1fr); }
@@ -766,6 +767,14 @@
       .footer__bottom { flex-direction: column; gap: 12px; text-align: center; }
     }
   </style>
+  <script>
+    (function(){
+      if (screen.width <= 1800) {
+        document.documentElement.style.zoom = '0.5';
+        document.documentElement.classList.add('laptop-zoom');
+      }
+    })();
+  </script>
 </head>
 <body>
 

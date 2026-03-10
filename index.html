@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Casa Tramé — Moda Artesanal Contemporánea</title>
+  <script>
+    (function(){
+      if (screen.width <= 1800) {
+        document.documentElement.style.zoom = '0.5';
+        document.documentElement.classList.add('laptop-zoom');
+      }
+    })();
+  </script>
   <style>
     /* ===========================================
        FONTS — Goia Display
@@ -324,18 +332,14 @@
     /* ===========================================
        RESPONSIVE
        =========================================== */
-    /* ── Laptops (≤1800px) — covers 13" @1440 and 16" @1728 ── */
-    @media (max-width: 1800px) {
-      html { zoom: 0.5; }
-      /* Compensar zoom en secciones 100vh */
-      .hero { height: calc(100vh / 0.5); min-height: auto; }
-      .brand-statement { min-height: calc(100vh / 0.5); }
-      .collection-section { min-height: calc(100vh / 0.5); }
-      .collection-grid { height: calc(55vh / 0.5); }
-      .vestidor { min-height: calc(100vh / 0.5); }
-      .vestidor__mockup img { max-height: calc(80vh / 0.5); }
-      .newsletter { height: calc(100vh / 0.5); }
-    }
+    /* ── Laptops: zoom via JS, solo fixes vh ── */
+    html.laptop-zoom .hero { height: calc(100vh / 0.5); min-height: auto; }
+    html.laptop-zoom .brand-statement { min-height: calc(100vh / 0.5); }
+    html.laptop-zoom .collection-section { min-height: calc(100vh / 0.5); }
+    html.laptop-zoom .collection-grid { height: calc(55vh / 0.5); }
+    html.laptop-zoom .vestidor { min-height: calc(100vh / 0.5); }
+    html.laptop-zoom .vestidor__mockup img { max-height: calc(80vh / 0.5); }
+    html.laptop-zoom .newsletter { height: calc(100vh / 0.5); }
     @media (max-width: 1024px) {
       .footer__grid { grid-template-columns: 1fr 1fr; }
     }
