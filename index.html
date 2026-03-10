@@ -259,10 +259,10 @@
        NEWSLETTER
        =========================================== */
     .newsletter {
-      position: relative; padding: 5.333rem 3.2rem; text-align: center;
-      overflow: hidden; height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-         }
+      position: relative; padding: 0; text-align: center;
+      overflow: hidden; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
     .newsletter__bg {
       position: absolute; inset: 0;
       background: url('https://images.unsplash.com/photo-1686530489698-d74e6f165b87?w=1920&q=80&fit=crop') center 30% / cover no-repeat;
@@ -270,10 +270,12 @@
     }
     .newsletter__bg::after {
       content: ''; position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,1) 100%);
+      background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.85) 65%, rgba(0,0,0,0.95) 100%);
     }
     .newsletter__content {
       position: relative; z-index: 2; max-width: 60rem;
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 5.333rem 3.2rem;
     }
     .newsletter__title {
       font-family: var(--heading); font-weight: 200; font-style: italic;
@@ -305,7 +307,7 @@
     /* ===========================================
        FOOTER
        =========================================== */
-    .footer { background: #000; color: #fff; border-top: none; padding: 4rem 3.2rem 2.133rem; text-align: left; }
+    .footer { background: transparent; color: #fff; border-top: none; padding: 4rem 3.2rem 2.133rem; text-align: left; position: relative; z-index: 2; width: 100%; }
     .footer__grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.667rem; margin-bottom: 2.133rem; }
     .footer__brand-name { font-family: var(--heading); font-size: var(--fs-subtitle); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.933rem; font-weight: 700; color: #fff; }
     .footer__brand p { color: rgba(255,255,255,0.55); font-size: var(--fs-body); max-width: 24rem; line-height: 1.6; }
@@ -561,7 +563,7 @@
     </div>
   </section>
 
-  <!-- ===== NEWSLETTER ===== -->
+  <!-- ===== NEWSLETTER + FOOTER ===== -->
   <section class="newsletter">
     <div class="newsletter__bg"></div>
     <div class="newsletter__content">
@@ -572,52 +574,50 @@
       </form>
       <p class="newsletter__legal">Al suscribirte aceptas recibir mensajes y bases legales.</p>
     </div>
+    <footer class="footer">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <div class="footer__brand-name">CASA TRAMÉ</div>
+          <p>Moda artesanal con visión contemporánea. Diseñada para quienes valoran la calidad y la intención detrás de cada prenda.</p>
+        </div>
+        <div class="footer__col-comprar">
+          <h4>Comprar</h4>
+          <ul>
+            <li><a href="catalogo.html">Nueva colección</a></li>
+            <li><a href="catalogo.html">Abrigos</a></li>
+            <li><a href="catalogo.html">Buzos</a></li>
+            <li><a href="catalogo.html">Denim</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Info</h4>
+          <ul>
+            <li><a href="index.html">Conócenos</a></li>
+            <li><a href="#">Sustentabilidad</a></li>
+            <li><a href="#">Guía de tallas</a></li>
+            <li><a href="#">Envíos y devoluciones</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Atención</h4>
+          <ul>
+            <li><a href="#">Contacto</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Términos</a></li>
+            <li><a href="#">Privacidad</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 Casa Tramé. Todos los derechos reservados.</span>
+        <div class="footer__social">
+          <a href="#" title="Instagram">IG</a>
+          <a href="#" title="Pinterest">PI</a>
+          <a href="#" title="TikTok">TK</a>
+        </div>
+      </div>
+    </footer>
   </section>
-
-  <!-- ===== FOOTER ===== -->
-  <footer class="footer">
-    <div class="footer__grid">
-      <div class="footer__brand">
-        <div class="footer__brand-name">CASA TRAMÉ</div>
-        <p>Moda artesanal con visión contemporánea. Diseñada para quienes valoran la calidad y la intención detrás de cada prenda.</p>
-      </div>
-      <div class="footer__col-comprar">
-        <h4>Comprar</h4>
-        <ul>
-          <li><a href="catalogo.html">Nueva colección</a></li>
-          <li><a href="catalogo.html">Abrigos</a></li>
-          <li><a href="catalogo.html">Buzos</a></li>
-          <li><a href="catalogo.html">Denim</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Info</h4>
-        <ul>
-          <li><a href="index.html">Conócenos</a></li>
-          <li><a href="#">Sustentabilidad</a></li>
-          <li><a href="#">Guía de tallas</a></li>
-          <li><a href="#">Envíos y devoluciones</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Atención</h4>
-        <ul>
-          <li><a href="#">Contacto</a></li>
-          <li><a href="#">FAQ</a></li>
-          <li><a href="#">Términos</a></li>
-          <li><a href="#">Privacidad</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer__bottom">
-      <span>&copy; 2026 Casa Tramé. Todos los derechos reservados.</span>
-      <div class="footer__social">
-        <a href="#" title="Instagram">IG</a>
-        <a href="#" title="Pinterest">PI</a>
-        <a href="#" title="TikTok">TK</a>
-      </div>
-    </div>
-  </footer>
 
   <div class="toast" id="toastEl"></div>
 
