@@ -48,7 +48,7 @@
       --fs-label: 0.95rem;
       --fs-micro: 0.7rem;
     }
-    html { font-size: 15px; scroll-behavior: smooth; scroll-snap-type: y mandatory; overflow-y: scroll; }
+    html { font-size: 15px; scroll-behavior: smooth; }
     body { font-family: var(--body); font-weight: 300; background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; }
     a { color: inherit; text-decoration: none; }
     button { background: none; border: none; cursor: pointer; font-family: inherit; }
@@ -103,8 +103,7 @@
        =========================================== */
     .hero {
       position: relative; width: 100%; height: 100vh; min-height: 600px;
-      overflow: hidden; scroll-snap-align: start;
-    }
+      overflow: hidden;    }
     .hero__video {
       position: absolute; inset: 0; z-index: 0;
       overflow: hidden; pointer-events: none;
@@ -149,8 +148,7 @@
       align-items: center; justify-content: center;
       padding: 80px 48px; text-align: center;
       max-width: 1200px; margin: 0 auto;
-      scroll-snap-align: start;
-    }
+         }
     .brand-statement__title {
       font-family: var(--heading); font-weight: 200; font-style: italic;
       font-size: var(--fs-hero); line-height: 1.25; margin-bottom: 32px;
@@ -167,8 +165,7 @@
     .collection-section {
       min-height: 100vh; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      padding: 60px 0; scroll-snap-align: start;
-    }
+      padding: 60px 0;    }
     .collection-section__title {
       text-align: center; font-family: var(--heading); font-weight: 200; font-style: italic;
       font-size: var(--fs-section); letter-spacing: 0.04em;
@@ -237,8 +234,7 @@
       min-height: 100vh; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       padding: 120px 48px 80px; text-align: center;
-      background: #fafafa; scroll-snap-align: start;
-    }
+      background: #fafafa;    }
     .vestidor__title {
       font-family: var(--heading); font-weight: 200; font-style: italic;
       font-size: var(--fs-section); line-height: 1.2; margin-bottom: 20px;
@@ -268,8 +264,7 @@
       position: relative; padding: 80px 48px; text-align: center;
       overflow: hidden; height: 100vh;
       display: flex; align-items: center; justify-content: center;
-      scroll-snap-align: start;
-    }
+         }
     .newsletter__bg {
       position: absolute; inset: 0;
       background: url('https://images.unsplash.com/photo-1686530489698-d74e6f165b87?w=1920&q=80&fit=crop') center 30% / cover no-repeat;
@@ -312,7 +307,7 @@
     /* ===========================================
        FOOTER
        =========================================== */
-    .footer { background: #000; color: #fff; border-top: none; padding: 60px 48px 32px; text-align: left; scroll-snap-align: start; }
+    .footer { background: #000; color: #fff; border-top: none; padding: 60px 48px 32px; text-align: left; }
     .footer__grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 32px; }
     .footer__brand-name { font-family: var(--heading); font-size: var(--fs-subtitle); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 14px; font-weight: 700; color: #fff; }
     .footer__brand p { color: rgba(255,255,255,0.55); font-size: var(--fs-body); max-width: 360px; line-height: 1.6; }
@@ -335,14 +330,15 @@
       .hero { height: calc(100vh / 0.5); min-height: auto; }
       .brand-statement { min-height: calc(100vh / 0.5); }
       .collection-section { min-height: calc(100vh / 0.5); }
-      .newsletter-section { min-height: calc(100vh / 0.5); }
-      .vestidor-promo { height: calc(100vh / 0.5); }
+      .collection-grid { height: calc(55vh / 0.5); }
+      .vestidor { min-height: calc(100vh / 0.5); }
+      .vestidor__mockup img { max-height: calc(80vh / 0.5); }
+      .newsletter { height: calc(100vh / 0.5); }
     }
     @media (max-width: 1024px) {
       .footer__grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 768px) {
-      html { scroll-snap-type: none; }
       :root {
         --nav-h: 64px;
         --fs-hero: 2.8rem;
