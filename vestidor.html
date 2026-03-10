@@ -604,18 +604,33 @@
     /* ── Laptops (≤1800px) — covers 13" @1440 and 16" @1728 ── */
     @media (max-width: 1800px) {
       html { zoom: 0.5; }
-      /* Compensar zoom en elementos que usan 100vh */
-      .vestidor { height: calc(100vh / 0.5 - var(--nav-h)); }
-      .panel { max-height: calc(100vh / 0.5 - var(--nav-h)); }
-      .center { height: calc(100vh / 0.5 - var(--nav-h)); }
-      /* Agrandar prendas del panel izq (140px × 0.5 = 70px visual → subir a 220px × 0.5 = 110px) */
+      /* Grid: compensar zoom para llenar viewport */
+      .vestidor {
+        height: calc(100vh / 0.5 - var(--nav-h));
+        overflow: visible;
+      }
+      /* Panel izq: quitar sticky, forzar scroll */
+      .panel {
+        position: relative;
+        top: 0;
+        max-height: none;
+        overflow-y: auto;
+      }
+      /* Center: quitar height explícito, dejar que grid lo maneje */
+      .center {
+        height: auto;
+        overflow: visible;
+      }
+      /* Canvas ocupa lo que sobra */
+      .canvas { min-height: 0; }
+      /* Layer stack visible */
+      .layer-stack { height: 400px; flex-shrink: 0; }
+      /* Agrandar prendas (220 × 0.5 = 110px visual) */
       .panel__item { width: 220px; }
       .panel__item img { width: 220px; height: 275px; }
       .panel__items { gap: 12px; padding: 0 32px; }
       .panel__section-header { padding: 0 32px; }
       .panel__title { padding: 0 32px; }
-      /* Layer stack más alto para compensar */
-      .layer-stack { height: 400px; }
     }
     /* ── Tablet (≤1100px) ── */
     @media (max-width: 1100px) {
