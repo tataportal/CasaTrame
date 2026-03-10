@@ -360,7 +360,10 @@
        =========================================== */
     /* ── Laptops (≤1800px) — covers 13" @1440 and 16" @1728 ── */
     @media (max-width: 1800px) {
-      html { font-size: 10px; }
+      html { zoom: 0.5; }
+      /* Compensar zoom en elementos 100vh */
+      .product-page { min-height: calc(100vh / 0.5); }
+      .product-images { max-height: calc(100vh / 0.5 - var(--nav-h)); }
     }
     @media (max-width: 1024px) {
       .product-page { grid-template-columns: 1fr 1fr; }
