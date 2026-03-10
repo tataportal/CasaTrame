@@ -413,43 +413,59 @@
     /* ── Outfit Size Popup ── */
     .outfit-popup-overlay {
       display: none; position: fixed; inset: 0; z-index: 3000;
-      background: rgba(0,0,0,0.4); backdrop-filter: blur(0.2rem);
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(0.4rem);
       align-items: center; justify-content: center;
     }
     .outfit-popup-overlay.open { display: flex; }
     .outfit-popup {
-      background: #fff; width: 28rem; max-width: 92vw;
-      max-height: 85vh; overflow-y: auto;
-      padding: 2.133rem 1.867rem; position: relative;
+      background: #fff; width: 52rem; max-width: 94vw;
+      max-height: 90vh; overflow-y: auto;
+      padding: 3rem 3.2rem; position: relative;
     }
     .outfit-popup__close {
-      position: absolute; top: 0.8rem; right: 1.067rem;
-      font-size: 1.6rem; cursor: pointer; color: var(--text);
+      position: absolute; top: 1.2rem; right: 1.4rem;
+      font-size: 2rem; cursor: pointer; color: var(--text);
       background: none; border: none; font-family: var(--body);
+      line-height: 1; width: 2.4rem; height: 2.4rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: 0.15s;
     }
+    .outfit-popup__close:hover { opacity: 0.5; }
     .outfit-popup__title {
-      font-size: 1.3rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.08em; margin-bottom: 1.6rem;
+      font-family: var(--heading); font-size: 1.6rem; font-weight: 200;
+      font-style: italic; letter-spacing: 0.04em; margin-bottom: 2rem;
+    }
+    .outfit-popup__items {
+      display: flex; flex-direction: column; gap: 1.6rem;
     }
     .outfit-popup__item {
-      display: flex; gap: 0.933rem; align-items: center;
-      padding: 0.933rem 0; border-bottom: 1px solid var(--border);
+      display: grid; grid-template-columns: 8rem 1fr; gap: 1.6rem;
+      align-items: start; padding-bottom: 1.6rem;
+      border-bottom: 1px solid var(--border);
     }
+    .outfit-popup__item:last-child { border-bottom: none; padding-bottom: 0; }
     .outfit-popup__item img {
-      width: 3.733rem; height: 4.667rem; object-fit: cover;
+      width: 100%; aspect-ratio: 2/3; object-fit: cover;
     }
-    .outfit-popup__item-info { flex: 1; }
+    .outfit-popup__item-info {
+      display: flex; flex-direction: column; gap: 0.4rem; padding-top: 0.2rem;
+    }
     .outfit-popup__item-name {
-      font-size: var(--fs-label); font-weight: 500; margin-bottom: 0.267rem;
+      font-size: var(--fs-body); font-weight: 500; letter-spacing: 0.02em;
     }
     .outfit-popup__item-price {
-      font-size: var(--fs-label); color: var(--text-mid); margin-bottom: 0.533rem;
+      font-size: var(--fs-body); color: var(--text-mid); margin-bottom: 0.6rem;
     }
-    .outfit-popup__sizes { display: flex; gap: 0.4rem; }
+    .outfit-popup__sizes-label {
+      font-size: var(--fs-label); color: var(--text-mid); text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 0.3rem;
+    }
+    .outfit-popup__sizes { display: flex; gap: 0.5rem; flex-wrap: wrap; }
     .outfit-popup__sizes button {
-      width: 2.4rem; height: 2rem; border: 1px solid var(--border);
-      background: none; font-size: 0.75rem; cursor: pointer;
-      font-family: var(--body); transition: 0.15s;
+      min-width: 3rem; height: 2.6rem; padding: 0 0.8rem;
+      border: 1px solid var(--border);
+      background: none; font-size: var(--fs-label); cursor: pointer;
+      font-family: var(--body); transition: 0.15s; letter-spacing: 0.04em;
     }
     .outfit-popup__sizes button.active {
       background: var(--text); color: #fff; border-color: var(--text);
@@ -458,9 +474,9 @@
       border-color: var(--text);
     }
     .outfit-popup__submit {
-      display: block; width: 100%; padding: 1.067rem 0; margin-top: 1.6rem;
+      display: block; width: 100%; padding: 1.2rem 0; margin-top: 2rem;
       text-align: center; background: var(--text); color: #fff;
-      border: none; font-size: var(--fs-ui); text-transform: uppercase;
+      border: none; font-size: var(--fs-body); text-transform: uppercase;
       letter-spacing: 0.12em; cursor: pointer; font-family: var(--body);
       font-weight: 500; transition: 0.2s;
     }
@@ -818,13 +834,11 @@
       .ob-tooltip__next { padding: 0.8rem 1.6rem; font-size: 0.9rem; }
 
       /* Outfit size popup — touch-friendly */
-      .outfit-popup { padding: 1.6rem 1.333rem; max-width: 95vw; }
-      .outfit-popup__title { font-size: 1.1rem; margin-bottom: 1.067rem; }
-      .outfit-popup__sizes button { width: 2.933rem; height: 2.667rem; font-size: 0.8rem; }
-      .outfit-popup__submit { padding: 0.933rem 0; font-size: 0.9rem; margin-top: 1.067rem; }
-      .outfit-popup__item img { width: 3.2rem; height: 4rem; }
-      .outfit-popup__item-name { font-size: 0.85rem; }
-      .outfit-popup__item-price { font-size: 0.85rem; }
+      .outfit-popup { padding: 1.6rem 1.333rem; max-width: 95vw; width: 100%; }
+      .outfit-popup__title { font-size: 1.2rem; margin-bottom: 1.067rem; }
+      .outfit-popup__item { grid-template-columns: 5.5rem 1fr; gap: 1rem; }
+      .outfit-popup__sizes button { min-width: 2.8rem; height: 2.6rem; font-size: 0.85rem; }
+      .outfit-popup__submit { padding: 1rem 0; font-size: 0.95rem; margin-top: 1.2rem; }
     }
 
     /* Hide screenshot button on desktop */
@@ -1681,6 +1695,7 @@
           <div class="outfit-popup__item-info">
             <div class="outfit-popup__item-name">${item.name}</div>
             <div class="outfit-popup__item-price">$ ${item.price.toLocaleString()}</div>
+            <div class="outfit-popup__sizes-label">Talla</div>
             <div class="outfit-popup__sizes">
               ${sizes.map((s, i) => `<button ${i === 2 ? 'class="active"' : ''} data-size="${s}" onclick="selectOutfitSize(this)">${s}</button>`).join('')}
             </div>
@@ -2411,7 +2426,7 @@
     <div class="outfit-popup">
       <button class="outfit-popup__close" onclick="closeOutfitPopup()">&times;</button>
       <div class="outfit-popup__title">Elegí tus tallas</div>
-      <div id="outfitPopupItems"></div>
+      <div class="outfit-popup__items" id="outfitPopupItems"></div>
       <button class="outfit-popup__submit" onclick="submitOutfitToCart()">Agregar todo al carrito</button>
     </div>
   </div>
