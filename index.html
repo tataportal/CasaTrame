@@ -722,10 +722,10 @@
       grid.addEventListener('mouseenter', function() { hovered = true; });
       grid.addEventListener('mouseleave', function() { hovered = false; });
 
-      // trackpad / mouse wheel → horizontal scroll
+      // trackpad horizontal swipe only
       grid.addEventListener('wheel', function(e) {
-        var dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-        pos += dx;
+        if (Math.abs(e.deltaX) < 2) return;
+        pos += e.deltaX;
         dragVelocity = 0;
         e.preventDefault();
       }, { passive: false });
