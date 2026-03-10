@@ -28,8 +28,9 @@
        RESET & VARIABLES
        =========================================== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     :root {
-      --bg: #ffffff;
+      --bg: #f5f5f3;
       --text: #111;
       --text-mid: #555;
       --text-light: #999;
@@ -66,7 +67,7 @@
     .nav--transparent .nav__right a,
     .nav--transparent .nav__right button { text-shadow: 0 2px 0.533rem rgba(0,0,0,0.7), 0 0 2px rgba(0,0,0,0.4); }
     .nav--transparent .nav__right svg { filter: drop-shadow(0 2px 0.267rem rgba(0,0,0,0.6)); }
-    .nav--solid { background: var(--bg); }
+    .nav--solid { background: #ffffff; }
     .nav--transparent .nav__left a,
     .nav--transparent .nav__right button,
     .nav--transparent .nav__right a { color: #fff; }
@@ -145,29 +146,27 @@
        BRAND STATEMENT
        =========================================== */
     .brand-statement {
-      min-height: 100vh; display: grid; grid-template-columns: 2fr 3fr;
+      min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
       align-items: center;
       background: #f5f5f3;
     }
     .brand-statement__img {
-      display: flex; align-items: center; justify-content: center;
-      padding: 2rem; order: 2;
+      padding: 0;
     }
     .brand-statement__img img {
-      max-width: 100%; max-height: 80vh; object-fit: contain;
+      display: block; width: 100%;
     }
     .brand-statement__content {
-      padding: 4rem 2rem 4rem 4rem;
-      max-width: 28rem; order: 1;
+      padding: 3rem 3rem 3rem 4rem;
     }
     .brand-statement__title {
       font-family: var(--heading); font-weight: 200;
-      font-size: var(--fs-section); line-height: 1.15; margin-bottom: 1.4rem;
+      font-size: 6.67rem; line-height: 1.1; margin-bottom: 2.67rem;
       letter-spacing: -0.01em;
     }
     .brand-statement__text {
-      font-size: var(--fs-label); color: var(--text-mid); line-height: 1.75;
-      font-weight: 300;
+      font-size: 2.53rem; color: var(--text-mid); line-height: 1.75;
+      font-weight: 300; max-width: 50rem;
     }
 
     /* ===========================================
@@ -376,9 +375,10 @@
       .hero__cta { padding: 0.933rem 2.133rem; font-size: var(--fs-btn); white-space: nowrap; }
       .hero__cta svg { width: 1.467rem; height: 1.467rem; }
       .brand-statement { grid-template-columns: 1fr; min-height: auto; }
-      .brand-statement__img { padding: 2.5rem 3rem 0; }
+      .brand-statement__img { padding: 1rem 1rem 0; }
       .brand-statement__content { padding: 2rem 1.6rem 3rem; text-align: center; }
-      .brand-statement__title { font-size: var(--fs-section); }
+      .brand-statement__title { font-size: var(--fs-page); margin-bottom: 1rem; }
+      .brand-statement__text { font-size: var(--fs-body); max-width: 100%; }
       .collection-section { padding: 2.667rem 0; min-height: auto; }
       .collection-section__title { margin-bottom: 1.6rem; }
       .collection-grid { padding: 0; overflow: visible; height: auto; }
@@ -422,13 +422,13 @@
     <div class="nav__inner">
       <div class="nav__left" id="navLinks">
         <a href="catalogo.html">Colección</a>
-        <a href="index.html" class="underlined">Conócenos</a>
+        <a href="#conocenos" class="underlined">Conócenos</a>
         <a href="vestidor.html">Vestidor&trade;</a>
       </div>
       <button class="nav__hamburger" onclick="toggleMobileMenu()">
         <span></span><span></span><span></span>
       </button>
-      <a href="index.html" class="nav__logo"><img src="img/trame_horizontal-black.svg" alt="Casa Tramé"></a>
+      <a href="#hero" class="nav__logo"><img src="img/trame_horizontal-black.svg" alt="Casa Tramé"></a>
       <div class="nav__right">
         <button title="Buscar" onclick="window.location.href='catalogo.html'">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -449,7 +449,7 @@
   <!-- Mobile menu (hidden on desktop) -->
   <div class="nav__mobile-menu" id="mobileMenu">
     <a href="catalogo.html">Colección</a>
-    <a href="index.html" class="underlined">Conócenos</a>
+    <a href="#conocenos" class="underlined">Conócenos</a>
     <a href="vestidor.html">Vestidor&trade;</a>
     <hr>
     <a href="catalogo.html#favoritos">Favoritos</a>
@@ -458,7 +458,7 @@
   </div>
 
   <!-- ===== HERO ===== -->
-  <section class="hero">
+  <section class="hero" id="hero">
     <div class="hero__video">
       <video autoplay muted loop playsinline>
         <source src="img/hero_video_opt.mp4" type="video/mp4">
@@ -474,7 +474,7 @@
   </section>
 
   <!-- ===== BRAND STATEMENT ===== -->
-  <section class="brand-statement">
+  <section class="brand-statement" id="conocenos">
     <div class="brand-statement__img">
       <picture>
         <source srcset="img/concepto.webp" type="image/webp">
@@ -655,7 +655,7 @@
     const hero = document.querySelector('.hero');
     function updateNav() {
       const heroBottom = hero.getBoundingClientRect().bottom;
-      if (heroBottom <= 0) {
+      if (heroBottom <= window.innerHeight * 0.5) {
         nav.classList.remove('nav--transparent');
         nav.classList.add('nav--solid');
       } else {
