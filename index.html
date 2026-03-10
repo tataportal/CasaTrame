@@ -82,8 +82,8 @@
     .nav--transparent .nav__hamburger span { background: #fff; }
     .nav--solid .nav__left a,
     .nav--solid .nav__right button,
-    .nav--solid .nav__right a { color: var(--text); }
-    .nav--solid .nav__right svg { stroke: var(--text); }
+    .nav--solid .nav__right a { color: var(--text); text-shadow: none; }
+    .nav--solid .nav__right svg { stroke: var(--text); filter: none; }
 
     .nav__inner {
       max-width: 100%; padding: 0 60px;
@@ -334,6 +334,7 @@
        =========================================== */
     /* ── Laptops: zoom via JS, solo fixes vh ── */
     html.laptop-zoom .hero { height: calc(100vh / 0.5); min-height: auto; }
+    html.laptop-zoom .hero__video video { min-width: 0; min-height: 0; width: 100%; height: calc(100vh / 0.5); object-fit: cover; }
     html.laptop-zoom .brand-statement { min-height: calc(100vh / 0.5); }
     html.laptop-zoom .collection-section { min-height: calc(100vh / 0.5); }
     html.laptop-zoom .collection-grid { height: calc(55vh / 0.5); }
@@ -669,8 +670,8 @@
     const nav = document.getElementById('mainNav');
     const hero = document.querySelector('.hero');
     function updateNav() {
-      const threshold = hero.offsetHeight - 100;
-      if (window.scrollY > threshold) {
+      const heroBottom = hero.getBoundingClientRect().bottom;
+      if (heroBottom <= 0) {
         nav.classList.remove('nav--transparent');
         nav.classList.add('nav--solid');
       } else {

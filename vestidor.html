@@ -897,7 +897,6 @@
   <nav class="nav">
     <div class="nav__inner">
       <div class="nav__left" id="navLinks">
-        <!-- SHOPIFY: Replace hrefs with {{ routes.collections_url }}, {{ pages['about'].url }}, etc. -->
         <a href="catalogo.html">Colección</a>
         <a href="index.html">Conócenos</a>
         <a href="vestidor.html" class="underlined">Vestidor™</a>
@@ -909,17 +908,19 @@
         <img src="img/trame_horizontal-black.svg" alt="Casa Tramé">
       </a>
       <div class="nav__right">
-        <button title="Buscar" onclick="window.location.href='catalogo.html'">
+        <button title="Buscar" onclick="openSearch()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </button>
         <a href="#" title="Cuenta">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </a>
-        <a href="catalogo.html#favoritos" title="Favoritos">
+        <a href="#" onclick="event.preventDefault(); openWishlistPage();" title="Favoritos" id="navWish" style="position:relative;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          <span id="wishBadge" style="display:none;position:absolute;top:-6px;right:-8px;background:var(--text);color:#fff;font-size:0.6rem;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;font-weight:600;">0</span>
         </a>
-        <a href="catalogo.html" title="Carrito">
+        <a href="#" onclick="event.preventDefault(); openCart();" title="Carrito" style="position:relative;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span id="cartBadge" style="display:none;position:absolute;top:-6px;right:-8px;background:var(--text);color:#fff;font-size:0.6rem;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;font-weight:600;">0</span>
         </a>
       </div>
     </div>
@@ -931,9 +932,9 @@
     <a href="index.html">Conócenos</a>
     <a href="vestidor.html" class="underlined">Vestidor&trade;</a>
     <hr>
-    <a href="catalogo.html#favoritos">Favoritos</a>
-    <a href="catalogo.html">Buscar</a>
-    <a href="catalogo.html">Carrito</a>
+    <a href="#" onclick="event.preventDefault(); toggleMobileMenu(); openWishlistPage();">Favoritos</a>
+    <a href="#" onclick="event.preventDefault(); toggleMobileMenu(); openSearch();">Buscar</a>
+    <a href="#" onclick="event.preventDefault(); toggleMobileMenu(); openCart();">Carrito</a>
   </div>
 
   <!-- ===== VESTIDOR LAYOUT ===== -->
@@ -1104,6 +1105,11 @@
        =========================================== -->
   <script>
     /* ---- Mobile Menu Toggle ---- */
+    /* Nav helpers (match catalogo) */
+    function openSearch() { window.location.href = 'catalogo.html'; }
+    function openWishlistPage() { window.location.href = 'catalogo.html#favoritos'; }
+    function openCart() { window.location.href = 'catalogo.html#carrito'; }
+
     const mobileMenu = document.getElementById('mobileMenu');
     const hamburger = document.querySelector('.nav__hamburger');
     let menuOpen = false;
