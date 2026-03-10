@@ -78,6 +78,7 @@
     .nav__right { display: flex; gap: 36px; align-items: center; justify-content: flex-end; }
     .nav__right button, .nav__right a { color: var(--text); font-size: 1.4rem; display: flex; align-items: center; }
     .nav__right svg { width: 35px; height: 35px; }
+    .nav__mobile-menu { display: none; }
     .nav__hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; padding: 8px; cursor: pointer; }
     .nav__hamburger span { width: 28px; height: 2px; background: var(--text); transition: all 0.3s ease; }
     .nav__hamburger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
@@ -607,23 +608,24 @@
       /* Grid: compensar zoom para llenar viewport */
       .vestidor {
         height: calc(100vh / 0.5 - var(--nav-h));
-        overflow: visible;
+        overflow: hidden;
       }
-      /* Panel izq: quitar sticky, forzar scroll */
+      /* Panel izq: altura fija = grid track, scroll interno */
       .panel {
         position: relative;
         top: 0;
-        max-height: none;
+        height: 100%;
+        max-height: 100%;
         overflow-y: auto;
       }
-      /* Center: quitar height explícito, dejar que grid lo maneje */
+      /* Center: altura fija = grid track, contiene canvas + layer-stack */
       .center {
-        height: auto;
-        overflow: visible;
+        height: 100%;
+        overflow: hidden;
       }
       /* Canvas ocupa lo que sobra */
-      .canvas { min-height: 0; }
-      /* Layer stack visible */
+      .canvas { min-height: 0; flex: 1 1 0; }
+      /* Layer stack visible al fondo */
       .layer-stack { height: 400px; flex-shrink: 0; }
       /* Agrandar prendas (220 × 0.5 = 110px visual) */
       .panel__item { width: 220px; }
