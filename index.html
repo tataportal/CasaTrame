@@ -145,28 +145,28 @@
        BRAND STATEMENT
        =========================================== */
     .brand-statement {
-      min-height: 100vh; display: grid; grid-template-columns: 3fr 2fr;
+      min-height: 100vh; display: grid; grid-template-columns: 2fr 3fr;
       align-items: center;
       background: #f5f5f3;
     }
     .brand-statement__img {
       display: flex; align-items: center; justify-content: center;
-      padding: 4rem;
+      padding: 2rem; order: 2;
     }
     .brand-statement__img img {
-      max-width: 100%; max-height: 65vh; object-fit: contain;
+      max-width: 100%; max-height: 80vh; object-fit: contain;
     }
     .brand-statement__content {
-      padding: 4rem 4rem 4rem 0;
-      max-width: 32rem;
+      padding: 4rem 2rem 4rem 4rem;
+      max-width: 28rem; order: 1;
     }
     .brand-statement__title {
       font-family: var(--heading); font-weight: 200;
-      font-size: var(--fs-hero); line-height: 1.15; margin-bottom: 1.8rem;
+      font-size: var(--fs-section); line-height: 1.15; margin-bottom: 1.4rem;
       letter-spacing: -0.01em;
     }
     .brand-statement__text {
-      font-size: var(--fs-body); color: var(--text-mid); line-height: 1.75;
+      font-size: var(--fs-label); color: var(--text-mid); line-height: 1.75;
       font-weight: 300;
     }
 
