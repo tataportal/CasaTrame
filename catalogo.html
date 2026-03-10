@@ -504,7 +504,7 @@
     .cart-overlay.open { display: block; }
     .cart-drawer {
       position: fixed; top: 0; right: 0; bottom: 0;
-      width: 28rem; max-width: 90vw; z-index: 2000;
+      width: 38rem; max-width: 90vw; z-index: 2000;
       background: var(--bg); display: flex; flex-direction: column;
       transform: translateX(100%); transition: transform 0.3s ease;
     }
@@ -1585,6 +1585,15 @@
     let cart = [];
     try { cart = JSON.parse(localStorage.getItem('ct_cart') || '[]'); } catch(e) {}
     cart.forEach(c => { if (c.img) c.img = c.img.replace(/^\.\.\//g, ''); });
+    /* Demo products — pre-load if cart is empty */
+    if (cart.length === 0) {
+      cart = [
+        { id:1, color:'#3D2B1F', size:'M', img:'photos_demo/Untitled-1.png', name:'The Satin Halter Dress', price:1150, qty:1 },
+        { id:3, color:'#3D2B1F', size:'S', img:'photos_demo/demo_cape_brown.png', name:'The Tramé Cape', price:2450, qty:1 },
+        { id:7, color:'#4A6741', size:'M', img:'photos_demo/demo_falda_green.png', name:'Falda Verde', price:850, qty:1 }
+      ];
+      syncCartToStorage();
+    }
 
     function syncCartToStorage() {
       try { localStorage.setItem('ct_cart', JSON.stringify(cart)); } catch(e) {}

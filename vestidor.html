@@ -473,6 +473,35 @@
     .outfit-popup__sizes button:hover:not(.active) {
       border-color: var(--text);
     }
+    .outfit-popup__size-guide-btn {
+      display: block; background: none; border: none; font-family: var(--body);
+      font-size: var(--fs-micro); color: var(--text-mid); cursor: pointer;
+      text-decoration: underline; margin-top: 0.4rem; padding: 0;
+      transition: 0.15s; text-align: left;
+    }
+    .outfit-popup__size-guide-btn:hover { color: var(--text); }
+    .outfit-popup__size-guide {
+      margin-top: 0.6rem; padding: 0.8rem;
+      background: #fafafa; border: 1px solid var(--border);
+    }
+    .outfit-popup__size-guide table {
+      width: 100%; border-collapse: collapse;
+      font-size: var(--fs-micro); text-align: center;
+    }
+    .outfit-popup__size-guide th {
+      font-weight: 500; padding: 0.3rem 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .outfit-popup__size-guide td {
+      padding: 0.3rem 0.4rem; border-bottom: 1px solid #f0f0f0;
+    }
+    .outfit-popup__size-guide td:first-child {
+      text-align: left; font-weight: 400; color: var(--text-mid);
+    }
+    .outfit-popup__size-guide-note {
+      font-size: var(--fs-micro); color: var(--text-light);
+      margin-top: 0.4rem; font-style: italic;
+    }
     .outfit-popup__submit {
       display: block; width: 100%; padding: 1.2rem 0; margin-top: 2rem;
       text-align: center; background: var(--text); color: #fff;
@@ -1706,6 +1735,19 @@
             <div class="outfit-popup__sizes">
               ${sizes.map((s, i) => `<button ${i === 2 ? 'class="active"' : ''} data-size="${s}" onclick="selectOutfitSize(this)">${s}</button>`).join('')}
             </div>
+            <button class="outfit-popup__size-guide-btn" onclick="toggleSizeGuide(this)">Ver guía de tallas</button>
+            <div class="outfit-popup__size-guide" style="display:none">
+              <table>
+                <thead><tr><th></th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th></tr></thead>
+                <tbody>
+                  <tr><td>Pecho</td><td>82</td><td>86</td><td>90</td><td>94</td><td>98</td></tr>
+                  <tr><td>Cintura</td><td>62</td><td>66</td><td>70</td><td>74</td><td>78</td></tr>
+                  <tr><td>Cadera</td><td>88</td><td>92</td><td>96</td><td>100</td><td>104</td></tr>
+                  <tr><td>Largo</td><td>98</td><td>100</td><td>102</td><td>104</td><td>106</td></tr>
+                </tbody>
+              </table>
+              <p class="outfit-popup__size-guide-note">Medidas en cm. Pueden variar según el modelo.</p>
+            </div>
           </div>
         </div>
       `).join('');
@@ -1716,6 +1758,17 @@
     function closeOutfitPopup() {
       document.getElementById('outfitPopupOverlay').classList.remove('open');
       document.body.style.overflow = '';
+    }
+
+    function toggleSizeGuide(btn) {
+      const guide = btn.nextElementSibling;
+      if (guide.style.display === 'none') {
+        guide.style.display = 'block';
+        btn.textContent = 'Ocultar guía de tallas';
+      } else {
+        guide.style.display = 'none';
+        btn.textContent = 'Ver guía de tallas';
+      }
     }
 
     function selectOutfitSize(btn) {
