@@ -66,18 +66,14 @@
       border-bottom: 1px solid var(--border);
     }
     .nav__inner {
-      max-width: 100%; padding: 0 4rem; position: relative;
+      max-width: 100%; padding: 0 4rem;
       display: grid; grid-template-columns: 1fr auto 1fr;
       align-items: center; height: 100%;
     }
     .nav__left { display: flex; gap: 3.2rem; align-items: center; justify-content: flex-start; }
     .nav__left a { font-size: 1.7rem; letter-spacing: 0.03em; line-height: 1; color: var(--text); }
     .nav__left a.underlined { text-decoration: underline; text-underline-offset: 0.333rem; }
-    .nav__logo {
-      position: absolute; left: 50%; top: 50%;
-      transform: translate(-50%, -50%);
-      display: flex; align-items: center; justify-content: center;
-    }
+    .nav__logo { display: flex; align-items: center; justify-content: center; }
     .nav__logo img { height: 2.467rem; width: auto; transform: translateY(-0.2rem); }
     .nav__right { display: flex; gap: 2.4rem; align-items: center; justify-content: flex-end; }
     .nav__right button, .nav__right a { color: var(--text); font-size: 1.4rem; display: flex; align-items: center; }
