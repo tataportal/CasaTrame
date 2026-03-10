@@ -145,19 +145,28 @@
        BRAND STATEMENT
        =========================================== */
     .brand-statement {
-      min-height: 100vh; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 5.333rem 3.2rem; text-align: center;
-      max-width: 80rem; margin: 0 auto;
-         }
+      min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
+      align-items: center;
+      background: #f7f7f7;
+    }
+    .brand-statement__img {
+      display: flex; align-items: center; justify-content: center;
+      padding: 4rem;
+    }
+    .brand-statement__img img {
+      max-width: 100%; max-height: 70vh; object-fit: contain;
+    }
+    .brand-statement__content {
+      padding: 4rem 5rem 4rem 2rem;
+    }
     .brand-statement__title {
       font-family: var(--heading); font-weight: 200; font-style: italic;
-      font-size: var(--fs-hero); line-height: 1.25; margin-bottom: 2.133rem;
+      font-size: var(--fs-hero); line-height: 1.2; margin-bottom: 2rem;
       letter-spacing: -0.01em;
     }
     .brand-statement__text {
       font-size: var(--fs-subtitle); color: var(--text-mid); line-height: 1.8;
-      font-weight: 300; max-width: 60rem; margin: 0 auto;
+      font-weight: 300;
     }
 
     /* ===========================================
@@ -365,8 +374,10 @@
       .hero__content { bottom: 4rem; }
       .hero__cta { padding: 0.933rem 2.133rem; font-size: var(--fs-btn); white-space: nowrap; }
       .hero__cta svg { width: 1.467rem; height: 1.467rem; }
-      .brand-statement { padding: 4rem 1.6rem; min-height: auto; }
-      .brand-statement__text { padding: 0 0.533rem; }
+      .brand-statement { grid-template-columns: 1fr; min-height: auto; }
+      .brand-statement__img { padding: 2.5rem 3rem 0; }
+      .brand-statement__content { padding: 2rem 1.6rem 3rem; text-align: center; }
+      .brand-statement__title { font-size: var(--fs-section); }
       .collection-section { padding: 2.667rem 0; min-height: auto; }
       .collection-section__title { margin-bottom: 1.6rem; }
       .collection-grid { padding: 0; overflow: visible; height: auto; }
@@ -463,12 +474,20 @@
 
   <!-- ===== BRAND STATEMENT ===== -->
   <section class="brand-statement">
-    <h2 class="brand-statement__title">Ropa que<br>trasciende<br>el tiempo</h2>
-    <p class="brand-statement__text">
-      Cada prenda de Casa Tramé nace con la intención de permanecer. Diseñamos piezas atemporales
-      que combinan técnicas artesanales con una visión contemporánea — para quienes eligen
-      calidad sobre cantidad y construyen un guardarropa con propósito.
-    </p>
+    <div class="brand-statement__img">
+      <picture>
+        <source srcset="img/concepto.webp" type="image/webp">
+        <img src="img/concepto.png" alt="Casa Tramé — concepto de marca" loading="lazy">
+      </picture>
+    </div>
+    <div class="brand-statement__content">
+      <h2 class="brand-statement__title">Ropa que<br>trasciende el tiempo</h2>
+      <p class="brand-statement__text">
+        Cada prenda de Casa Tramé nace con la intención de permanecer. Diseñamos piezas atemporales
+        que combinan técnicas artesanales con una visión contemporánea — para quienes eligen
+        calidad sobre cantidad y construyen un guardarropa con propósito.
+      </p>
+    </div>
   </section>
 
   <!-- ===== COLLECTION 2026 I ===== -->
