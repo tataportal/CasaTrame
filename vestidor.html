@@ -1186,6 +1186,7 @@
          {% for product in collections['vestidor'].products %} ... {% endfor %} */
       abrigos: [
         { id:101, name:"Abrigo Marrón", cat:"abrigos", price:2150,
+          imgDemo:"photos_demo/demo_coat_bown.png",
           imgThumb:"img/vestidor/coat_001_marron_o_mini.png",
           doubleLayer:true,
           defaultState:'cerrado',
@@ -1201,6 +1202,7 @@
       ],
       jackets: [
         { id:201, name:"Jacket Verde Cerrada", cat:"jackets", price:1450,
+          imgDemo:"photos_demo/demo_jacket_green.png",
           img:"img/vestidor/jacket_001_verde_c_f.png",
           imgThumb:"img/vestidor/jacket_001_verde_c_mini.png",
           imgFront:"img/vestidor/jacket_001_verde_c_f.png",
@@ -1209,18 +1211,23 @@
       ],
       polos: [
         { id:601, name:"Polo Blanco", cat:"polos", price:650,
+          imgDemo:"photos_demo/demo_polo_gray.png",
           img:"img/vestidor/polo_001_blanco.png" },
         { id:602, name:"Polo Marrón", cat:"polos", price:650,
+          imgDemo:"photos_demo/demo_polo_gray.png",
           img:"img/vestidor/polo_001_marron.png" },
       ],
       faldas: [
         { id:301, name:"Falda Verde", cat:"faldas", price:850,
+          imgDemo:"photos_demo/demo_falda_green.png",
           img:"img/vestidor/falda_001_verde.png" },
       ],
       pants: [
         { id:501, name:"Pantalón Beige", cat:"pants", price:1050,
+          imgDemo:"photos_demo/demo_jeans.png",
           img:"img/vestidor/pantalon_001_beige.png" },
         { id:502, name:"Pantalón Marrón", cat:"pants", price:1050,
+          imgDemo:"photos_demo/demo_jeans.png",
           img:"img/vestidor/pantalon_002_marron.png" },
       ]
     };
@@ -1301,7 +1308,7 @@
                data-cat="${cat}" data-id="${item.id}"
                onclick="toggleItemOnCanvas('${cat}', ${item.id})">
             <span class="panel__item__check">&#10003;</span>
-            <img src="${item.imgThumb || item.img}" alt="${item.name}" draggable="false">
+            <img src="${item.imgDemo || item.imgThumb || item.img}" alt="${item.name}" draggable="false">
             <!-- SHOPIFY: Replace with /products/{{ product.handle }} -->
             <button class="panel__item__eye" title="Ver producto" onclick="event.stopPropagation(); window.open('producto.html?id=${item.id}', '_blank')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -1324,7 +1331,7 @@
         const container = document.getElementById(`items-${cat}`);
         container.innerHTML = catalog[cat].map(item => {
           const resolved = resolveImages(item, itemStates[item.id]);
-          const thumbSrc = item.imgThumb || resolved.img || item.img;
+          const thumbSrc = item.imgDemo || item.imgThumb || resolved.img || item.img;
           const toggleBtn = item.states
             ? `<button class="panel__item__toggle" onclick="togglePanelState(${item.id}, event)">${itemStates[item.id] || ''}</button>`
             : '';
@@ -1525,7 +1532,7 @@
           : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
 
         const resolved = resolveImages(l.item, l.state);
-        const thumbSrc = l.item.imgThumb || resolved.img || l.item.img;
+        const thumbSrc = l.item.imgDemo || l.item.imgThumb || resolved.img || l.item.img;
         const stateLabel = l.state ? ` (${l.state})` : '';
         const hasToggle = !!l.item.states;
         const toggleBtn = hasToggle
@@ -1654,7 +1661,7 @@
       } else {
         list.innerHTML = uniqueItems.map(item => `
           <div class="summary__item" style="cursor:pointer" onclick="window.open('producto.html?id=${item.id}','_blank')">
-            <img class="summary__item-img" src="${item.imgThumb || item.img}" alt="${item.name}">
+            <img class="summary__item-img" src="${item.imgDemo || item.imgThumb || item.img}" alt="${item.name}">
             <div class="summary__item-info">
               <div class="summary__item-cat">${item.cat}</div>
               <div class="summary__item-name">${item.name}</div>
@@ -1691,7 +1698,7 @@
       const container = document.getElementById('outfitPopupItems');
       container.innerHTML = items.map(item => `
         <div class="outfit-popup__item" data-item-id="${item.id}">
-          <img src="${item.imgThumb || item.img}" alt="${item.name}">
+          <img src="${item.imgDemo || item.imgThumb || item.img}" alt="${item.name}">
           <div class="outfit-popup__item-info">
             <div class="outfit-popup__item-name">${item.name}</div>
             <div class="outfit-popup__item-price">$ ${item.price.toLocaleString()}</div>
