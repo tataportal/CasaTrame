@@ -275,36 +275,25 @@
     }
     .add-to-bag:hover { background: #333; }
 
-    /* Wishlist link */
+    /* Secondary actions row */
+    .product-actions-row {
+      display: flex; gap: 0.6rem; margin-bottom: 2rem;
+    }
     .vestidor-link {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.533rem;
-      font-size: 1.01rem;
-      color: var(--text);
-      letter-spacing: 0.05em;
-      text-decoration: none;
-      padding: 0.933rem 0;
-      transition: 0.2s;
-      border-bottom: 1px solid #f0f0f0;
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      gap: 0.4rem; font-size: var(--fs-ui); color: var(--text);
+      letter-spacing: 0.05em; text-decoration: none;
+      padding: 0.8rem 0; border: 1px solid #ddd; transition: 0.2s;
     }
-    .vestidor-link:hover { color: var(--text-mid); }
+    .vestidor-link:hover { border-color: var(--text); }
     .wishlist-link {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.533rem;
-      font-size: 1.01rem;
-      color: var(--text);
-      letter-spacing: 0.05em;
-      padding: 0.933rem 0;
-      cursor: pointer;
-      transition: 0.2s;
-      margin-bottom: 2.133rem;
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      gap: 0.4rem; font-size: var(--fs-ui); color: var(--text);
+      letter-spacing: 0.05em; padding: 0.8rem 0;
+      border: 1px solid #ddd; cursor: pointer; transition: 0.2s;
     }
-    .wishlist-link svg { width: 1.533rem; height: 1.533rem; }
-    .wishlist-link:hover { color: var(--text-mid); }
+    .wishlist-link svg { width: 1.2rem; height: 1.2rem; }
+    .wishlist-link:hover { border-color: var(--text); }
 
     /* Accordion details */
     .product-accordion {
@@ -358,6 +347,36 @@
     .footer__social a { width: 2.8rem; height: 2.8rem; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: var(--fs-ui); color: var(--text-light); transition: 0.2s; }
     .footer__social a:hover { background: var(--text); color: #fff; border-color: var(--text); }
 
+    /* RECOMMENDATIONS */
+    .recommendations {
+      padding: 4rem 3.5rem;
+      background: var(--bg);
+    }
+    .recommendations__title {
+      font-family: var(--heading); font-weight: 200; font-style: italic;
+      font-size: var(--fs-section); letter-spacing: 0.04em;
+      text-align: center; margin-bottom: 2.5rem; color: var(--text);
+    }
+    .recommendations__grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+    }
+    .rec-card {
+      text-decoration: none; color: var(--text); display: flex; flex-direction: column;
+    }
+    .rec-card__img {
+      width: 100%; aspect-ratio: 3/4; object-fit: cover;
+      transition: transform 0.4s ease; filter: saturate(0.85);
+    }
+    .rec-card:hover .rec-card__img { transform: scale(1.02); filter: saturate(1); }
+    .rec-card__name {
+      font-family: var(--body); font-size: var(--fs-ui);
+      margin-top: 0.6rem; letter-spacing: 0.02em;
+    }
+    .rec-card__price {
+      font-family: var(--body); font-size: var(--fs-ui);
+      color: var(--text-light); margin-top: 0.2rem;
+    }
+
     /* TOAST */
     .toast { position: fixed; bottom: 1.6rem; left: 50%; transform: translateX(-50%) translateY(1.333rem); background: var(--text); color: #fff; padding: 0.733rem 2rem; font-size: 0.82rem; z-index: 9999; opacity: 0; transition: all 0.3s ease; }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -409,12 +428,16 @@
         z-index: 900; margin: 0; border-radius: 0;
         padding: 1.2rem 0; font-size: 0.95rem;
       }
-      .vestidor-link { font-size: 0.9rem; padding: 0.667rem 0; }
-      .wishlist-link { font-size: 0.9rem; padding: 0.667rem 0; margin-bottom: 1.067rem; }
+      .product-actions-row { gap: 0.4rem; margin-bottom: 1.5rem; }
+      .vestidor-link { font-size: 0.85rem; padding: 0.6rem 0; }
+      .wishlist-link { font-size: 0.85rem; padding: 0.6rem 0; }
       .wishlist-link svg { width: 1.2rem; height: 1.2rem; }
       .product-accordion summary { font-size: 0.9rem; padding: 1.067rem 0; }
       .product-accordion summary::after { font-size: 1.2rem; }
       .product-accordion > div { font-size: 0.9rem; }
+      .recommendations { padding: 2.5rem 1.333rem 2.5rem; }
+      .recommendations__title { font-size: var(--fs-section); margin-bottom: 1.5rem; }
+      .recommendations__grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
       .footer { padding: 2.133rem 1.333rem 1.333rem; }
       .footer__grid { grid-template-columns: 1fr; gap: 1.6rem; }
       .footer__col-comprar { display: none; }
@@ -519,17 +542,17 @@
       <!-- Add to bag -->
       <button class="add-to-bag" id="addToBag" onclick="addToBag()">Añadir al carrito</button>
 
-      <!-- Vestidor link -->
-      <!-- SHOPIFY: Build URL dynamically with product.metafields.vestidor.cat and product.id -->
-      <a href="vestidor.html?add=jackets,201" class="vestidor-link">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:1.2rem;height:1.2rem"><path d="M20.38 3.46L16 2 12 3.5 8 2 3.62 3.46A2 2 0 002 5.38V21l5-2 5 2 5-2 5 2V5.38a2 2 0 00-1.62-1.92z"/><line x1="12" y1="3.5" x2="12" y2="21"/></svg>
-        Ver en Vestidor™
-      </a>
-
-      <!-- Wishlist -->
-      <div class="wishlist-link" onclick="toggleWish()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" id="wishIcon"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-        <span id="wishText">Añadir a favoritos</span>
+      <!-- Secondary actions -->
+      <div class="product-actions-row">
+        <!-- SHOPIFY: Build URL dynamically with product.metafields.vestidor.cat and product.id -->
+        <a href="vestidor.html?add=jackets,201" class="vestidor-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:1.2rem;height:1.2rem"><path d="M20.38 3.46L16 2 12 3.5 8 2 3.62 3.46A2 2 0 002 5.38V21l5-2 5 2 5-2 5 2V5.38a2 2 0 00-1.62-1.92z"/><line x1="12" y1="3.5" x2="12" y2="21"/></svg>
+          Vestidor™
+        </a>
+        <div class="wishlist-link" onclick="toggleWish()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" id="wishIcon"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          <span id="wishText">Favoritos</span>
+        </div>
       </div>
 
       <!-- Accordions -->
@@ -568,6 +591,33 @@
       </details>
     </div>
   </div>
+
+  <!-- ===== RECOMMENDATIONS ===== -->
+  <section class="recommendations">
+    <h2 class="recommendations__title">También podría gustarte</h2>
+    <div class="recommendations__grid">
+      <a href="producto.html" class="rec-card">
+        <img class="rec-card__img" src="img/producto_abrigo.png" alt="Abrigo Marrón" loading="lazy">
+        <span class="rec-card__name">Abrigo Marrón</span>
+        <span class="rec-card__price">$ 2,150</span>
+      </a>
+      <a href="producto.html" class="rec-card">
+        <img class="rec-card__img" src="img/producto_blusas.png" alt="Blusa Lino" loading="lazy">
+        <span class="rec-card__name">Blusa Lino Celeste</span>
+        <span class="rec-card__price">$ 850</span>
+      </a>
+      <a href="producto.html" class="rec-card">
+        <img class="rec-card__img" src="img/producto_buzos.png" alt="Buzo Oversize" loading="lazy">
+        <span class="rec-card__name">Buzo Oversize</span>
+        <span class="rec-card__price">$ 1,250</span>
+      </a>
+      <a href="producto.html" class="rec-card">
+        <img class="rec-card__img" src="img/producto_denim.png" alt="Jacket Denim" loading="lazy">
+        <span class="rec-card__name">Jacket Denim</span>
+        <span class="rec-card__price">$ 1,450</span>
+      </a>
+    </div>
+  </section>
 
   <!-- ===== FOOTER ===== -->
   <footer class="footer">
