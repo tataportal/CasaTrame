@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vestidor™ — Casa Tramé</title>
+  <link rel="preload" href="fonts/GoiaDisplay-ExtraLightItalic.otf" as="font" type="font/otf" crossorigin>
+  <link rel="preload" href="fonts/GoiaDisplay-Bold.otf" as="font" type="font/otf" crossorigin>
+  <link rel="preload" href="fonts/GoiaDisplay-Light.otf" as="font" type="font/otf" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;600&display=swap" rel="stylesheet">
   <style>
     /* ===========================================
        FONTS
@@ -32,13 +38,13 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; margin: 0; overflow: hidden; }
     :root {
-      --bg: #ffffff;
+      --bg: #f7f7f7;
       --text: #111;
       --text-mid: #555;
       --text-light: #999;
       --border: #e0e0e0;
       --heading: 'Goia Display', Georgia, serif;
-      --body: 'Goia Display', -apple-system, sans-serif;
+      --body: 'Jost', -apple-system, sans-serif;
       --nav-h: 6.667rem;
       /* ── Type Scale (vestidor-specific) ── */
       --fs-body: 1.4rem;
@@ -46,7 +52,7 @@
       --fs-btn: 1.1rem;
       --fs-label: 0.95rem;
     }
-    html { font-size: clamp(8px, calc(2.33px + 0.5vw), 15px); scroll-behavior: smooth; }
+    html { font-size: clamp(10px, calc(2px + 2.4vw), 15px); scroll-behavior: smooth; }
     body {
       font-family: var(--body); font-weight: 300; background: var(--bg);
       color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased;
@@ -80,7 +86,7 @@
     .nav__right svg { width: 2.333rem; height: 2.333rem; }
     .nav__mobile-menu { display: none; }
     .nav__hamburger { display: none; flex-direction: column; gap: 0.333rem; background: none; border: none; padding: 0.533rem; cursor: pointer; }
-    .nav__hamburger span { width: 1.867rem; height: 2px; background: var(--text); transition: all 0.3s ease; }
+    .nav__hamburger span { width: 1.867rem; height: 0.133rem; background: var(--text); transition: all 0.3s ease; }
     .nav__hamburger.is-open span:nth-child(1) { transform: translateY(0.467rem) rotate(45deg); }
     .nav__hamburger.is-open span:nth-child(2) { opacity: 0; }
     .nav__hamburger.is-open span:nth-child(3) { transform: translateY(-0.467rem) rotate(-45deg); }
@@ -189,7 +195,7 @@
     /* Toggle o/c button on panel items with states */
     .panel__item__toggle {
       position: absolute; bottom: 0.267rem; left: 0.267rem;
-      padding: 2px 0.4rem; border-radius: 0.667rem;
+      padding: 0.133rem 0.4rem; border-radius: 0.667rem;
       background: rgba(255,255,255,0.9); color: var(--text-mid);
       font-size: 0.65rem; font-family: var(--f-body);
       border: 1px solid var(--text-muted); cursor: pointer; z-index: 3;
@@ -305,7 +311,7 @@
       color: var(--text-light);
     }
 
-    .layer-chip__actions { display: flex; gap: 2px; justify-content: flex-end; flex-shrink: 0; }
+    .layer-chip__actions { display: flex; gap: 0.133rem; justify-content: flex-end; flex-shrink: 0; }
     .layer-chip__btn {
       width: 2.667rem; height: 2.667rem; border: none;
       display: flex; align-items: center; justify-content: center;
@@ -796,7 +802,7 @@
       /* Thumbnails: 8.533rem wide, auto height, keep aspect ratio */
       .panel__item { width: 8.533rem; flex-shrink: 0; border-width: 1.5px; }
       .panel__item img { width: 8.533rem; height: auto; object-fit: contain; background: #f5f5f5; }
-      .panel__item__check { width: 0.933rem; height: 0.933rem; font-size: 0.6rem; top: 2px; right: 2px; }
+      .panel__item__check { width: 0.933rem; height: 0.933rem; font-size: 0.6rem; top: 0.133rem; right: 0.133rem; }
       .panel__item__toggle { display: none; }
       .panel__item__eye { display: none !important; }
       /* Favoritos section hidden on mobile (items already in categories) */
@@ -899,11 +905,11 @@
         </a>
         <a href="#" onclick="event.preventDefault(); openWishlistPage();" title="Favoritos" id="navWish" style="position:relative;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-          <span id="wishBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:var(--text);width:8px;height:8px;border-radius:50%;"></span>
+          <span id="wishBadge" style="display:none;position:absolute;top:-0.267rem;right:-0.267rem;background:var(--text);width:0.533rem;height:0.533rem;border-radius:50%;"></span>
         </a>
         <a href="#" onclick="event.preventDefault(); openCart();" title="Carrito" style="position:relative;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-          <span id="cartBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:var(--text);width:8px;height:8px;border-radius:50%;"></span>
+          <span id="cartBadge" style="display:none;position:absolute;top:-0.267rem;right:-0.267rem;background:var(--text);width:0.533rem;height:0.533rem;border-radius:50%;"></span>
         </a>
       </div>
     </div>
@@ -932,7 +938,7 @@
       <div class="cat-filter__menu" id="catFilterMenu">
         <button class="cat-filter__option cat-filter__option--active" data-cat="all" onclick="selectCatFilter('all')">Todas las prendas</button>
         <button class="cat-filter__option" data-cat="favoritos" onclick="selectCatFilter('favoritos')">
-          <svg style="width:12px;height:12px;vertical-align:-1px;margin-right:4px;" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          <svg style="width:0.8rem;height:0.8rem;vertical-align:-0.067rem;margin-right:0.267rem;" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
           Mis Favoritos
         </button>
         <button class="cat-filter__option" data-cat="abrigos" onclick="selectCatFilter('abrigos')">Abrigos</button>
@@ -950,7 +956,7 @@
       <div class="panel__section panel__section--favs" id="section-favoritos">
         <div class="panel__section-header" onclick="toggleSection('favoritos')">
           <span>
-            <svg style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            <svg style="width:0.933rem;height:0.933rem;vertical-align:-0.133rem;margin-right:0.267rem;" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
             <span class="panel__section-title">Favoritos</span><span class="panel__section-count" id="count-favoritos"></span>
           </span>
           <span class="panel__section-toggle">&#9660;</span>
