@@ -347,18 +347,18 @@
     .footer__social a { width: 2.8rem; height: 2.8rem; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: var(--fs-ui); color: var(--text-light); transition: 0.2s; }
     .footer__social a:hover { background: var(--text); color: #fff; border-color: var(--text); }
 
-    /* RECOMMENDATIONS */
+    /* RECOMMENDATIONS (inside product-info) */
     .recommendations {
-      padding: 4rem 3.5rem;
-      background: var(--bg);
+      margin-top: 2.5rem; padding-top: 2rem;
+      border-top: 1px solid #eee;
     }
     .recommendations__title {
       font-family: var(--heading); font-weight: 200; font-style: italic;
-      font-size: var(--fs-section); letter-spacing: 0.04em;
-      text-align: center; margin-bottom: 2.5rem; color: var(--text);
+      font-size: var(--fs-subtitle); letter-spacing: 0.04em;
+      text-align: center; margin-bottom: 1.5rem; color: var(--text);
     }
     .recommendations__grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem;
     }
     .rec-card {
       text-decoration: none; color: var(--text); display: flex; flex-direction: column;
@@ -370,11 +370,11 @@
     .rec-card:hover .rec-card__img { transform: scale(1.02); filter: saturate(1); }
     .rec-card__name {
       font-family: var(--body); font-size: var(--fs-ui);
-      margin-top: 0.6rem; letter-spacing: 0.02em;
+      margin-top: 0.5rem; letter-spacing: 0.02em;
     }
     .rec-card__price {
       font-family: var(--body); font-size: var(--fs-ui);
-      color: var(--text-light); margin-top: 0.2rem;
+      color: var(--text-light); margin-top: 0.15rem;
     }
 
     /* TOAST */
@@ -435,9 +435,8 @@
       .product-accordion summary { font-size: 0.9rem; padding: 1.067rem 0; }
       .product-accordion summary::after { font-size: 1.2rem; }
       .product-accordion > div { font-size: 0.9rem; }
-      .recommendations { padding: 2.5rem 1.333rem 2.5rem; }
-      .recommendations__title { font-size: var(--fs-section); margin-bottom: 1.5rem; }
-      .recommendations__grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+      .recommendations { margin-top: 1.5rem; padding-top: 1.5rem; }
+      .recommendations__grid { gap: 0.6rem; }
       .footer { padding: 2.133rem 1.333rem 1.333rem; }
       .footer__grid { grid-template-columns: 1fr; gap: 1.6rem; }
       .footer__col-comprar { display: none; }
@@ -589,35 +588,34 @@
           Devoluciones gratuitas dentro de los 30 días posteriores a la compra. La prenda debe estar sin uso, con etiquetas originales y en su empaque. Contacta a nuestro equipo para iniciar tu devolución.
         </div>
       </details>
+      <!-- Recommendations -->
+      <div class="recommendations">
+        <h2 class="recommendations__title">También podría gustarte</h2>
+        <div class="recommendations__grid">
+          <a href="producto.html" class="rec-card">
+            <img class="rec-card__img" src="img/producto_abrigo.png" alt="Abrigo Marrón" loading="lazy">
+            <span class="rec-card__name">Abrigo Marrón</span>
+            <span class="rec-card__price">$ 2,150</span>
+          </a>
+          <a href="producto.html" class="rec-card">
+            <img class="rec-card__img" src="img/producto_blusas.png" alt="Blusa Lino" loading="lazy">
+            <span class="rec-card__name">Blusa Lino Celeste</span>
+            <span class="rec-card__price">$ 850</span>
+          </a>
+          <a href="producto.html" class="rec-card">
+            <img class="rec-card__img" src="img/producto_buzos.png" alt="Buzo Oversize" loading="lazy">
+            <span class="rec-card__name">Buzo Oversize</span>
+            <span class="rec-card__price">$ 1,250</span>
+          </a>
+          <a href="producto.html" class="rec-card">
+            <img class="rec-card__img" src="img/producto_denim.png" alt="Jacket Denim" loading="lazy">
+            <span class="rec-card__name">Jacket Denim</span>
+            <span class="rec-card__price">$ 1,450</span>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
-
-  <!-- ===== RECOMMENDATIONS (full-width, outside sticky grid) ===== -->
-  <section class="recommendations">
-    <h2 class="recommendations__title">También podría gustarte</h2>
-    <div class="recommendations__grid">
-      <a href="producto.html" class="rec-card">
-        <img class="rec-card__img" src="img/producto_abrigo.png" alt="Abrigo Marrón" loading="lazy">
-        <span class="rec-card__name">Abrigo Marrón</span>
-        <span class="rec-card__price">$ 2,150</span>
-      </a>
-      <a href="producto.html" class="rec-card">
-        <img class="rec-card__img" src="img/producto_blusas.png" alt="Blusa Lino" loading="lazy">
-        <span class="rec-card__name">Blusa Lino Celeste</span>
-        <span class="rec-card__price">$ 850</span>
-      </a>
-      <a href="producto.html" class="rec-card">
-        <img class="rec-card__img" src="img/producto_buzos.png" alt="Buzo Oversize" loading="lazy">
-        <span class="rec-card__name">Buzo Oversize</span>
-        <span class="rec-card__price">$ 1,250</span>
-      </a>
-      <a href="producto.html" class="rec-card">
-        <img class="rec-card__img" src="img/producto_denim.png" alt="Jacket Denim" loading="lazy">
-        <span class="rec-card__name">Jacket Denim</span>
-        <span class="rec-card__price">$ 1,450</span>
-      </a>
-    </div>
-  </section>
 
   <!-- ===== FOOTER ===== -->
   <footer class="footer">
