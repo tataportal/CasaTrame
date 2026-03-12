@@ -2031,7 +2031,8 @@
       }
 
       emptyEl.classList.add('hidden');
-      grid.innerHTML = savedLooks.map(look => {
+      const visibleLooks = savedLooks.slice(-3);
+      grid.innerHTML = visibleLooks.map(look => {
         // Build DOM-based outfit miniature from stored visual positions
         const layerImgs = (look.visualLayers || []).map(vl =>
           `<img src="${vl.img}" alt="" style="position:absolute;left:${vl.left}%;top:${vl.top}%;width:${vl.width}%;height:${vl.height}%;object-fit:contain;z-index:${vl.zIndex};">`
@@ -2048,7 +2049,7 @@
               <button class="saved-look__btn" title="Editar" onclick="event.stopPropagation(); loadLook(${look.id})">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
               </button>
-              <button class="saved-look__btn" title="Descargar" onclick="event.stopPropagation(); toast('Disponible al subir a Vercel')">
+              <button class="saved-look__btn" title="Descargar" onclick="event.stopPropagation(); downloadLook(${look.id})">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               </button>
               <button class="saved-look__btn" title="Borrar" onclick="event.stopPropagation(); deleteLook(${look.id})">
@@ -2058,6 +2059,45 @@
           </div>
         </div>`;
       }).join('');
+    }
+
+    function downloadLook(lookId) {
+      const look = savedLooks.find(l => l.id === lookId);
+      if (!look || !look.visualLayers || look.visualLayers.length === 0) {
+        toast('No hay capas para descargar');
+        return;
+      }
+      const canvas = document.createElement('canvas');
+      const W = 800, H = 1000;
+      canvas.width = W; canvas.height = H;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#f7f7f7';
+      ctx.fillRect(0, 0, W, H);
+
+      const sorted = [...look.visualLayers].sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
+      let loaded = 0;
+      if (sorted.length === 0) return;
+      sorted.forEach(vl => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          const x = vl.left / 100 * W;
+          const y = vl.top / 100 * H;
+          const w = vl.width / 100 * W;
+          const h = vl.height / 100 * H;
+          ctx.drawImage(img, x, y, w, h);
+          loaded++;
+          if (loaded === sorted.length) {
+            const link = document.createElement('a');
+            link.download = (look.name || 'look') + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            toast('Look descargado');
+          }
+        };
+        img.onerror = () => { loaded++; };
+        img.src = vl.img;
+      });
     }
 
     /* ============================================
