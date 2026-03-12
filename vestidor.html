@@ -568,7 +568,7 @@
       text-transform: uppercase; letter-spacing: 0.06em;
     }
     .saved-look__actions {
-      display: flex; gap: 0.667rem;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;
     }
     .saved-look__btn {
       width: 2.8rem; height: 2.8rem; border: 1.5px solid var(--text);
@@ -578,11 +578,10 @@
     }
     .saved-look__btn:hover { background: var(--text); color: #fff; }
     .saved-look__btn svg { width: 1.2rem; height: 1.2rem; }
-    .saved-look__btn--ig {
-      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-      border-color: transparent; color: #fff;
+    .saved-look__btn--share {
+      background: var(--text); border-color: var(--text); color: #fff;
     }
-    .saved-look__btn--ig:hover { opacity: 0.85; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; }
+    .saved-look__btn--share:hover { opacity: 0.85; }
 
     .saved-looks__empty {
       text-align: center; padding: 1.333rem 0.667rem;
@@ -2071,8 +2070,8 @@
               <button class="saved-look__btn" title="Descargar" onclick="event.stopPropagation(); downloadLook(${look.id})">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               </button>
-              <button class="saved-look__btn saved-look__btn--ig" title="Compartir en Instagram" onclick="event.stopPropagation(); shareLookIG(${look.id})">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              <button class="saved-look__btn saved-look__btn--share" title="Compartir" onclick="event.stopPropagation(); shareLookIG(${look.id})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
               </button>
               <button class="saved-look__btn" title="Borrar" onclick="event.stopPropagation(); deleteLook(${look.id})">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
