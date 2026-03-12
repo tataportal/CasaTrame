@@ -335,10 +335,18 @@
       cursor: pointer; transition: 0.2s; white-space: nowrap;
     }
     .newsletter__submit:hover { color: #fff; }
-    .newsletter__legal {
-      font-size: var(--fs-subtitle); color: rgba(255,255,255,0.65); line-height: 1.5;
-      margin-top: 0.8rem; letter-spacing: 0.06em;
+    .newsletter__submit-wrap {
+      position: relative;
     }
+    .newsletter__legal-tip {
+      position: absolute; bottom: calc(100% + 0.6rem); right: 0;
+      background: rgba(0,0,0,0.85); color: rgba(255,255,255,0.7);
+      font-size: var(--fs-label); padding: 0.5rem 0.8rem;
+      border-radius: 0.25rem; white-space: nowrap;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+      letter-spacing: 0.03em;
+    }
+    .newsletter__submit-wrap:hover .newsletter__legal-tip { opacity: 1; }
 
     /* ===========================================
        FOOTER
@@ -445,7 +453,7 @@
       .newsletter__form { flex-direction: column; gap: 0.4rem; }
       .newsletter__input { padding: 0 0 0.5rem 0; font-size: var(--fs-body); }
       .newsletter__submit { padding: 0 0 0.5rem 1rem; font-size: var(--fs-btn); }
-      .newsletter__legal { font-size: var(--fs-label); }
+      .newsletter__legal-tip { font-size: var(--fs-label); }
       .footer { padding: 1.6rem 1rem 1rem; }
       .footer__grid { grid-template-columns: 1fr; gap: 1.2rem; }
       .footer__col-comprar { display: none; }
@@ -608,9 +616,11 @@
       <h2 class="newsletter__title">Sé parte de Casa Tramé</h2>
       <form class="newsletter__form" onsubmit="event.preventDefault(); this.querySelector('input').value=''; toast('Gracias por suscribirte!');">
         <input class="newsletter__input" type="email" placeholder="Tu email" required>
-        <button class="newsletter__submit" type="submit">Enviar</button>
+        <div class="newsletter__submit-wrap">
+          <span class="newsletter__legal-tip">Al suscribirte aceptas recibir mensajes y bases legales.</span>
+          <button class="newsletter__submit" type="submit">Enviar</button>
+        </div>
       </form>
-      <p class="newsletter__legal">Al suscribirte aceptas recibir mensajes y bases legales.</p>
     </div>
     <footer class="footer">
       <div class="footer__grid">
