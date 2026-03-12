@@ -578,6 +578,11 @@
     }
     .saved-look__btn:hover { background: var(--text); color: #fff; }
     .saved-look__btn svg { width: 1.2rem; height: 1.2rem; }
+    .saved-look__btn--ig {
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      border-color: transparent; color: #fff;
+    }
+    .saved-look__btn--ig:hover { opacity: 0.85; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; }
 
     .saved-looks__empty {
       text-align: center; padding: 1.333rem 0.667rem;
@@ -2066,6 +2071,9 @@
               <button class="saved-look__btn" title="Descargar" onclick="event.stopPropagation(); downloadLook(${look.id})">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               </button>
+              <button class="saved-look__btn saved-look__btn--ig" title="Compartir en Instagram" onclick="event.stopPropagation(); shareLookIG(${look.id})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              </button>
               <button class="saved-look__btn" title="Borrar" onclick="event.stopPropagation(); deleteLook(${look.id})">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
               </button>
@@ -2075,57 +2083,127 @@
       }).join('');
     }
 
+    function loadImg(src) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+    }
+
+    /* Build IG Story canvas (1080x1920) with look layers */
+    function buildStoryCanvas(look) {
+      return new Promise((resolve) => {
+        const sorted = [...look.visualLayers].sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
+        if (sorted.length === 0) { resolve(null); return; }
+
+        const W = 1080, H = 1920;
+        const cvs = document.createElement('canvas');
+        cvs.width = W; cvs.height = H;
+        const ctx = cvs.getContext('2d');
+
+        // Background
+        ctx.fillStyle = '#f7f7f7';
+        ctx.fillRect(0, 0, W, H);
+
+        // Top: CASA TRAMÉ
+        ctx.fillStyle = '#1e1e1e';
+        ctx.font = '700 40px "Goia Display", serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('CASA TRAMÉ', W / 2, 155);
+
+        // Title: Colección Otoño – Invierno
+        ctx.font = '200 italic 82px "Goia Display", serif';
+        ctx.fillText('Colección', W / 2, 280);
+        ctx.fillText('Otoño \u2013 Invierno', W / 2, 375);
+
+        // Bottom: casatrame.com
+        ctx.fillStyle = '#8c8c8c';
+        ctx.font = '300 48px "Goia Display", serif';
+        ctx.fillText('casatrame.com', W / 2, H - 80);
+
+        // Draw look layers centered in middle area
+        const lookTop = 420;
+        const lookBot = H - 160;
+        const availH = lookBot - lookTop;
+        const availW = W * 0.85;
+
+        Promise.all(sorted.map(vl => loadImg(vl.img))).then(images => {
+          // Get natural dimensions from first loaded image to calc scale
+          const natW = 1000, natH = 1500; // all vestidor images are 1000x1500
+          const scale = Math.min(availW / natW, availH / natH);
+          const drawW = natW * scale;
+          const drawH = natH * scale;
+          const offX = (W - drawW) / 2;
+          const offY = lookTop + (availH - drawH) / 2;
+
+          sorted.forEach((vl, i) => {
+            if (!images[i]) return;
+            ctx.drawImage(images[i], offX, offY, drawW, drawH);
+          });
+
+          resolve(cvs);
+        });
+      });
+    }
+
     function downloadLook(lookId) {
       const look = savedLooks.find(l => l.id === lookId);
       if (!look || !look.visualLayers || look.visualLayers.length === 0) {
         toast('No hay capas para descargar');
         return;
       }
-      const cvs = document.createElement('canvas');
-      const W = 800, H = 1000;
-      cvs.width = W; cvs.height = H;
-      const ctx = cvs.getContext('2d');
-      ctx.fillStyle = '#f7f7f7';
-      ctx.fillRect(0, 0, W, H);
-
-      const sorted = [...look.visualLayers].sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
-      if (sorted.length === 0) return;
-
-      // Load all images as promises, then draw in order
-      function loadImg(src) {
-        return new Promise((resolve) => {
-          const img = new Image();
-          img.onload = () => resolve(img);
-          img.onerror = () => resolve(null);
-          img.src = src;
-        });
-      }
-
-      Promise.all(sorted.map(vl => loadImg(vl.img))).then(images => {
-        sorted.forEach((vl, i) => {
-          if (!images[i]) return;
-          const x = vl.left / 100 * W;
-          const y = vl.top / 100 * H;
-          const w = vl.width / 100 * W;
-          const h = vl.height / 100 * H;
-          ctx.drawImage(images[i], x, y, w, h);
-        });
-        // Watermark
-        ctx.fillStyle = '#999';
-        ctx.font = '300 24px Jost, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('casatrame.com', W / 2, H - 20);
-
+      buildStoryCanvas(look).then(cvs => {
+        if (!cvs) return;
         try {
           const link = document.createElement('a');
-          link.download = (look.name || 'look') + '.png';
+          link.download = (look.name || 'look') + '_story.png';
           link.href = cvs.toDataURL('image/png');
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
-          toast('Look descargado');
+          toast('Story descargada');
         } catch(e) {
           toast('Error al descargar: ' + e.message);
+        }
+      });
+    }
+
+    function shareLookIG(lookId) {
+      const look = savedLooks.find(l => l.id === lookId);
+      if (!look || !look.visualLayers || look.visualLayers.length === 0) {
+        toast('No hay capas para compartir');
+        return;
+      }
+      buildStoryCanvas(look).then(async (cvs) => {
+        if (!cvs) return;
+        try {
+          // Convert canvas to blob
+          const blob = await new Promise(r => cvs.toBlob(r, 'image/png'));
+          const file = new File([blob], (look.name || 'look') + '_story.png', { type: 'image/png' });
+
+          // Use Web Share API if available (mobile)
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: 'Mi look Casa Tramé',
+              text: 'Colección Otoño – Invierno | casatrame.com'
+            });
+            toast('Compartido');
+          } else {
+            // Fallback: download the file
+            const link = document.createElement('a');
+            link.download = file.name;
+            link.href = URL.createObjectURL(blob);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+            toast('Imagen guardada — compártela desde tu galería');
+          }
+        } catch(e) {
+          if (e.name !== 'AbortError') toast('Error: ' + e.message);
         }
       });
     }
