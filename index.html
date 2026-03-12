@@ -178,19 +178,21 @@
        COLLECTION SECTION
        =========================================== */
     .collection-section {
-      min-height: 100vh; display: flex; flex-direction: column;
+      height: 100vh; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      padding: 4rem 0; overflow-x: hidden;    }
+      padding: 2rem 0; overflow: hidden; box-sizing: border-box;
+    }
     .collection-section__title {
       text-align: center; font-family: var(--heading); font-weight: 200; font-style: italic;
       font-size: var(--fs-section); letter-spacing: 0.04em;
-      margin-bottom: 2.667rem; color: var(--text);
+      margin-bottom: 1.5rem; color: var(--text); flex-shrink: 0;
     }
     .collection-grid {
       display: flex; gap: 0.8rem; width: 100%;
       padding: 0; overflow: hidden;
       position: relative;
       cursor: grab;
+      flex: 1; min-height: 0;
     }
     .collection-grid.is-dragging { cursor: grabbing; }
     .carousel-arrow {
@@ -209,14 +211,16 @@
     .collection-grid__track {
       display: flex; gap: 0.8rem;
       will-change: transform;
+      height: 100%;
     }
     .collection-card {
       flex: 0 0 auto; min-width: 0;
       cursor: pointer; display: flex; flex-direction: column;
-      width: 30vw;
+      height: 100%;
     }
     .collection-card__img {
       position: relative; overflow: hidden;
+      flex: 1; min-height: 0;
       aspect-ratio: 3 / 4;
     }
     .collection-card__img img {
@@ -233,7 +237,7 @@
       white-space: nowrap;
     }
     .collection-section__cta {
-      display: flex; justify-content: center; margin-top: 2.667rem;
+      display: flex; justify-content: center; margin-top: 1.5rem; flex-shrink: 0;
     }
     .collection-section__cta .btn-outline {
       padding: 1.213rem 3.36rem; border: 1px solid var(--text);
