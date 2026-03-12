@@ -320,6 +320,14 @@
       backdrop-filter: blur(0.267rem);
     }
     .newsletter__input::placeholder { color: rgba(255,255,255,0.5); }
+    .newsletter__input:-webkit-autofill,
+    .newsletter__input:-webkit-autofill:hover,
+    .newsletter__input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 1000px rgba(0,0,0,0.85) inset;
+      -webkit-text-fill-color: #fff;
+      caret-color: #fff;
+      border-color: rgba(255,255,255,0.5);
+    }
     .newsletter__input:focus { border-color: #fff; }
     .newsletter__submit {
       padding: 1.8rem 3.6rem; background: #fff; color: var(--text);
