@@ -2088,6 +2088,12 @@
           ctx.drawImage(img, x, y, w, h);
           loaded++;
           if (loaded === sorted.length) {
+            // Watermark
+            ctx.fillStyle = '#999';
+            ctx.font = '300 24px Jost, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('casatrame.com', W / 2, H - 20);
+
             const link = document.createElement('a');
             link.download = (look.name || 'look') + '.png';
             link.href = canvas.toDataURL('image/png');
