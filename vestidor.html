@@ -532,7 +532,13 @@
     .saved-looks__title {
       font-size: 1.2rem; letter-spacing: 0.18em; text-transform: uppercase;
       color: var(--text-light); margin-bottom: 0.933rem;
+      display: flex; align-items: center; justify-content: space-between;
     }
+    .saved-looks__clear {
+      font-size: 0.75rem; cursor: pointer; color: var(--text-light);
+      opacity: 0.5; transition: opacity 0.2s;
+    }
+    .saved-looks__clear:hover { opacity: 1; }
     .saved-looks__grid {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.667rem;
     }
@@ -1074,7 +1080,7 @@
         <button class="summary__checkout" id="btnAddOutfit" disabled onclick="openOutfitSizePopup()">Agregar outfit al carrito</button>
         <!-- Saved Looks -->
         <div class="saved-looks" id="savedLooksSection">
-          <div class="saved-looks__title">Looks guardados</div>
+          <div class="saved-looks__title">Looks guardados <span class="saved-looks__clear" id="clearAllLooks" onclick="clearAllLooks()" title="Borrar todos">✕</span></div>
           <div class="saved-looks__grid" id="savedLooksGrid"></div>
           <div class="saved-looks__empty" id="savedLooksEmpty">
             <p>Aún no tienes looks guardados.</p>
@@ -2018,6 +2024,14 @@
       renderSavedLooks();
       syncLooksToStorage();
       toast('Look eliminado');
+    }
+
+    function clearAllLooks() {
+      if (savedLooks.length === 0) { toast('No hay looks guardados'); return; }
+      savedLooks = [];
+      syncLooksToStorage();
+      renderSavedLooks();
+      toast('Looks eliminados');
     }
 
     function renderSavedLooks() {
