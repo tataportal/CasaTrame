@@ -746,15 +746,22 @@
       .btn-v svg { width: 3vw; height: 3vw; }
       .btn-v--help { width: 7vw; height: 7vw; min-width: 7vw; font-size: 3vw; }
       .btn-v--screenshot { display: none !important; }
-      /* ── SHARE BUTTON (prominent, top-right over canvas) ── */
-      .btn-v--share-main {
-        display: inline-flex !important;
-        position: absolute; top: 2.5vw; right: 2.5vw; z-index: 20;
-        background: var(--text); color: #fff; border: none;
-        padding: 2vw 4.5vw; font-size: 3vw;
-        letter-spacing: 0.08em;
+      /* ── FAVORITO HEART (top-right over canvas) ── */
+      .btn-v--fav-canvas {
+        display: flex !important;
+        position: absolute; top: 3vw; right: 3vw; z-index: 20;
+        background: none; border: none; cursor: pointer;
+        color: var(--text); padding: 0;
       }
-      .btn-v--share-main svg { width: 3.5vw; height: 3.5vw; }
+      .btn-v--fav-canvas svg { width: 6vw; height: 6vw; transition: 0.2s; }
+      .btn-v--fav-canvas:disabled { opacity: 0.3; pointer-events: none; }
+      .btn-v--fav-canvas.saved svg { fill: var(--text); }
+
+      /* ── COMPARTIR in toolbar (mobile) ── */
+      .btn-v--share-toolbar { display: inline-flex !important; }
+
+      /* ── Hide GUARDAR on mobile (heart replaces it) ── */
+      #saveLookBtn { display: none !important; }
 
       /* ── CATEGORY FILTER ── */
       .cat-filter {
@@ -888,7 +895,8 @@
     /* Hide mobile-only buttons on desktop */
     @media (min-width: 769px) {
       .btn-v--screenshot { display: none !important; }
-      .btn-v--share-main { display: none !important; }
+      .btn-v--fav-canvas { display: none !important; }
+      .btn-v--share-toolbar { display: none !important; }
     }
   </style>
 </head>
@@ -1017,10 +1025,9 @@
     <!-- CENTER: Canvas + layers -->
     <div class="center">
 
-      <!-- COMPARTIR button (mobile only, positioned over canvas) -->
-      <button class="btn-v btn-v--share-main" onclick="shareToIGStories()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-        COMPARTIR
+      <!-- FAVORITO heart (mobile only, top-right over canvas) -->
+      <button class="btn-v--fav-canvas" id="saveLookBtnCanvas" onclick="saveLook()" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
       </button>
       <div class="canvas" id="canvas">
         <div class="center-toolbar">
@@ -1039,6 +1046,10 @@
           <button class="btn-v btn-v--outline" id="saveLookBtn" onclick="saveLook()" disabled>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
             Guardar
+          </button>
+          <button class="btn-v btn-v--outline btn-v--share-toolbar" onclick="shareToIGStories()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            Compartir
           </button>
           <button class="btn-v btn-v--outline btn-v--screenshot" onclick="saveScreenshot()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -1729,6 +1740,8 @@
 
       const hasItems = uniqueItems.length > 0;
       document.getElementById('saveLookBtn').disabled = !hasItems;
+      const canvasHeart = document.getElementById('saveLookBtnCanvas');
+      if (canvasHeart) canvasHeart.disabled = !hasItems;
       document.getElementById('btnAddOutfit').disabled = !hasItems;
     }
 
@@ -1997,6 +2010,13 @@
       renderSavedLooks();
       syncLooksToStorage();
       toast(`Look ${savedLookCounter} guardado`);
+
+      // Pulse the canvas heart
+      const canvasHeart = document.getElementById('saveLookBtnCanvas');
+      if (canvasHeart) {
+        canvasHeart.classList.add('saved');
+        setTimeout(() => canvasHeart.classList.remove('saved'), 1200);
+      }
     }
 
     function loadLook(lookId) {
