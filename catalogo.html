@@ -398,102 +398,7 @@
     /* ===========================================
        CART DRAWER
        =========================================== */
-    .cart-overlay {
-      display: none; position: fixed; inset: 0; z-index: 1999;
-      background: rgba(0,0,0,0.35); backdrop-filter: blur(2px);
-    }
-    .cart-overlay.open { display: block; }
-    .cart-drawer {
-      position: fixed; top: 0; right: 0; bottom: 0;
-      width: 50rem; max-width: 90vw; z-index: 2000;
-      background: var(--bg); display: flex; flex-direction: column;
-      transform: translateX(100%); transition: transform 0.3s ease;
-    }
-    .cart-drawer.open { transform: translateX(0); }
-    .cart-drawer__header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 2.4rem 2.4rem 1.6rem; border-bottom: 1px solid var(--border);
-    }
-    .cart-drawer__title {
-      font-family: var(--body); font-size: 1.1rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.12em;
-    }
-    .cart-drawer__close {
-      font-size: 2rem; color: var(--text); background: none; border: none;
-      cursor: pointer; line-height: 1;
-    }
-    .cart-drawer__items {
-      flex: 1; overflow-y: auto; padding: 0;
-    }
-    .cart-drawer__empty {
-      padding: 5rem 2.4rem; text-align: center;
-      font-size: 1.1rem; color: var(--text-light);
-    }
-    .cart-item {
-      display: grid; grid-template-columns: 9rem 1fr; gap: 1.6rem;
-      padding: 1.8rem 2.4rem; border-bottom: 1px solid #f0f0f0;
-    }
-    .cart-item__img {
-      aspect-ratio: 4/5; overflow: hidden; background: #fafafa;
-    }
-    .cart-item__img img { width: 100%; height: 100%; object-fit: cover; }
-    .cart-item__details { display: flex; flex-direction: column; justify-content: center; gap: 0.4rem; }
-    .cart-item__name { font-size: 1.05rem; color: var(--text); line-height: 1.3; }
-    .cart-item__meta { font-size: 0.9rem; color: var(--text-light); display: flex; align-items: center; gap: 0.4rem; }
-    .cart-item__meta-dot {
-      display: inline-block; width: 0.8rem; height: 0.8rem;
-      border-radius: 50%; vertical-align: middle;
-    }
-    .cart-item__price { font-size: 1.05rem; color: var(--text); margin-top: 0.267rem; }
-    .cart-item__qty {
-      display: flex; align-items: center; gap: 0; margin-top: 0.6rem;
-    }
-    .cart-item__qty button {
-      width: 2.4rem; height: 2.4rem; border: 1px solid var(--border);
-      background: none; font-size: 1.05rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--text); font-family: var(--body);
-    }
-    .cart-item__qty button:hover { border-color: var(--text); }
-    .cart-item__qty span {
-      width: 2.8rem; height: 2.4rem; border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1rem; color: var(--text);
-    }
-    .cart-item__remove {
-      font-size: 0.85rem; color: var(--text-light); text-decoration: underline;
-      cursor: pointer; background: none; border: none; margin-top: 0.4rem;
-      font-family: var(--body); text-align: left; padding: 0;
-    }
-    .cart-item__remove:hover { color: var(--text); }
-    .cart-drawer__footer {
-      padding: 1.8rem 2.4rem 2.4rem; border-top: 1px solid var(--border);
-    }
-    .cart-drawer__subtotal {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 1.4rem;
-    }
-    .cart-drawer__subtotal-label {
-      font-size: 1rem; text-transform: uppercase; letter-spacing: 0.08em;
-      color: var(--text);
-    }
-    .cart-drawer__subtotal-value {
-      font-size: 1.2rem; font-weight: 700; color: var(--text);
-    }
-    .cart-drawer__checkout {
-      display: block; width: 100%; padding: 1.2rem 0; text-align: center;
-      background: var(--text); color: #fff; border: none; font-size: 1rem;
-      text-transform: uppercase; letter-spacing: 0.12em; cursor: pointer;
-      font-family: var(--body); font-weight: 500; transition: 0.2s;
-    }
-    .cart-drawer__checkout:hover { background: #333; }
-    .cart-drawer__continue {
-      display: block; width: 100%; padding: 0.8rem 0; text-align: center;
-      background: none; color: var(--text); border: none; font-size: 0.9rem;
-      text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer;
-      font-family: var(--body); margin-top: 0.667rem; text-decoration: underline;
-    }
+    /* Cart CSS now in styles.css */
     .wishlist-card__cart-btn {
       display: block; width: 100%; padding: 0.6rem 0; margin-top: 0;
       font-size: 1.02rem; text-transform: uppercase; letter-spacing: 0.1em;
@@ -894,6 +799,7 @@
 
   <div class="toast" id="toastEl"></div>
 
+  <script src="cart.js"></script>
   <!-- ===========================================
        JAVASCRIPT
        =========================================== -->
@@ -1489,10 +1395,7 @@
       openWishlistPage(); // Re-render
     }
 
-    /* ---- CART ---- */
-    let cart = [];
-    try { cart = JSON.parse(localStorage.getItem('ct_cart') || '[]'); } catch(e) {}
-    cart.forEach(c => { if (c.img) c.img = c.img.replace(/^\.\.\//g, ''); });
+    /* ---- CART (demo init + page-specific helpers) ---- */
     /* Demo products — pre-load if cart is empty */
     if (cart.length === 0) {
       cart = [
@@ -1501,105 +1404,6 @@
         { id:7, color:'#4A6741', size:'M', img:'photos_demo/demo_falda_green.png', name:'Falda Verde', price:850, qty:1 }
       ];
       syncCartToStorage();
-    }
-
-    function syncCartToStorage() {
-      try { localStorage.setItem('ct_cart', JSON.stringify(cart)); } catch(e) {}
-    }
-
-    function addToCart(id, color, size, img, name, price) {
-      // Check if same product+color+size already in cart
-      const existing = cart.find(c => c.id === id && c.color === color && c.size === size);
-      if (existing) {
-        existing.qty++;
-      } else {
-        cart.push({ id, color, size, img, name, price, qty: 1 });
-      }
-      syncCartToStorage();
-      updateCartBadge();
-      renderCart();
-      openCart();
-    }
-
-    function removeFromCart(idx) {
-      cart.splice(idx, 1);
-      syncCartToStorage();
-      updateCartBadge();
-      renderCart();
-      if (cart.length === 0) closeCart();
-    }
-
-    function updateCartQty(idx, delta) {
-      cart[idx].qty += delta;
-      if (cart[idx].qty < 1) cart[idx].qty = 1;
-      syncCartToStorage();
-      updateCartBadge();
-      renderCart();
-    }
-
-    function updateCartBadge() {
-      const badge = document.getElementById('cartBadge');
-      const total = cart.reduce((sum, c) => sum + c.qty, 0);
-      badge.style.display = total > 0 ? 'block' : 'none';
-    }
-
-    function openCart() {
-      renderCart();
-      document.getElementById('cartOverlay').classList.add('open');
-      document.getElementById('cartDrawer').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeCart() {
-      document.getElementById('cartOverlay').classList.remove('open');
-      document.getElementById('cartDrawer').classList.remove('open');
-      document.body.style.overflow = '';
-    }
-
-    function renderCart() {
-      const itemsEl = document.getElementById('cartItems');
-      const emptyEl = document.getElementById('cartEmpty');
-      const footerEl = document.getElementById('cartFooter');
-      const subtotalEl = document.getElementById('cartSubtotal');
-
-      if (cart.length === 0) {
-        emptyEl.style.display = 'block';
-        footerEl.style.display = 'none';
-        itemsEl.querySelectorAll('.cart-item').forEach(el => el.remove());
-        return;
-      }
-
-      emptyEl.style.display = 'none';
-      footerEl.style.display = 'block';
-
-      // Remove old items but keep empty div
-      itemsEl.querySelectorAll('.cart-item').forEach(el => el.remove());
-
-      cart.forEach((c, idx) => {
-        const div = document.createElement('div');
-        div.className = 'cart-item';
-        div.innerHTML = `
-          <div class="cart-item__img"><img src="${c.img}" alt="${c.name}"></div>
-          <div class="cart-item__details">
-            <div class="cart-item__name">${c.name}</div>
-            <div class="cart-item__meta">
-              <span class="cart-item__meta-dot" style="background:${c.color}"></span>
-              Talla ${c.size}
-            </div>
-            <div class="cart-item__price">$ ${(c.price * c.qty).toLocaleString()}</div>
-            <div class="cart-item__qty">
-              <button onclick="updateCartQty(${idx}, -1)">&minus;</button>
-              <span>${c.qty}</span>
-              <button onclick="updateCartQty(${idx}, 1)">+</button>
-            </div>
-            <button class="cart-item__remove" onclick="removeFromCart(${idx})">Eliminar</button>
-          </div>
-        `;
-        itemsEl.appendChild(div);
-      });
-
-      const subtotal = cart.reduce((sum, c) => sum + c.price * c.qty, 0);
-      subtotalEl.textContent = '$ ' + subtotal.toLocaleString();
     }
 
     function addToCartFromModal() {

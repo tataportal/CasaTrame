@@ -335,8 +335,9 @@
         <a href="catalogo.html#favoritos" title="Favoritos" style="position:relative;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
         </a>
-        <a href="catalogo.html" title="Carrito" style="position:relative;">
+        <a href="#" onclick="event.preventDefault(); openCart();" title="Carrito" style="position:relative;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span id="cartBadge" style="display:none;position:absolute;top:-0.267rem;right:-0.267rem;background:var(--text);width:0.533rem;height:0.533rem;border-radius:50%;"></span>
         </a>
       </div>
     </div>
@@ -350,7 +351,7 @@
     <hr>
     <a href="catalogo.html#favoritos">Favoritos</a>
     <a href="catalogo.html">Buscar</a>
-    <a href="catalogo.html">Carrito</a>
+    <a href="#" onclick="event.preventDefault(); openCart();">Carrito</a>
   </div>
 
   <!-- ===== PRODUCT PAGE ===== -->
@@ -529,8 +530,29 @@
     </div>
   </footer>
 
+  <!-- ===== CART DRAWER ===== -->
+  <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer__header">
+      <span class="cart-drawer__title">Carrito</span>
+      <button class="cart-drawer__close" onclick="closeCart()">&times;</button>
+    </div>
+    <div class="cart-drawer__items" id="cartItems">
+      <div class="cart-drawer__empty" id="cartEmpty">Tu carrito está vacío.</div>
+    </div>
+    <div class="cart-drawer__footer" id="cartFooter" style="display:none;">
+      <div class="cart-drawer__subtotal">
+        <span class="cart-drawer__subtotal-label">Subtotal</span>
+        <span class="cart-drawer__subtotal-value" id="cartSubtotal">$ 0</span>
+      </div>
+      <button class="cart-drawer__checkout" onclick="toast('Checkout con Shopify próximamente')">Finalizar Compra</button>
+      <button class="cart-drawer__continue" onclick="closeCart()">Seguir comprando</button>
+    </div>
+  </div>
+
   <div class="toast" id="toastEl"></div>
 
+  <script src="cart.js"></script>
   <!-- ===========================================
        JAVASCRIPT
        =========================================== -->
@@ -579,8 +601,8 @@
         toast('Selecciona una talla');
         return;
       }
-      toast(`Añadido al carrito — ${selectedColor}, Talla ${selectedSize}`);
-      // TODO: integrate with cart system from catalogo.html
+      const img = document.querySelector('.product-images img').src;
+      addToCart(201, selectedColor, selectedSize, img, 'The Cropped Denim Jacket', 890);
     }
 
     /* ---- WISHLIST ---- */

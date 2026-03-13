@@ -995,9 +995,29 @@
 
   </div>
 
+  <!-- ===== CART DRAWER ===== -->
+  <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer__header">
+      <span class="cart-drawer__title">Carrito</span>
+      <button class="cart-drawer__close" onclick="closeCart()">&times;</button>
+    </div>
+    <div class="cart-drawer__items" id="cartItems">
+      <div class="cart-drawer__empty" id="cartEmpty">Tu carrito está vacío.</div>
+    </div>
+    <div class="cart-drawer__footer" id="cartFooter" style="display:none;">
+      <div class="cart-drawer__subtotal">
+        <span class="cart-drawer__subtotal-label">Subtotal</span>
+        <span class="cart-drawer__subtotal-value" id="cartSubtotal">$ 0</span>
+      </div>
+      <button class="cart-drawer__checkout" onclick="toast('Checkout con Shopify próximamente')">Finalizar Compra</button>
+      <button class="cart-drawer__continue" onclick="closeCart()">Seguir comprando</button>
+    </div>
+  </div>
+
   <div class="toast" id="toastEl"></div>
 
-
+  <script src="cart.js"></script>
   <!-- ===========================================
        JAVASCRIPT
        =========================================== -->
@@ -1006,7 +1026,6 @@
     /* Nav helpers (match catalogo) */
     function openSearch() { window.location.href = 'catalogo.html'; }
     function openWishlistPage() { window.location.href = 'catalogo.html#favoritos'; }
-    function openCart() { window.location.href = 'catalogo.html#carrito'; }
 
     const mobileMenu = document.getElementById('mobileMenu');
     const hamburger = document.querySelector('.nav__hamburger');
@@ -1709,21 +1728,21 @@
         });
       });
 
-      // Save to localStorage for the catalog cart
-      let existingCart = [];
-      try { existingCart = JSON.parse(localStorage.getItem('ct_cart') || '[]'); } catch(e) {}
+      // Add each item via shared cart functions
       cartItems.forEach(newItem => {
-        const existing = existingCart.find(c => c.id === newItem.id && c.color === newItem.color && c.size === newItem.size);
+        const existing = cart.find(c => c.id === newItem.id && c.color === newItem.color && c.size === newItem.size);
         if (existing) { existing.qty++; }
-        else { existingCart.push(newItem); }
+        else { cart.push(newItem); }
       });
-      localStorage.setItem('ct_cart', JSON.stringify(existingCart));
+      syncCartToStorage();
+      updateCartBadge();
+      renderCart();
 
       closeOutfitPopup();
       toast(`${cartItems.length} prendas agregadas al carrito`);
 
-      // Redirect to catalog cart after short delay
-      setTimeout(() => { window.location.href = 'catalogo.html?opencart=1'; }, 800);
+      // Open cart drawer after short delay
+      setTimeout(() => { openCart(); }, 600);
     }
 
     function removeItemById(id) {
