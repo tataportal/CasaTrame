@@ -4,111 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Casa Tramé — Otoño Invierno 2026</title>
-  <link rel="preload" href="fonts/GoiaDisplay-ExtraLightItalic.otf" as="font" type="font/otf" crossorigin>
-  <link rel="preload" href="fonts/GoiaDisplay-Bold.otf" as="font" type="font/otf" crossorigin>
-  <link rel="preload" href="fonts/GoiaDisplay-Light.otf" as="font" type="font/otf" crossorigin>
+  <link rel="preload" href="fonts/GoiaDisplay-ExtraLightItalic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/GoiaDisplay-Bold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/GoiaDisplay-Light.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;600&display=swap" rel="stylesheet">
   <style>
-    /* ===========================================
-       FONTS — Goia Display
-       =========================================== */
-    @font-face {
-      font-family: 'Goia Display';
-      src: url('fonts/GoiaDisplay-ExtraLightItalic.otf') format('opentype');
-      font-weight: 200;
-      font-style: italic;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: 'Goia Display';
-      src: url('fonts/GoiaDisplay-Bold.otf') format('opentype');
-      font-weight: 700;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: 'Goia Display';
-      src: url('fonts/GoiaDisplay-Light.otf') format('opentype');
-      font-weight: 300;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    /* ===========================================
-       RESET
-       =========================================== */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #f7f7f7;
-      --text: #111;
-      --text-mid: #555;
-      --text-light: #999;
-      --border: #e0e0e0;
-      --heading: 'Goia Display', Georgia, serif;
-      --body: 'Jost', -apple-system, sans-serif;
-      --nav-h: 6.667rem;
-      /* ── Type Scale ── */
-      --fs-hero: 4.4rem;
-      --fs-section: 3.6rem;
-      --fs-page: 2.8rem;
-      --fs-subtitle: 1.8rem;
-      --fs-body: 1.4rem;
-      --fs-ui: 1.25rem;
-      --fs-btn: 1.1rem;
-      --fs-label: 0.95rem;
-      --fs-micro: 0.7rem;
-    }
-    html { font-size: clamp(8px, calc(2.33px + 0.5vw), 15px); scroll-behavior: smooth; }
-    body { font-family: var(--body); font-weight: 300; background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; }
-    a { color: inherit; text-decoration: none; }
+    /* Catalogo-specific: images default + nav override */
     img { max-width: 100%; height: auto; display: block; }
-    button { cursor: pointer; border: none; background: none; font-family: inherit; }
-    ul { list-style: none; }
-
-    /* ===========================================
-       NAVBAR
-       Left: Colección (underlined) · Conócenos · Vestidor™
-       Center: CASA TRAMÉ (big serif)
-       Right: search · user · heart · bag icons
-       =========================================== */
-    .nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      background: var(--bg); height: var(--nav-h);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav__inner {
-      max-width: 100%; padding: 0 4rem;
-      display: grid; grid-template-columns: 1fr auto 1fr;
-      align-items: center; height: 100%;
-    }
-    .nav__left { display: flex; gap: 3.2rem; align-items: center; justify-content: flex-start; }
-    .nav__left a { font-size: 1.7rem; letter-spacing: 0.03em; line-height: 1; color: var(--text); }
-    .nav__left a.underlined { text-decoration: underline; text-underline-offset: 0.333rem; }
-    .nav__logo { display: flex; align-items: center; justify-content: center; }
-    .nav__logo img { height: 2.467rem; width: auto; transform: translateY(-0.2rem); }
-    .nav__right { display: flex; gap: 2.4rem; align-items: center; justify-content: flex-end; }
-    .nav__right button, .nav__right a { color: var(--text); font-size: 1.4rem; display: flex; align-items: center; }
-    .nav__right svg { width: 2.333rem; height: 2.333rem; }
-    .nav__mobile-menu { display: none; }
-    .nav__hamburger { display: none; flex-direction: column; gap: 0.333rem; background: none; border: none; padding: 0.533rem; cursor: pointer; }
-    .nav__hamburger span { width: 1.867rem; height: 0.133rem; background: var(--text); transition: all 0.3s ease; }
-    .nav__hamburger.is-open span:nth-child(1) { transform: translateY(0.467rem) rotate(45deg); }
-    .nav__hamburger.is-open span:nth-child(2) { opacity: 0; }
-    .nav__hamburger.is-open span:nth-child(3) { transform: translateY(-0.467rem) rotate(-45deg); }
-    .nav__mobile-menu {
-      display: none; position: fixed; top: var(--nav-h); left: 0; right: 0; bottom: 0;
-      background: var(--bg); z-index: 999; flex-direction: column;
-      padding: 2.667rem 2.133rem; gap: 1.867rem; overflow-y: auto;
-    }
-    .nav__mobile-menu.open { display: flex; }
-    .nav__mobile-menu a {
-      font-size: 2.4rem; letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--text); font-weight: 300; font-family: var(--body); text-decoration: none;
-    }
-    .nav__mobile-menu a.underlined { text-decoration: underline; text-underline-offset: 0.333rem; }
-    .nav__mobile-menu hr { border: none; border-top: 1px solid var(--border); width: 100%; margin: 0.267rem 0; }
+    /* NAVBAR — override: always solid with border */
+    .nav { background: var(--bg); border-bottom: 1px solid var(--border); }
 
     /* ===========================================
        MAIN LAYOUT
@@ -366,24 +273,7 @@
     details { border-top: 1px solid #eee; margin-top: 0.933rem; }
     details summary { cursor: pointer; font-size: 0.92rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500; padding: 0.8rem 0; }
     details > div { padding: 0 0 0.933rem; color: var(--text-mid); font-size: 0.95rem; line-height: 1.6; }
-
-    /* ===========================================
-       FOOTER
-       =========================================== */
-    .footer { border-top: 1px solid var(--border); padding: 4rem 3.2rem 2.133rem; text-align: left; }
-    .footer__grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.667rem; margin-bottom: 2.133rem; }
-    .footer__brand-name { font-family: var(--heading); font-size: var(--fs-subtitle); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.933rem; font-weight: 700; }
-    .footer__brand p { color: var(--text-light); font-size: var(--fs-body); max-width: 24rem; line-height: 1.6; }
-    .footer h4 { font-family: var(--body); font-size: var(--fs-body); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; margin-bottom: 0.933rem; }
-    .footer ul { display: flex; flex-direction: column; gap: 0.667rem; }
-    .footer ul a { font-size: var(--fs-body); color: var(--text-light); transition: 0.2s; }
-    .footer ul a:hover { color: var(--text); }
-    .footer__bottom { border-top: 1px solid #eee; padding-top: 1.333rem; display: flex; justify-content: space-between; align-items: center; font-size: var(--fs-ui); color: var(--text-light); }
-    .footer__social { display: flex; gap: 0.8rem; }
-    .footer__social a { width: 2.8rem; height: 2.8rem; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: var(--fs-ui); color: var(--text-light); transition: 0.2s; }
-    .footer__social a:hover { background: var(--text); color: #fff; border-color: var(--text); }
-
-    /* ===========================================
+/* ===========================================
        WISHLIST PAGE
        =========================================== */
     .wishlist-page {
@@ -674,37 +564,13 @@
       border-top: 1px solid #f5f5f5;
       letter-spacing: 0.03em;
     }
-
-    /* TOAST */
-    .toast { position: fixed; bottom: 1.6rem; left: 50%; transform: translateX(-50%) translateY(1.333rem); background: var(--text); color: #fff; padding: 0.733rem 2rem; font-size: 0.82rem; z-index: 9999; opacity: 0; transition: all 0.3s ease; }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-    /* ===========================================
+/* ===========================================
        RESPONSIVE
        =========================================== */
     @media (max-width: 1024px) {
       .product-grid { grid-template-columns: repeat(2, 1fr); }
-      .footer__grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 768px) {
-      :root {
-        --nav-h: 8rem;
-        --fs-hero: 4rem;
-        --fs-section: 3.2rem;
-        --fs-page: 2.8rem;
-        --fs-subtitle: 2rem;
-        --fs-body: 1.8rem;
-        --fs-ui: 1.6rem;
-        --fs-btn: 1.5rem;
-        --fs-label: 1.4rem;
-      }
-      .nav__inner { padding: 0 2rem; display: flex; align-items: center; justify-content: center; position: relative; }
-      .nav__left { display: none; }
-      .nav__right { display: none; }
-      .nav__hamburger { display: flex; position: absolute; right: 2rem; top: 50%; transform: translateY(-50%); flex-direction: column; gap: 0.5rem; }
-      .nav__hamburger span { width: 2.8rem; height: 0.2rem; }
-      .nav__logo img { height: 2.8rem; }
-      .nav__logo { justify-content: center; }
       .main { grid-template-columns: 1fr; }
       .sidebar { position: relative; top: 0; padding: 1.333rem 1.333rem 0.8rem; max-height: none; text-align: center; }
       .sidebar__tag { font-size: 0.7rem; }
@@ -777,10 +643,6 @@
       .btn { padding: 1.067rem 1.6rem; font-size: 0.9rem; }
       .btn--outline { padding: 1.067rem 1.333rem; font-size: 1.2rem; }
       .wish-selector { min-width: auto; width: calc(100vw - 2.667rem); max-width: 22.667rem; right: 0; left: auto; }
-      .footer { padding: 2.133rem 1.333rem 1.333rem; }
-      .footer__grid { grid-template-columns: 1fr; gap: 1.6rem; }
-      .footer__col-comprar { display: none; }
-      .footer__bottom { flex-direction: column; gap: 0.8rem; text-align: center; }
     }
   </style>
 </head>
