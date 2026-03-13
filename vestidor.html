@@ -886,8 +886,10 @@
     }
 
     /* Hide mobile-only buttons on desktop */
-    .btn-v--screenshot { display: none !important; }
-    .btn-v--share-main { display: none !important; }
+    @media (min-width: 769px) {
+      .btn-v--screenshot { display: none !important; }
+      .btn-v--share-main { display: none !important; }
+    }
   </style>
 </head>
 <body>
