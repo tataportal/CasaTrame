@@ -722,7 +722,8 @@
         order: 1;
         height: 55vh;
         padding: 0;
-        overflow: hidden;
+        overflow: visible;
+        position: relative;
       }
       .canvas {
         width: 100%; height: 100%;
@@ -745,13 +746,13 @@
       .btn-v svg { width: 3vw; height: 3vw; }
       .btn-v--help { width: 7vw; height: 7vw; min-width: 7vw; font-size: 3vw; }
       .btn-v--screenshot { display: inline-flex !important; }
-      /* ── SHARE BUTTON (prominent, above toolbar) ── */
+      /* ── SHARE BUTTON (prominent, top-right over canvas) ── */
       .btn-v--share-main {
         display: inline-flex !important;
-        position: absolute; top: 2.5vw; right: 2.5vw; z-index: 11;
+        position: absolute; top: 2.5vw; right: 2.5vw; z-index: 20;
         background: var(--text); color: #fff; border: none;
         padding: 2vw 4.5vw; font-size: 3vw;
-        letter-spacing: 0.08em; pointer-events: auto;
+        letter-spacing: 0.08em;
       }
       .btn-v--share-main svg { width: 3.5vw; height: 3.5vw; }
 
@@ -1014,13 +1015,12 @@
     <!-- CENTER: Canvas + layers -->
     <div class="center">
 
+      <!-- COMPARTIR button (mobile only, positioned over canvas) -->
+      <button class="btn-v btn-v--share-main" onclick="shareToIGStories()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        COMPARTIR
+      </button>
       <div class="canvas" id="canvas">
-        <!-- Toolbar overlay (inside canvas so it positions over it) -->
-        <!-- COMPARTIR button (top-right, mobile only) -->
-        <button class="btn-v btn-v--share-main" onclick="shareToIGStories()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-          COMPARTIR
-        </button>
         <div class="center-toolbar">
           <div class="center-toolbar__group">
             <button class="btn-v btn-v--outline" onclick="randomizeOutfit()">
