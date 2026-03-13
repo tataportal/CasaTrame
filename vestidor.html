@@ -715,7 +715,7 @@
         overflow: visible;
       }
 
-      /* ── CANVAS (55vh) ── */
+      /* ── CANVAS ── */
       .center {
         order: 1;
         height: 55vh;
@@ -724,6 +724,7 @@
       }
       .canvas {
         width: 100%; height: 100%;
+        background: #ffffff;
         border: none; border-bottom: 1px solid var(--border);
       }
       .layer-stack { display: none; }
@@ -731,12 +732,26 @@
       .desktop-only { display: none; }
       .mobile-only { display: inline; }
 
-      /* ── TOOLBAR BUTTONS (Randomizar, Limpiar, etc.) ── */
-      .center-toolbar { flex-wrap: wrap; gap: 1.5vw; bottom: 2.5vw; left: 2.5vw; right: 2.5vw; }
-      .btn-v { padding: 2.2vw 4vw; font-size: 3.6vw; letter-spacing: 0.04em; }
-      .btn-v svg { width: 4vw; height: 4vw; }
-      .btn-v--help { width: 10vw; height: 10vw; min-width: 10vw; font-size: 3.8vw; }
+      /* ── TOOLBAR: single row, small pill buttons ── */
+      .center-toolbar {
+        flex-wrap: nowrap; gap: 1.5vw;
+        bottom: 2vw; left: 2vw; right: 2vw;
+        justify-content: center;
+      }
+      .center-toolbar__group { gap: 1.5vw; }
+      .btn-v { padding: 1.5vw 3vw; font-size: 2.8vw; letter-spacing: 0.03em; }
+      .btn-v svg { width: 3vw; height: 3vw; }
+      .btn-v--help { width: 7vw; height: 7vw; min-width: 7vw; font-size: 3vw; }
       .btn-v--screenshot { display: inline-flex; }
+      /* ── SHARE BUTTON (prominent, above toolbar) ── */
+      .btn-v--share-main {
+        display: inline-flex;
+        position: absolute; top: 2.5vw; right: 2.5vw; z-index: 11;
+        background: var(--text); color: #fff; border: none;
+        padding: 2vw 4.5vw; font-size: 3vw;
+        letter-spacing: 0.08em; pointer-events: auto;
+      }
+      .btn-v--share-main svg { width: 3.5vw; height: 3.5vw; }
 
       /* ── CATEGORY FILTER ── */
       .cat-filter {
@@ -773,7 +788,7 @@
 
       /* ── GARMENT ROW ── */
       .panel {
-        order: 3; height: auto; padding: 1.5vw 0;
+        order: 3; height: auto; padding: 1vw 0;
         border-right: none; border-bottom: 1px solid var(--border);
         max-height: none; position: relative; top: 0;
         display: flex; flex-direction: row;
@@ -803,7 +818,7 @@
       .panel__item__eye { display: none !important; }
       .panel__section--favs { display: none; }
 
-      /* ── TU OUTFIT PANEL (full-width, edge to edge) ── */
+      /* ── TU OUTFIT PANEL (full-width, edge to edge, left-aligned) ── */
       .panel--right {
         order: 4; border-left: none; border-right: none;
         border-top: 1px solid var(--border); border-bottom: none;
@@ -811,27 +826,36 @@
         -webkit-overflow-scrolling: touch;
         height: auto; min-height: auto; padding: 0; width: 100%;
         display: flex; flex-direction: column; max-height: none;
+        align-items: stretch;
       }
-      .summary { padding: 0; }
+      .summary { padding: 0; width: 100%; }
       .summary__title {
-        font-size: 4vw; margin-bottom: 0;
-        padding: 3.5vw 4vw 2.5vw; letter-spacing: 0.12em;
+        font-size: 3.8vw; margin-bottom: 0;
+        padding: 3.5vw 4vw 2vw; letter-spacing: 0.12em;
+        text-align: left;
       }
-      .summary__list { min-height: auto; padding: 0; }
-      .summary__empty { padding: 4vw; font-size: 3.8vw; }
-      .summary__item { padding: 3vw 4vw; gap: 3vw; border-bottom: 1px solid #f0f0f0; }
+      .summary__list { min-height: auto; padding: 0; width: 100%; }
+      .summary__empty { padding: 4vw; font-size: 3.8vw; text-align: left; }
+      .summary__item {
+        padding: 3vw 4vw; gap: 3vw;
+        border-bottom: 1px solid #f0f0f0;
+        width: 100%;
+      }
       .summary__item-img { width: 15vw; height: 19vw; }
       .summary__item-cat { font-size: 3vw; }
       .summary__item-name { font-size: 3.8vw; }
       .summary__item-price { font-size: 3.8vw; }
-      .summary__item-remove { width: 10vw; height: 10vw; }
-      .summary__item-remove svg { width: 4.5vw; height: 4.5vw; }
-      .summary__total { padding: 3.5vw 4vw; margin-top: 0; border-top: 1px solid var(--border); }
+      .summary__item-remove { width: 8vw; height: 8vw; }
+      .summary__item-remove svg { width: 4vw; height: 4vw; }
+      .summary__total {
+        padding: 3.5vw 4vw; margin-top: 0;
+        border-top: 1px solid var(--border); width: 100%;
+      }
       .summary__total-label { font-size: 3.8vw; }
       .summary__total-value { font-size: 4.5vw; }
       .summary__checkout {
         padding: 3.5vw 0; font-size: 3.8vw;
-        margin: 0; border-radius: 0; letter-spacing: 0.1em;
+        margin: 0; border-radius: 0; letter-spacing: 0.1em; width: 100%;
       }
       .saved-looks { display: none; }
       .summary__tip { display: none; }
@@ -858,8 +882,9 @@
       .outfit-popup__submit { padding: 3.5vw 0; font-size: 3.8vw; margin-top: 3vw; }
     }
 
-    /* Hide screenshot button on desktop */
+    /* Hide mobile-only buttons on desktop */
     .btn-v--screenshot { display: none; }
+    .btn-v--share-main { display: none; }
   </style>
 </head>
 <body>
@@ -989,6 +1014,11 @@
 
       <div class="canvas" id="canvas">
         <!-- Toolbar overlay (inside canvas so it positions over it) -->
+        <!-- COMPARTIR button (top-right, mobile only) -->
+        <button class="btn-v btn-v--share-main" onclick="shareToIGStories()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          COMPARTIR
+        </button>
         <div class="center-toolbar">
           <div class="center-toolbar__group">
             <button class="btn-v btn-v--outline" onclick="randomizeOutfit()">
