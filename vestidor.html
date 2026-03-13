@@ -2493,32 +2493,66 @@
     function shareToIGStories() {
       if (layers.length === 0) { toast('Agrega prendas primero'); return; }
 
-      // Generate the 1080x1920 image first, then share
-      generateOutfitImage(function(blob) {
-        if (!blob) { toast('Error al generar imagen'); return; }
+      // Build a temporary "look" object from the current canvas state
+      const canvasEl = document.getElementById('canvas');
+      const canvasRect = canvasEl.getBoundingClientRect();
+      const cW = canvasRect.width, cH = canvasRect.height;
 
-        const file = new File([blob], 'mi-outfit-casatrame.png', { type: 'image/png' });
+      const visualLayers = [];
+      const layerEls = canvasEl.querySelectorAll('.canvas__layer');
+      for (const layerEl of layerEls) {
+        const uid = parseInt(layerEl.getAttribute('data-uid'));
+        const layer = layers.find(l => l.uid === uid);
+        if (!layer || layer.hidden) continue;
+        const imgEl = layerEl.querySelector('img');
+        if (!imgEl) continue;
 
-        // Check if Web Share API with files is supported (iOS Safari 15+, Android Chrome)
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          navigator.share({
-            files: [file],
-            title: 'Mi outfit — Casa Tramé',
-            text: 'Armé este look en el Vestidor™ de Casa Tramé ✨'
-          }).then(() => {
-            toast('¡Compartido!');
-          }).catch(err => {
-            if (err.name !== 'AbortError') {
-              // User cancelled — not an error
-              toast('Descargando imagen...');
-              downloadBlob(blob);
-            }
-          });
-        } else {
-          // Fallback: download + show instructions
-          downloadBlob(blob);
-          toast('Imagen descargada — súbela a tu Story');
-        }
+        const res = resolveImages(layer.item, layer.state);
+        let imgSrc = res.img || layer.item.img;
+        if (layer.layerType === 'coat-back' && res.imgBack) imgSrc = res.imgBack;
+        if (layer.layerType === 'coat-front' && res.imgFront) imgSrc = res.imgFront;
+
+        const r = layerEl.getBoundingClientRect();
+        visualLayers.push({
+          img: imgSrc,
+          left: ((r.left - canvasRect.left) / cW * 100),
+          top: ((r.top - canvasRect.top) / cH * 100),
+          width: (r.width / cW * 100),
+          height: (r.height / cH * 100),
+          zIndex: layerEl.style.zIndex || 1
+        });
+      }
+
+      if (visualLayers.length === 0) { toast('Agrega prendas primero'); return; }
+
+      // Use the branded buildStoryCanvas template
+      const tempLook = { visualLayers };
+      buildStoryCanvas(tempLook).then(cvs => {
+        if (!cvs) { toast('Error al generar imagen'); return; }
+
+        cvs.toBlob(function(blob) {
+          if (!blob) { toast('Error al generar imagen'); return; }
+
+          const file = new File([blob], 'mi-outfit-casatrame.png', { type: 'image/png' });
+
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            navigator.share({
+              files: [file],
+              title: 'Mi outfit — Casa Tramé',
+              text: 'Armé este look en el Vestidor™ de Casa Tramé ✨'
+            }).then(() => {
+              toast('¡Compartido!');
+            }).catch(err => {
+              if (err.name !== 'AbortError') {
+                toast('Descargando imagen...');
+                downloadBlob(blob);
+              }
+            });
+          } else {
+            downloadBlob(blob);
+            toast('Imagen descargada — súbela a tu Story');
+          }
+        }, 'image/png');
       });
     }
 
