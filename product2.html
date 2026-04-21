@@ -857,7 +857,7 @@
 
     <!-- Title + price -->
     <h1 class="pdp-info__title">Trench de Seda y Nylon</h1>
-    <div id="priceEl" style="font-size:14px;color:#6f6a61;margin-bottom:24px;">$ 2,450</div>
+    <div style="font-size:14px;color:#6f6a61;margin-bottom:24px;">$ 2,450</div>
 
     <!-- Color: label + thumbnail images -->
     <div class="pdp-info__color-label">
@@ -1014,182 +1014,6 @@
 
   <script src="cart.js"></script>
   <script>
-    /* ═══════════════════════════════════════════
-       PRODUCT CATALOGUE
-    ═══════════════════════════════════════════ */
-    const PRODUCTS = [
-      { id:1,  name:"The Satin Halter Dress",   cat:"abrigos",    price:1150,
-        colors:["#3D2B1F","#C5B88A","#5C2434"],
-        colorNames:{"#3D2B1F":"Café oscuro","#C5B88A":"Dorado","#5C2434":"Vino"},
-        colorImgs:{"#3D2B1F":"photos_demo/Untitled-1.png","#C5B88A":"photos_demo/001-gold.jpg","#5C2434":"photos_demo/001-wine.jpg"},
-        img:"photos_demo/Untitled-1.png", hoverImg:"photos_demo/001-brown-model.jpg",
-        desc:"Vestido halter en satén con cuello drapeado. Silueta mini con espalda abierta.",
-        details:"100% poliéster satinado. Cierre metálico en espalda." },
-
-      { id:2,  name:"The Tramé Cape",            cat:"abrigos",    price:2450,
-        colors:["#3D2B1F","#111"],
-        colorNames:{"#3D2B1F":"Café","#111":"Negro"},
-        colorImgs:{"#3D2B1F":"photos_demo/demo_cape_brown.png","#111":"photos_demo/demo_cape_black.png"},
-        img:"photos_demo/demo_cape_brown.png",
-        desc:"Capa oversize en lana boiled con botón superior. Silueta dramática y fluida.",
-        details:"100% lana boiled italiana. Sin forro. Talla única." },
-
-      { id:3,  name:"The Cropped Denim Jacket",  cat:"buzos",      price:1850,
-        colors:["#A8C4D8","#999"],
-        colorNames:{"#A8C4D8":"Azul hielo","#999":"Gris"},
-        colorImgs:{"#A8C4D8":"photos_demo/demo_denim_jacket.png","#999":"photos_demo/demo_jacket_gris.png"},
-        img:"photos_demo/demo_denim_jacket.png", hoverImg:"photos_demo/denim-blue-model.jpg",
-        desc:"Chamarra denim cropped con lavado vintage. Corte boxy y hombros estructurados.",
-        details:"100% algodón orgánico (14 oz denim). Botones de latón envejecido." },
-
-      { id:4,  name:"The Washed Denim Jacket",   cat:"buzos",      price:1650,
-        colors:["#999","#A8C4D8"],
-        colorNames:{"#999":"Gris","#A8C4D8":"Azul hielo"},
-        colorImgs:{"#999":"photos_demo/demo_jacket_gris.png","#A8C4D8":"photos_demo/demo_denim_jacket.png"},
-        img:"photos_demo/demo_jacket_gris.png", hoverImg:"photos_demo/denim-blue-model.jpg",
-        desc:"Chamarra denim en lavado gris con acabado suave. Corte cropped relajado.",
-        details:"100% algodón orgánico (12 oz denim). Lavado enzimático." },
-
-      { id:5,  name:"The Wide-Leg Jean",          cat:"denim",      price:1350,
-        colors:["#A8C4D8","#F5F0E8","#6B8DB5"],
-        colorNames:{"#A8C4D8":"Azul claro","#F5F0E8":"Crudo","#6B8DB5":"Índigo"},
-        colorImgs:{"#A8C4D8":"photos_demo/demo_jeans.png","#F5F0E8":"photos_demo/denim-white.jpg","#6B8DB5":"photos_demo/denim-blue.jpg"},
-        img:"photos_demo/demo_jeans.png",
-        desc:"Jean de pierna ancha con lavado claro vintage. Tiro alto y silueta relajada.",
-        details:"100% algodón orgánico (12 oz denim). Lavado stone wash." },
-
-      { id:6,  name:"The Mom Slim Jean",          cat:"denim",      price:1150,
-        colors:["#6B8DB5","#2F3B4A","#1a1a1a","#A8C4D8"],
-        colorNames:{"#6B8DB5":"Azul","#2F3B4A":"Marino","#1a1a1a":"Negro","#A8C4D8":"Claro"},
-        colorImgs:{"#6B8DB5":"photos_demo/denim-blue.jpg","#2F3B4A":"photos_demo/denim-darkblue.jpg","#1a1a1a":"photos_demo/denim-darkgray.jpg","#A8C4D8":"photos_demo/denim-light.jpg"},
-        img:"photos_demo/denim-blue.jpg",
-        desc:"Jean mom fit de tiro alto con pierna ligeramente cónica. El clásico reinventado.",
-        details:"98% algodón, 2% elastano. Denim rígido con ligero stretch." },
-
-      { id:7,  name:"The Straight Jean",          cat:"denim",      price:1250,
-        colors:["#1a1a1a","#333","#2F3B4A"],
-        colorNames:{"#1a1a1a":"Negro","#333":"Gris oscuro","#2F3B4A":"Marino"},
-        colorImgs:{"#1a1a1a":"photos_demo/denim-black.jpg","#333":"photos_demo/denim-darkgray.jpg","#2F3B4A":"photos_demo/denim-darkblue.jpg"},
-        img:"photos_demo/denim-black.jpg",
-        desc:"Jean recto en denim oscuro. Pierna recta con tiro alto y lavado mínimo.",
-        details:"100% algodón orgánico (13.5 oz denim). Tintura índigo natural." },
-
-      { id:8,  name:"The White Wide-Leg Jean",    cat:"denim",      price:1450,
-        colors:["#F5F0E8","#A8C4D8"],
-        colorNames:{"#F5F0E8":"Crudo","#A8C4D8":"Azul claro"},
-        colorImgs:{"#F5F0E8":"photos_demo/denim-white.jpg","#A8C4D8":"photos_demo/denim-light.jpg"},
-        img:"photos_demo/denim-white.jpg",
-        desc:"Jean wide-leg en denim blanco. Pierna amplia con caída elegante.",
-        details:"98% algodón, 2% elastano. Lavado enzimático blanco óptico." },
-
-      { id:9,  name:"The Essential Polo",         cat:"polos",      price:650,
-        colors:["#B0B0B0"],
-        colorNames:{"#B0B0B0":"Gris"},
-        colorImgs:{"#B0B0B0":"photos_demo/demo_polo_gray.png"},
-        img:"photos_demo/demo_polo_gray.png",
-        desc:"Polo oversize en algodón pesado con cuello redondo. Básico elevado.",
-        details:"100% algodón pima (220 gsm). Costuras reforzadas." },
-
-      { id:10, name:"The Long Coat",              cat:"abrigos",    price:3450,
-        colors:["#8B7D6B"],
-        colorNames:{"#8B7D6B":"Beige"},
-        colorImgs:{"#8B7D6B":"photos_demo/demo_coat_bown.png"},
-        img:"photos_demo/demo_coat_bown.png",
-        desc:"Abrigo largo cruzado en paño de lana con patrón houndstooth. Silueta entallada con solapa ancha.",
-        details:"85% lana, 15% cashmere. Forro completo en cupro. Cierre de doble botón." },
-
-      { id:11, name:"The Suede Jacket",           cat:"buzos",      price:1950,
-        colors:["#556B2F"],
-        colorNames:{"#556B2F":"Oliva"},
-        colorImgs:{"#556B2F":"photos_demo/demo_jacket_green.png"},
-        img:"photos_demo/demo_jacket_green.png",
-        desc:"Chaqueta en suede sintético con cuello redondo y puños acanalados. Corte relajado.",
-        details:"100% poliéster con acabado suede. Forro interior en algodón." },
-
-      { id:12, name:"The Mini Suede Skirt",       cat:"pantalones", price:890,
-        colors:["#556B2F"],
-        colorNames:{"#556B2F":"Oliva"},
-        colorImgs:{"#556B2F":"photos_demo/demo_falda_green.png"},
-        img:"photos_demo/demo_falda_green.png",
-        desc:"Minifalda en suede sintético con abertura lateral. Tiro alto con cierre invisible.",
-        details:"100% poliéster con acabado suede. Forro en viscosa." },
-
-      /* Fallback: trench */
-      { id:301, name:"Trench de Seda y Nylon",   cat:"abrigos",    price:2450,
-        colors:["#c9b79a","#4a2e1d"],
-        colorNames:{"#c9b79a":"Arena","#4a2e1d":"Carrubo"},
-        colorImgs:{"#c9b79a":"img/producto_abrigo.png","#4a2e1d":"photos_demo/demo_coat_bown.png"},
-        img:"img/producto_abrigo.png", hoverImg:"photos_demo/demo_coat_bown.png",
-        desc:"Trench con hombros esculturales inspirados en el Cabat, confeccionado en lienzo de seda y nylon, con correa de cuello de cuero trenzado desmontable.",
-        details:"67% poliamida, 33% seda · Correa: cuero intrecciato · Hecho a mano en Perú · Código: CT-859441-CB" }
-    ];
-
-    /* ═══════════════════════════════════════════
-       LOAD PRODUCT FROM URL ?id=
-    ═══════════════════════════════════════════ */
-    let currentProduct = PRODUCTS[PRODUCTS.length - 1]; // default: trench
-    let selectedColor  = '';
-    let selectedSize   = null;
-
-    function loadProduct() {
-      const id = parseInt(new URLSearchParams(window.location.search).get('id'));
-      currentProduct = PRODUCTS.find(p => p.id === id) || currentProduct;
-      const p = currentProduct;
-
-      /* page title */
-      document.title = `${p.name} — Casa Tramé`;
-
-      /* info section */
-      document.querySelector('.pdp-info__title').textContent = p.name;
-      document.querySelector('#priceEl').textContent = `$ ${p.price.toLocaleString()}`;
-      document.querySelector('.pdp-desc-short').textContent = p.desc;
-      document.querySelector('.pdp-accordion .pdp-accordion__panel').textContent = p.details;
-
-      /* sticky bar */
-      document.querySelector('.pdp-stickybar__name').textContent = p.name;
-
-      /* pick first color */
-      selectedColor = p.colors[0];
-      document.getElementById('colorName').textContent = p.colorNames[selectedColor] || selectedColor;
-
-      /* build color thumbnails */
-      const swEl = document.getElementById('colorSwatches');
-      swEl.innerHTML = p.colors.map((hex, i) =>
-        `<div class="thumb${i===0?' active':''}" data-color="${hex}"
-              onclick="selectColor('${hex}',this)" title="${p.colorNames[hex]||hex}">
-           <img src="${p.colorImgs[hex]||p.img}" alt="${p.colorNames[hex]||hex}">
-         </div>`
-      ).join('');
-
-      /* build sticky swatches */
-      const ssEl = document.querySelector('.pdp-stickybar__swatches');
-      ssEl.innerHTML = p.colors.map((hex, i) =>
-        `<span class="pdp-stickybar__swatch${i===0?' active':''}"
-               data-color="${hex}" style="background:${hex};"
-               title="${p.colorNames[hex]||hex}"
-               onclick="selectColor('${hex}')"></span>`
-      ).join('');
-
-      /* hero images */
-      const heroImgs = document.querySelectorAll('#pdpGallery .pdp-gallery__pair img');
-      const img1 = p.colorImgs[selectedColor] || p.img;
-      const img2 = p.hoverImg || Object.values(p.colorImgs)[1] || img1;
-      if (heroImgs[0]) heroImgs[0].src = img1;
-      if (heroImgs[1]) heroImgs[1].src = img2;
-
-      /* post-gallery images */
-      const allImgs = [...new Set([...Object.values(p.colorImgs), p.hoverImg].filter(Boolean))];
-      const pairImgs = document.querySelectorAll('.pdp-post-gallery__pair img');
-      const fullImg  = document.querySelector('.pdp-post-gallery__full img');
-      if (pairImgs[0]) pairImgs[0].src = allImgs[0] || img1;
-      if (pairImgs[1]) pairImgs[1].src = allImgs[1] || img2;
-      if (fullImg)     fullImg.src      = allImgs[2] || allImgs[0] || img1;
-    }
-
-    /* ═══════════════════════════════════════════
-       INTERACTIONS
-    ═══════════════════════════════════════════ */
-
     /* ─── Mobile menu ─── */
     const mobileMenu = document.getElementById('mobileMenu');
     const hamburger  = document.querySelector('.nav__hamburger');
@@ -1202,23 +1026,25 @@
     }
     window.addEventListener('resize', () => {
       if (window.innerWidth > 640 && menuOpen) {
-        menuOpen = false; mobileMenu.classList.remove('open');
-        hamburger.classList.remove('is-open'); document.body.style.overflow = '';
+        menuOpen = false;
+        mobileMenu.classList.remove('open');
+        hamburger.classList.remove('is-open');
+        document.body.style.overflow = '';
       }
     });
+
+    /* ─── State ─── */
+    let selectedColor = 'Carrubo';
+    let selectedSize  = null;
 
     /* ─── Color ─── */
     function selectColor(color) {
       selectedColor = color;
-      const p = currentProduct;
-      document.getElementById('colorName').textContent = p.colorNames[color] || color;
+      document.getElementById('colorName').textContent = color;
       document.querySelectorAll('#colorSwatches .thumb').forEach(t =>
         t.classList.toggle('active', t.dataset.color === color));
       document.querySelectorAll('.pdp-stickybar__swatch').forEach(s =>
         s.classList.toggle('active', s.dataset.color === color));
-      /* swap first hero image */
-      const heroImg = document.querySelector('#pdpGallery .pdp-gallery__pair img');
-      if (heroImg) heroImg.src = p.colorImgs[color] || p.img;
     }
 
     /* ─── Size ─── */
@@ -1229,7 +1055,10 @@
       cb.setAttribute('aria-expanded', open);
     }
     function selectSize(el) {
-      if (el.dataset.avail === 'notify') { toast('Avísame — disponible próximamente'); return; }
+      if (el.dataset.avail === 'notify') {
+        toast('Avísame — disponible próximamente');
+        return;
+      }
       selectedSize = el.dataset.size;
       document.getElementById('sizeComboboxLabel').textContent = 'Talla ' + selectedSize;
       document.getElementById('sizeSelect').classList.remove('open');
@@ -1244,32 +1073,31 @@
     function addToBag() {
       if (!selectedSize) {
         document.getElementById('sizeError').classList.add('show');
-        toast('Selecciona una talla primero'); return;
+        toast('Selecciona una talla primero');
+        return;
       }
-      const p   = currentProduct;
-      const img = p.colorImgs[selectedColor] || p.img;
-      addToCart(p.id, selectedColor, selectedSize, img, p.name, p.price);
+      const img = document.querySelector('.pdp-gallery img').src;
+      addToCart(301, selectedColor, selectedSize, img, 'Trench de Seda y Nylon', 2450);
     }
 
     /* ─── Toast ─── */
     function toast(msg) {
       const el = document.getElementById('toastEl');
-      el.textContent = msg; el.classList.add('show');
+      el.textContent = msg;
+      el.classList.add('show');
       setTimeout(() => el.classList.remove('show'), 2400);
     }
 
-    /* ─── Sticky bar visibility ─── */
+    /* ─── Sticky bar: show in gallery, hide when info in view ─── */
     const stickybar = document.getElementById('pdpStickybar');
     const pdpInfo   = document.getElementById('pdpInfo');
     function updateStickybar() {
       if (!stickybar || !pdpInfo) return;
-      stickybar.classList.toggle('hide', pdpInfo.getBoundingClientRect().top < window.innerHeight * 0.9);
+      const infoTop = pdpInfo.getBoundingClientRect().top;
+      stickybar.classList.toggle('hide', infoTop < window.innerHeight * 0.9);
     }
     window.addEventListener('scroll', updateStickybar, { passive: true });
-
-    /* ─── Init ─── */
-    loadProduct();
-    updateStickybar();
+    updateStickybar(); // run once on load
   </script>
 </body>
 </html>
