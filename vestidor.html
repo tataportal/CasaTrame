@@ -1407,7 +1407,7 @@
     /* Slot groups: only 1 item per group allowed on canvas */
     const slotGroups = [
       ['abrigos', 'jackets'],
-      ['polos', 'blusas'],
+      ['polos'],
       ['pants', 'faldas'],
     ];
     function getSlotGroup(cat) { return slotGroups.find(g => g.includes(cat)); }
@@ -1431,15 +1431,35 @@
 
       const st = itemStates[item.id] || item.defaultState || null;
 
-      if (item.doubleLayer) {
-        // Back → always at the very bottom (index 0)
-        layers.unshift({ uid: ++uidCounter, item, layerType: 'coat-back', state: st });
-        // Front → always at the very top (end)
-        layers.push({ uid: ++uidCounter, item, layerType: 'coat-front', state: st });
+      /* Layer priority: pants/faldas=0, polos=1, blusas(mid)=2, jackets=3, abrigos=4 */
+      const layerOrder = { pants:0, faldas:0, polos:1, blusas:2, jackets:3, abrigos:4 };
+      const itemOrder = layerOrder[cat] ?? 2;
+
+      if (item.doubleLayer && cat === 'blusas') {
+        // Mid-layer: back goes after polos, front goes before jackets/abrigos
+        const backLayer = { uid: ++uidCounter, item, layerType: 'mid-back', state: st, _order: itemOrder };
+        const frontLayer = { uid: ++uidCounter, item, layerType: 'mid-front', state: st, _order: itemOrder };
+        // Insert back after last polo/normal with lower order
+        let backIdx = 0;
+        for (let i = 0; i < layers.length; i++) {
+          const lo = layerOrder[layers[i].item.cat] ?? 2;
+          if (lo <= 1) backIdx = i + 1;
+        }
+        layers.splice(backIdx, 0, backLayer);
+        // Insert front just before coat-back/coat-front layers (abrigos/jackets)
+        let frontIdx = layers.length;
+        for (let i = 0; i < layers.length; i++) {
+          if (layers[i].layerType === 'coat-back' || layers[i].layerType === 'coat-front') { frontIdx = i; break; }
+        }
+        layers.splice(frontIdx, 0, frontLayer);
+      } else if (item.doubleLayer) {
+        // Outer layer (abrigos/jackets): back at bottom, front at top
+        layers.unshift({ uid: ++uidCounter, item, layerType: 'coat-back', state: st, _order: itemOrder });
+        layers.push({ uid: ++uidCounter, item, layerType: 'coat-front', state: st, _order: itemOrder });
       } else {
-        // Normal items go just before any coat-front layers (so they stay "embraced")
-        const lastNormalIdx = layers.reduce((acc, l, i) => l.layerType !== 'coat-front' ? i : acc, -1);
-        layers.splice(lastNormalIdx + 1, 0, { uid: ++uidCounter, item, layerType: 'normal', state: st });
+        // Normal items go just before any coat-front/mid-front layers
+        const lastNormalIdx = layers.reduce((acc, l, i) => (l.layerType !== 'coat-front' && l.layerType !== 'mid-front' && l.layerType !== 'mid-back') ? i : acc, -1);
+        layers.splice(lastNormalIdx + 1, 0, { uid: ++uidCounter, item, layerType: 'normal', state: st, _order: itemOrder });
       }
 
       // Mark as selected (both in catalog and favoritos)
@@ -1467,8 +1487,8 @@
         div.className = 'canvas__layer';
         div.setAttribute('data-cat', l.item.cat);
         div.setAttribute('data-uid', l.uid);
-        if (l.layerType === 'coat-back') div.classList.add('canvas__layer--coat-back');
-        if (l.layerType === 'coat-front') div.classList.add('canvas__layer--coat-front');
+        if (l.layerType === 'coat-back' || l.layerType === 'mid-back') div.classList.add('canvas__layer--coat-back');
+        if (l.layerType === 'coat-front' || l.layerType === 'mid-front') div.classList.add('canvas__layer--coat-front');
 
         // z-index follows array order: index 0 = back, last = front
         div.style.zIndex = i + 2;
@@ -1476,8 +1496,8 @@
         // Pick correct image: resolve state, then separate back/front if available
         const resolved = resolveImages(l.item, l.state);
         let imgSrc = resolved.img || l.item.img;
-        if (l.layerType === 'coat-back' && resolved.imgBack) imgSrc = resolved.imgBack;
-        if (l.layerType === 'coat-front' && resolved.imgFront) imgSrc = resolved.imgFront;
+        if ((l.layerType === 'coat-back' || l.layerType === 'mid-back') && resolved.imgBack) imgSrc = resolved.imgBack;
+        if ((l.layerType === 'coat-front' || l.layerType === 'mid-front') && resolved.imgFront) imgSrc = resolved.imgFront;
 
         div.innerHTML = `<img src="${imgSrc}" alt="${l.item.name}" loading="lazy">`;
         canvas.insertBefore(div, document.getElementById('canvasDropzone'));
@@ -1499,8 +1519,8 @@
       }
       stack.classList.add('has-layers');
 
-      // Render from top (front) to bottom (back), skip coat-back layers
-      const reversed = [...layers].reverse().filter(l => l.layerType !== 'coat-back');
+      // Render from top (front) to bottom (back), skip back layers
+      const reversed = [...layers].reverse().filter(l => l.layerType !== 'coat-back' && l.layerType !== 'mid-back');
       reversed.forEach(l => {
         const chip = document.createElement('div');
         chip.className = 'layer-chip' + (l.hidden ? ' layer-hidden' : '');
@@ -1508,8 +1528,10 @@
         chip.dataset.uid = l.uid;
 
         const typeLabel = l.layerType === 'coat-front' ? 'Abrigo' :
+                          l.layerType === 'mid-front' ? 'Blusa' :
                           l.item.cat === 'abrigos' ? 'Abrigo' :
                           l.item.cat === 'jackets' ? 'Jacket' :
+                          l.item.cat === 'blusas' ? 'Blusa' :
                           l.item.cat === 'faldas' ? 'Falda' :
                           l.item.cat === 'pants' ? 'Pantalón' : l.item.cat;
 
