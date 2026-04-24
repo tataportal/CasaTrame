@@ -1189,6 +1189,9 @@
         { id:603, name:"Basic Tee Blanca", cat:"polos", price:450,
           imgDemo:"photos_demo/demo_polo_gray.png",
           img:"img/vestidor/polo_002_blanco.png" },
+        { id:604, name:"Polo Cuello Alto Blanco", cat:"polos", price:750,
+          imgDemo:"photos_demo/polo_003_blanco.png",
+          img:"img/vestidor/polo_003_blanco.png" },
       ],
       blusas: [
         { id:701, name:"Camisa Negra", cat:"blusas", price:950,
@@ -1487,12 +1490,33 @@
     /* ============================================
        RENDER CANVAS LAYERS
        ============================================ */
+    /* Z-index system:
+       - FIXED slots for back layers + outwear fronts (never move)
+       - REORDERABLE middle zone for polos, pants, faldas, camisa-front (user can swap)
+
+       z=1: abrigos back   (FIXED)
+       z=2: jackets back    (FIXED)
+       z=3: camisa/blusa back (FIXED)
+       z=10..19: middle zone — polos, pants, faldas, mid-front (array order)
+       z=20: jackets front  (FIXED)
+       z=21: abrigos front  (FIXED)
+    */
+    function isMiddleLayer(layer) {
+      const lt = layer.layerType;
+      if (lt === 'normal') return true;       // polos, pants, faldas
+      if (lt === 'mid-front') return true;     // camisa/blusa front
+      return false;
+    }
+
     function renderCanvas() {
       document.querySelectorAll('.canvas__layer').forEach(el => el.remove());
 
       const canvas = document.getElementById('canvas');
       const emptyMsg = document.getElementById('canvasEmpty');
       emptyMsg.classList.toggle('hidden', layers.length > 0);
+
+      // Count middle layers for dynamic z assignment
+      let midCounter = 0;
 
       layers.forEach((l, i) => {
         if (l.hidden) return; // skip hidden layers
@@ -1503,8 +1527,17 @@
         if (l.layerType === 'coat-back' || l.layerType === 'mid-back') div.classList.add('canvas__layer--coat-back');
         if (l.layerType === 'coat-front' || l.layerType === 'mid-front') div.classList.add('canvas__layer--coat-front');
 
-        // z-index follows array order: index 0 = back, last = front
-        div.style.zIndex = i + 2;
+        // Z-index: fixed for backs/outwear-fronts, array-order for middle zone
+        let z;
+        const cat = l.item.cat;
+        const lt = l.layerType;
+        if (lt === 'coat-back' && cat === 'abrigos')  z = 1;
+        else if (lt === 'coat-back' && cat === 'jackets')  z = 2;
+        else if (lt === 'mid-back')                        z = 3;
+        else if (lt === 'coat-front' && cat === 'jackets') z = 20;
+        else if (lt === 'coat-front' && cat === 'abrigos') z = 21;
+        else { z = 10 + midCounter; midCounter++; } // middle zone: array order
+        div.style.zIndex = z;
 
         // Pick correct image: resolve state, then separate back/front if available
         const resolved = resolveImages(l.item, l.state);
@@ -1621,29 +1654,20 @@
        LAYER MANIPULATION
        ============================================ */
     function moveLayer(uid, direction) {
+      // With fixed z-indices, array order only affects chip display order.
+      // Visual rendering is always correct because z-index is fixed per garment type.
       const idx = layers.findIndex(l => l.uid === uid);
       if (idx < 0) return;
-      const layer = layers[idx];
 
-      // Skip over hidden back layers when calculating swap target
       let newIdx = idx + direction;
+      // Skip back layers in chip navigation
       while (newIdx >= 0 && newIdx < layers.length &&
              (layers[newIdx].layerType === 'coat-back' || layers[newIdx].layerType === 'mid-back')) {
         newIdx += direction;
       }
       if (newIdx < 0 || newIdx >= layers.length) return;
 
-      // If moving a front layer (coat-front/mid-front), move its paired back layer too
-      if (layer.layerType === 'coat-front' || layer.layerType === 'mid-front') {
-        // Swap front layer
-        const [moved] = layers.splice(idx, 1);
-        layers.splice(newIdx > idx ? newIdx - 1 : newIdx, 0, moved);
-      } else {
-        [layers[idx], layers[newIdx]] = [layers[newIdx], layers[idx]];
-      }
-
-      // Enforce invariant: back layers always below their paired front
-      enforceLayerOrder();
+      [layers[idx], layers[newIdx]] = [layers[newIdx], layers[idx]];
       renderCanvas();
       renderLayerStack();
     }
@@ -1654,25 +1678,8 @@
       if (fromIdx < 0 || toIdx < 0) return;
       const [moved] = layers.splice(fromIdx, 1);
       layers.splice(toIdx, 0, moved);
-      enforceLayerOrder();
       renderCanvas();
       renderLayerStack();
-    }
-
-    /* Enforce: back layers always at bottom, front layers always above their back */
-    function enforceLayerOrder() {
-      // Collect all back layers, remove them, then reinsert at correct positions
-      const backs = layers.filter(l => l.layerType === 'coat-back' || l.layerType === 'mid-back');
-      layers = layers.filter(l => l.layerType !== 'coat-back' && l.layerType !== 'mid-back');
-
-      // Sort backs: coat-back (abrigos) at very bottom, then mid-back
-      backs.sort((a, b) => {
-        const order = { 'coat-back': 0, 'mid-back': 1 };
-        return (order[a.layerType] || 0) - (order[b.layerType] || 0);
-      });
-
-      // Reinsert all backs at the beginning
-      layers.unshift(...backs);
     }
 
     function removeLayer(uid) {
