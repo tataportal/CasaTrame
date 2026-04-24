@@ -893,6 +893,13 @@
         </div>
         <div class="panel__items" id="items-polos"></div>
       </div>
+      <div class="panel__section" id="section-blusas">
+        <div class="panel__section-header" onclick="toggleSection('blusas')">
+          <span><span class="panel__section-title">Blusas</span><span class="panel__section-count" id="count-blusas"></span></span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-blusas"></div>
+      </div>
       <!-- sweaters section removed in v2 -->
       <div class="panel__section" id="section-faldas">
         <div class="panel__section-header" onclick="toggleSection('faldas')">
@@ -1179,6 +1186,22 @@
         { id:602, name:"Polo Marrón", cat:"polos", price:650,
           imgDemo:"photos_demo/demo_polo_gray.png",
           img:"img/vestidor/polo_001_marron.png" },
+      ],
+      blusas: [
+        { id:701, name:"Camisa Negra", cat:"blusas", price:950,
+          imgDemo:"photos_demo/camisa_002_negro_c_f.png",
+          imgThumb:"img/vestidor/camisa_002_negro_c_f.png",
+          doubleLayer:true,
+          defaultState:'cerrado',
+          states: {
+            cerrado: { img:"img/vestidor/camisa_002_negro_c_f.png",
+                       imgFront:"img/vestidor/camisa_002_negro_c_f.png",
+                       imgBack:"img/vestidor/camisa_002_negro_c_f.png" },
+            abierto: { img:"img/vestidor/camisa_002_negro_o_f.png",
+                       imgFront:"img/vestidor/camisa_002_negro_o_f.png",
+                       imgBack:"img/vestidor/camisa_002_negro_o_b.png" }
+          }
+        },
       ],
       faldas: [
         { id:301, name:"Falda Verde", cat:"faldas", price:850,
