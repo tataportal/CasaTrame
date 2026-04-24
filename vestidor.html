@@ -1623,9 +1623,27 @@
     function moveLayer(uid, direction) {
       const idx = layers.findIndex(l => l.uid === uid);
       if (idx < 0) return;
-      const newIdx = idx + direction;
+      const layer = layers[idx];
+
+      // Skip over hidden back layers when calculating swap target
+      let newIdx = idx + direction;
+      while (newIdx >= 0 && newIdx < layers.length &&
+             (layers[newIdx].layerType === 'coat-back' || layers[newIdx].layerType === 'mid-back')) {
+        newIdx += direction;
+      }
       if (newIdx < 0 || newIdx >= layers.length) return;
-      [layers[idx], layers[newIdx]] = [layers[newIdx], layers[idx]];
+
+      // If moving a front layer (coat-front/mid-front), move its paired back layer too
+      if (layer.layerType === 'coat-front' || layer.layerType === 'mid-front') {
+        // Swap front layer
+        const [moved] = layers.splice(idx, 1);
+        layers.splice(newIdx > idx ? newIdx - 1 : newIdx, 0, moved);
+      } else {
+        [layers[idx], layers[newIdx]] = [layers[newIdx], layers[idx]];
+      }
+
+      // Enforce invariant: back layers always below their paired front
+      enforceLayerOrder();
       renderCanvas();
       renderLayerStack();
     }
@@ -1636,8 +1654,25 @@
       if (fromIdx < 0 || toIdx < 0) return;
       const [moved] = layers.splice(fromIdx, 1);
       layers.splice(toIdx, 0, moved);
+      enforceLayerOrder();
       renderCanvas();
       renderLayerStack();
+    }
+
+    /* Enforce: back layers always at bottom, front layers always above their back */
+    function enforceLayerOrder() {
+      // Collect all back layers, remove them, then reinsert at correct positions
+      const backs = layers.filter(l => l.layerType === 'coat-back' || l.layerType === 'mid-back');
+      layers = layers.filter(l => l.layerType !== 'coat-back' && l.layerType !== 'mid-back');
+
+      // Sort backs: coat-back (abrigos) at very bottom, then mid-back
+      backs.sort((a, b) => {
+        const order = { 'coat-back': 0, 'mid-back': 1 };
+        return (order[a.layerType] || 0) - (order[b.layerType] || 0);
+      });
+
+      // Reinsert all backs at the beginning
+      layers.unshift(...backs);
     }
 
     function removeLayer(uid) {
