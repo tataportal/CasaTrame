@@ -1457,9 +1457,19 @@
         layers.unshift({ uid: ++uidCounter, item, layerType: 'coat-back', state: st, _order: itemOrder });
         layers.push({ uid: ++uidCounter, item, layerType: 'coat-front', state: st, _order: itemOrder });
       } else {
-        // Normal items go just before any coat-front/mid-front layers
-        const lastNormalIdx = layers.reduce((acc, l, i) => (l.layerType !== 'coat-front' && l.layerType !== 'mid-front' && l.layerType !== 'mid-back') ? i : acc, -1);
-        layers.splice(lastNormalIdx + 1, 0, { uid: ++uidCounter, item, layerType: 'normal', state: st, _order: itemOrder });
+        // Normal items (polos, etc.) go AFTER back layers but BEFORE front layers
+        // Goal: coat-back → mid-back → [normal items here] → mid-front → coat-front
+        let insertIdx = 0;
+        for (let i = 0; i < layers.length; i++) {
+          const lt = layers[i].layerType;
+          if (lt === 'coat-back' || lt === 'mid-back') {
+            insertIdx = i + 1; // go past all back layers
+          } else if (lt === 'normal') {
+            insertIdx = i + 1; // go past other normal items too
+          }
+          // stop before mid-front or coat-front
+        }
+        layers.splice(insertIdx, 0, { uid: ++uidCounter, item, layerType: 'normal', state: st, _order: itemOrder });
       }
 
       // Mark as selected (both in catalog and favoritos)
