@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Casa Tramé — Otoño Invierno 2026</title>
+  <title>Casa Tramé — Otoño Invierno</title>
   <link rel="preload" href="fonts/GoiaDisplay-ExtraLightItalic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/GoiaDisplay-Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/GoiaDisplay-Light.woff2" as="font" type="font/woff2" crossorigin>
@@ -69,7 +69,7 @@
       transition: 0.2s ease;
     }
     .sidebar__filters a.active {
-      border-bottom: 1.5px solid var(--text);
+      border-bottom: 0.5px solid var(--text);
       padding-bottom: 0.533rem;
     }
     .sidebar__filters a:hover { opacity: 0.7; }
@@ -602,9 +602,8 @@
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
-      <span class="sidebar__tag">2 0 2 6</span>
       <h1 class="sidebar__title">OTOÑO<br>INVIERNO</h1>
-      <p class="sidebar__subtitle">Nuestra primera colección cápsula, descubre la practicidad</p>
+      <p class="sidebar__subtitle">Una colección que nace desde lo esencial: versátil, cómoda, y pensada para acompañarte en el día a día.</p>
 
       <!-- Mobile: collapsible toggles | Desktop: always visible -->
       <div class="sidebar__mobile-toggles">
@@ -632,7 +631,6 @@
       <div class="sidebar__collapsible sidebar__collapsible--sort" id="sortSection">
         <div class="sidebar__sort">
           <a href="#" class="sidebar__sort-toggle" id="priceSortToggle" data-dir="asc">Ordenar por precio <span class="sidebar__sort-arrow">↑</span></a>
-          <a href="#" class="sidebar__sort-toggle" id="colorSortToggle" data-dir="dark">Ordenar por color <span class="sidebar__sort-arrow">↑</span></a>
         </div>
       </div>
     </aside>
@@ -773,7 +771,7 @@
       </div>
     </div>
     <div class="footer__bottom">
-      <span>&copy; 2026 Casa Tramé. Todos los derechos reservados.</span>
+      <span>&copy; Casa Tramé. Todos los derechos reservados.</span>
       <div class="footer__social">
         <a href="#" title="Instagram">IG</a>
         <a href="#" title="Pinterest">PI</a>
@@ -867,13 +865,13 @@
       { id:1, name:"The Satin Halter Dress", cat:"abrigos", price:1150,
         colors:["#3D2B1F","#C5B88A","#5C2434"],
         colorImgs:{
-          "#3D2B1F":"photos_demo/Untitled-1.png",
+          "#3D2B1F":"photos_demo/001-brown.png",
           "#C5B88A":"photos_demo/001-gold.jpg",
           "#5C2434":"photos_demo/001-wine.jpg"
         },
         hoverImg:"photos_demo/001-brown-model.jpg",
-        img:"photos_demo/Untitled-1.png",
-        imgLg:"photos_demo/Untitled-1.png",
+        img:"photos_demo/001-brown.png",
+        imgLg:"photos_demo/001-brown.png",
         desc:"Vestido halter en satén con cuello drapeado. Silueta mini con espalda abierta.",
         details:"100% poliéster satinado. Cierre metálico en espalda."
       },
@@ -1129,8 +1127,6 @@
     document.getElementById('priceSortToggle').addEventListener('click', e => {
       e.preventDefault();
       const btn = e.currentTarget;
-      const colorBtn = document.getElementById('colorSortToggle');
-      colorBtn.classList.remove('active', 'flipped');
       if (btn.classList.contains('active')) {
         // Toggle direction
         const wasAsc = btn.dataset.dir === 'asc';
@@ -1146,26 +1142,6 @@
       applyFilters();
     });
 
-    /* ---- SORT BY COLOR (toggle) ---- */
-    document.getElementById('colorSortToggle').addEventListener('click', e => {
-      e.preventDefault();
-      const btn = e.currentTarget;
-      const priceBtn = document.getElementById('priceSortToggle');
-      priceBtn.classList.remove('active', 'flipped');
-      if (btn.classList.contains('active')) {
-        const wasDark = btn.dataset.dir === 'dark';
-        btn.dataset.dir = wasDark ? 'light' : 'dark';
-        btn.classList.toggle('flipped', wasDark);
-        currentSort = wasDark ? 'color-light' : 'color-dark';
-      } else {
-        btn.classList.add('active');
-        btn.dataset.dir = 'dark';
-        btn.classList.remove('flipped');
-        currentSort = 'color-dark';
-      }
-      applyFilters();
-    });
-
     /* ---- WISHLIST ---- */
     let wishlist = [];
     try { wishlist = JSON.parse(localStorage.getItem('ct_wishlist') || '[]'); } catch(e) {}
@@ -1174,7 +1150,7 @@
     /* ── DEMO DEFAULTS — BORRAR CUANDO HAYA SHOPIFY ── */
     if (wishlist.length === 0) {
       wishlist = [
-        { id:1, vid:101, color:"#3D2B1F", size:"M", img:"photos_demo/Untitled-1.png" },
+        { id:1, vid:101, color:"#3D2B1F", size:"M", img:"photos_demo/001-brown.png" },
         { id:3, vid:201, color:"#A8C4D8", size:"M", img:"photos_demo/demo_denim_jacket.png" },
         { id:9, vid:601, color:"#B0B0B0", size:"M", img:"photos_demo/demo_polo_gray.png" }
       ];
@@ -1408,7 +1384,7 @@
     /* Demo products — pre-load if cart is empty */
     if (cart.length === 0) {
       cart = [
-        { id:1, color:'#3D2B1F', size:'M', img:'photos_demo/Untitled-1.png', name:'The Satin Halter Dress', price:1150, qty:1 },
+        { id:1, color:'#3D2B1F', size:'M', img:'photos_demo/001-brown.png', name:'The Satin Halter Dress', price:1150, qty:1 },
         { id:3, color:'#3D2B1F', size:'S', img:'photos_demo/demo_cape_brown.png', name:'The Tramé Cape', price:2450, qty:1 },
         { id:7, color:'#4A6741', size:'M', img:'photos_demo/demo_falda_green.png', name:'Falda Verde', price:850, qty:1 }
       ];
@@ -1599,7 +1575,6 @@
       document.querySelectorAll('#filters a').forEach(a => a.classList.remove('active'));
       document.querySelector('#filters a[data-filter="all"]').classList.add('active');
       document.getElementById('priceSortToggle').classList.remove('active', 'flipped');
-      document.getElementById('colorSortToggle').classList.remove('active', 'flipped');
       applyFilters();
       // Wait for DOM to update, then scroll to the product card and open modal
       setTimeout(() => {

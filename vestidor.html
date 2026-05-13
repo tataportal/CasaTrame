@@ -1156,6 +1156,8 @@
          {% for product in collections['vestidor'].products %} ... {% endfor %} */
       abrigos: [
         { id:101, name:"Abrigo Marrón", cat:"abrigos", price:2150,
+          sourceImg:"photos_demo/demo_coat_bown.png",
+          vestidor:{ src:"photos_demo/demo_coat_bown.png", singleLayer:true, layerType:"single-outer", fit:{ left:0, top:0, width:100, height:100 } },
           imgDemo:"photos_demo/demo_coat_bown.png",
           imgThumb:"img/vestidor/coat_001_marron_o_mini.png",
           doubleLayer:true,
@@ -1172,6 +1174,8 @@
       ],
       jackets: [
         { id:201, name:"Jacket Verde Cerrada", cat:"jackets", price:1450,
+          sourceImg:"photos_demo/demo_jacket_green.png",
+          vestidor:{ src:"photos_demo/demo_jacket_green.png", singleLayer:true, layerType:"single-outer", fit:{ left:0, top:0, width:100, height:100 } },
           imgDemo:"photos_demo/demo_jacket_green.png",
           img:"img/vestidor/jacket_001_verde_c_f.png",
           imgThumb:"img/vestidor/jacket_001_verde_c_mini.png",
@@ -1181,20 +1185,30 @@
       ],
       polos: [
         { id:601, name:"Polo Manga Larga Blanco", cat:"polos", price:650,
+          sourceImg:"photos_demo/polo_001_blanco.png",
+          vestidor:{ src:"photos_demo/polo_001_blanco.png", fit:{ left:0, top:0, width:100, height:100 } },
           imgDemo:"photos_demo/polo_001_blanco.png",
           img:"img/vestidor/polo_001_blanco.png" },
         { id:602, name:"Polo Manga Larga Marrón", cat:"polos", price:650,
+          sourceImg:"photos_demo/polo_001_marron.png",
+          vestidor:{ src:"photos_demo/polo_001_marron.png", fit:{ left:0, top:0, width:100, height:100 } },
           imgDemo:"photos_demo/polo_001_marron.png",
           img:"img/vestidor/polo_001_marron.png" },
         { id:603, name:"Basic Tee Blanca", cat:"polos", price:450,
+          sourceImg:"photos_demo/demo_polo_gray.png",
+          vestidor:{ src:"photos_demo/demo_polo_gray.png", fit:{ left:0, top:0, width:100, height:100 } },
           imgDemo:"photos_demo/demo_polo_gray.png",
           img:"img/vestidor/polo_002_blanco.png" },
         { id:604, name:"Polo Cuello Alto Blanco", cat:"polos", price:750,
-          imgDemo:"photos_demo/polo_003_blanco.png",
+          sourceImg:"photos_demo/polo_003_blancoT.png",
+          vestidor:{ src:"photos_demo/polo_003_blancoT.png", bg:"#fff", fit:{ left:18.5, top:-1.7, width:62.5, height:62.5 } },
+          imgDemo:"photos_demo/polo_003_blancoT.png",
           img:"img/vestidor/polo_003_blanco.png" },
       ],
       blusas: [
         { id:701, name:"Camisa Negra", cat:"blusas", price:950,
+          sourceImg:"photos_demo/camisa_002_negro_c_f.png",
+          vestidor:{ src:"photos_demo/camisa_002_negro_c_f.png", singleLayer:true, fit:{ left:0, top:0, width:100, height:100 } },
           imgDemo:"photos_demo/camisa_002_negro_c_f.png",
           imgThumb:"img/vestidor/camisa_002_negro_c_f.png",
           doubleLayer:true,
@@ -1211,14 +1225,20 @@
       ],
       faldas: [
         { id:301, name:"Falda Verde", cat:"faldas", price:850,
+          sourceImg:"photos_demo/demo_falda_green.png",
+          vestidor:{ src:"photos_demo/demo_falda_green.png", fit:{ left:0, top:0, width:100, height:100 } },
           imgDemo:"photos_demo/demo_falda_green.png",
           img:"img/vestidor/falda_001_verde.png" },
       ],
       pants: [
         { id:501, name:"Pantalón Beige", cat:"pants", price:1050,
+          sourceImg:"photos_demo/demo_jeans.png",
+          vestidor:{ src:"photos_demo/demo_jeans.png", fit:{ left:0, top:0, width:100, height:100 } },
           imgDemo:"photos_demo/demo_jeans.png",
           img:"img/vestidor/pantalon_001_beige.png" },
         { id:502, name:"Pantalón Marrón", cat:"pants", price:1050,
+          sourceImg:"photos_demo/demo_jeans.png",
+          vestidor:{ src:"photos_demo/demo_jeans.png", fit:{ left:0, top:0, width:100, height:100 } },
           imgDemo:"photos_demo/demo_jeans.png",
           img:"img/vestidor/pantalon_002_marron.png" },
       ]
@@ -1236,6 +1256,38 @@
     function resolveImages(item, state) {
       if (item.states && state && item.states[state]) return item.states[state];
       return item; // fallback: item's own img/imgFront/imgBack
+    }
+
+    function getItemSourceImage(item, state) {
+      const resolved = resolveImages(item, state || itemStates[item.id]);
+      return item.sourceImg || item.imgDemo || item.imgThumb || resolved.img || item.img;
+    }
+
+    function getItemBackground(item) {
+      return item.vestidor?.bg || '#f5f5f5';
+    }
+
+    function getLayerVisual(layer) {
+      const resolved = resolveImages(layer.item, layer.state);
+      let imgSrc = resolved.img || layer.item.img;
+      if ((layer.layerType === 'coat-back' || layer.layerType === 'mid-back') && resolved.imgBack) imgSrc = resolved.imgBack;
+      if ((layer.layerType === 'coat-front' || layer.layerType === 'mid-front') && resolved.imgFront) imgSrc = resolved.imgFront;
+
+      const vestidor = layer.item.vestidor || {};
+      if (vestidor.src) imgSrc = vestidor.src;
+
+      return {
+        img: imgSrc,
+        fit: Object.assign({ left: 0, top: 0, width: 100, height: 100 }, vestidor.fit || {})
+      };
+    }
+
+    function applyLayerFit(layerEl, visual) {
+      const fit = visual.fit || {};
+      layerEl.style.left = `${fit.left ?? 0}%`;
+      layerEl.style.top = `${fit.top ?? 0}%`;
+      layerEl.style.width = `${fit.width ?? 100}%`;
+      layerEl.style.height = `${fit.height ?? 100}%`;
     }
 
     /* Track current state per item id (shared between panel + canvas) */
@@ -1300,7 +1352,7 @@
                data-cat="${cat}" data-id="${item.id}"
                onclick="toggleItemOnCanvas('${cat}', ${item.id})">
             <span class="panel__item__check">&#10003;</span>
-            <img src="${item.imgDemo || item.imgThumb || item.img}" alt="${item.name}" draggable="false" loading="lazy">
+            <img src="${getItemSourceImage(item)}" alt="${item.name}" draggable="false" loading="lazy" style="background:${getItemBackground(item)}">
             <!-- SHOPIFY: Replace with /products/{{ product.handle }} -->
             <button class="panel__item__eye" title="Ver producto" onclick="event.stopPropagation(); window.open('producto.html?id=${item.id}', '_blank')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -1322,9 +1374,8 @@
       Object.keys(catalog).forEach(cat => {
         const container = document.getElementById(`items-${cat}`);
         container.innerHTML = catalog[cat].map(item => {
-          const resolved = resolveImages(item, itemStates[item.id]);
-          const thumbSrc = item.imgDemo || item.imgThumb || resolved.img || item.img;
-          const toggleBtn = item.states
+          const thumbSrc = getItemSourceImage(item);
+          const toggleBtn = item.states && !item.vestidor?.singleLayer
             ? `<button class="panel__item__toggle" onclick="togglePanelState(${item.id}, event)">${itemStates[item.id] || ''}</button>`
             : '';
           return `
@@ -1332,7 +1383,7 @@
                data-cat="${cat}" data-id="${item.id}"
                onclick="toggleItemOnCanvas('${cat}', ${item.id})">
             <span class="panel__item__check">&#10003;</span>
-            <img src="${thumbSrc}" alt="${item.name}" draggable="false" loading="lazy">
+            <img src="${thumbSrc}" alt="${item.name}" draggable="false" loading="lazy" style="background:${getItemBackground(item)}">
             ${toggleBtn}
             <button class="panel__item__eye" title="Ver producto" onclick="event.stopPropagation(); window.open('producto.html?id=${item.id}', '_blank')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -1441,7 +1492,7 @@
       const layerOrder = { pants:0, faldas:0, polos:1, blusas:2, jackets:3, abrigos:4 };
       const itemOrder = layerOrder[cat] ?? 2;
 
-      if (item.doubleLayer && cat === 'blusas') {
+      if (item.doubleLayer && !item.vestidor?.singleLayer && cat === 'blusas') {
         // Mid-layer: back goes after polos, front goes before jackets/abrigos
         const backLayer = { uid: ++uidCounter, item, layerType: 'mid-back', state: st, _order: itemOrder };
         const frontLayer = { uid: ++uidCounter, item, layerType: 'mid-front', state: st, _order: itemOrder };
@@ -1458,11 +1509,15 @@
           if (layers[i].layerType === 'coat-back' || layers[i].layerType === 'coat-front') { frontIdx = i; break; }
         }
         layers.splice(frontIdx, 0, frontLayer);
-      } else if (item.doubleLayer) {
+      } else if (item.doubleLayer && !item.vestidor?.singleLayer) {
         // Outer layer (abrigos/jackets): back at bottom, front at top
         layers.unshift({ uid: ++uidCounter, item, layerType: 'coat-back', state: st, _order: itemOrder });
         layers.push({ uid: ++uidCounter, item, layerType: 'coat-front', state: st, _order: itemOrder });
       } else {
+        const singleLayerType = item.vestidor?.layerType || 'normal';
+        if (singleLayerType === 'single-outer') {
+          layers.push({ uid: ++uidCounter, item, layerType: singleLayerType, state: st, _order: itemOrder });
+        } else {
         // Normal items (polos, etc.) go AFTER back layers but BEFORE front layers
         // Goal: coat-back → mid-back → [normal items here] → mid-front → coat-front
         let insertIdx = 0;
@@ -1476,6 +1531,7 @@
           // stop before mid-front or coat-front
         }
         layers.splice(insertIdx, 0, { uid: ++uidCounter, item, layerType: 'normal', state: st, _order: itemOrder });
+        }
       }
 
       // Mark as selected (both in catalog and favoritos)
@@ -1534,18 +1590,17 @@
         if (lt === 'coat-back' && cat === 'abrigos')  z = 1;
         else if (lt === 'coat-back' && cat === 'jackets')  z = 2;
         else if (lt === 'mid-back')                        z = 3;
+        else if (lt === 'single-outer' && cat === 'jackets') z = 20;
+        else if (lt === 'single-outer' && cat === 'abrigos') z = 21;
         else if (lt === 'coat-front' && cat === 'jackets') z = 20;
         else if (lt === 'coat-front' && cat === 'abrigos') z = 21;
         else { z = 10 + midCounter; midCounter++; } // middle zone: array order
         div.style.zIndex = z;
 
-        // Pick correct image: resolve state, then separate back/front if available
-        const resolved = resolveImages(l.item, l.state);
-        let imgSrc = resolved.img || l.item.img;
-        if ((l.layerType === 'coat-back' || l.layerType === 'mid-back') && resolved.imgBack) imgSrc = resolved.imgBack;
-        if ((l.layerType === 'coat-front' || l.layerType === 'mid-front') && resolved.imgFront) imgSrc = resolved.imgFront;
+        const visual = getLayerVisual(l);
+        applyLayerFit(div, visual);
 
-        div.innerHTML = `<img src="${imgSrc}" alt="${l.item.name}" loading="lazy">`;
+        div.innerHTML = `<img src="${visual.img}" alt="${l.item.name}" loading="lazy">`;
         canvas.insertBefore(div, document.getElementById('canvasDropzone'));
 
 
@@ -1585,10 +1640,9 @@
           ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
           : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
 
-        const resolved = resolveImages(l.item, l.state);
-        const thumbSrc = l.item.imgDemo || l.item.imgThumb || resolved.img || l.item.img;
+        const thumbSrc = getItemSourceImage(l.item, l.state);
         const stateLabel = l.state ? ` (${l.state})` : '';
-        const hasToggle = !!l.item.states;
+        const hasToggle = !!l.item.states && !l.item.vestidor?.singleLayer;
         const toggleBtn = hasToggle
           ? `<button class="layer-chip__btn layer-chip__btn--toggle" title="Cambiar estado" onclick="toggleItemState(${l.uid})">
                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
@@ -1596,7 +1650,7 @@
 
         chip.innerHTML = `
           <div class="layer-chip__grip"><span></span><span></span><span></span></div>
-          <img class="layer-chip__thumb" src="${thumbSrc}" alt="">
+          <img class="layer-chip__thumb" src="${thumbSrc}" alt="" style="background:${getItemBackground(l.item)}">
           <div>
             <div class="layer-chip__name">${l.item.name}${stateLabel}</div>
             <div class="layer-chip__type">${typeLabel}</div>
@@ -1724,7 +1778,7 @@
       } else {
         list.innerHTML = uniqueItems.map(item => `
           <div class="summary__item" style="cursor:pointer" onclick="window.open('producto.html?id=${item.id}','_blank')">
-            <img class="summary__item-img" src="${item.imgDemo || item.imgThumb || item.img}" alt="${item.name}" loading="lazy">
+            <img class="summary__item-img" src="${getItemSourceImage(item)}" alt="${item.name}" loading="lazy" style="background:${getItemBackground(item)}">
             <div class="summary__item-info">
               <div class="summary__item-cat">${item.cat}</div>
               <div class="summary__item-name">${item.name}</div>
@@ -1763,7 +1817,7 @@
       const container = document.getElementById('outfitPopupItems');
       container.innerHTML = items.map(item => `
         <div class="outfit-popup__item" data-item-id="${item.id}">
-          <img src="${item.imgDemo || item.imgThumb || item.img}" alt="${item.name}" loading="lazy">
+          <img src="${getItemSourceImage(item)}" alt="${item.name}" loading="lazy" style="background:${getItemBackground(item)}">
           <div class="outfit-popup__item-info">
             <div class="outfit-popup__item-name">${item.name}</div>
             <div class="outfit-popup__item-price">$ ${item.price.toLocaleString()}</div>
@@ -1942,7 +1996,7 @@
             state: snap.state || null
           })) : []
         }));
-        localStorage.setItem('ct_saved_looks', JSON.stringify(data));
+        localStorage.setItem('ct_saved_looks_v2', JSON.stringify(data));
       } catch(e) {}
     }
 
@@ -1967,14 +2021,10 @@
         if (!imgEl) continue;
 
         const r = layerEl.getBoundingClientRect();
-        // Get image src (resolve state for items with o/c toggle)
-        const res = resolveImages(layer.item, layer.state);
-        let imgSrc = res.img || layer.item.img;
-        if (layer.layerType === 'coat-back' && res.imgBack) imgSrc = res.imgBack;
-        else if (layer.layerType === 'coat-front' && res.imgFront) imgSrc = res.imgFront;
+        const visual = getLayerVisual(layer);
 
         visualLayers.push({
-          img: imgSrc,
+          img: visual.img,
           left: ((r.left - canvasRect.left) / cW * 100),
           top: ((r.top - canvasRect.top) / cH * 100),
           width: (r.width / cW * 100),
@@ -2496,14 +2546,11 @@
         const imgEl = layerEl.querySelector('img');
         if (!imgEl) continue;
 
-        const res = resolveImages(layer.item, layer.state);
-        let imgSrc = res.img || layer.item.img;
-        if (layer.layerType === 'coat-back' && res.imgBack) imgSrc = res.imgBack;
-        if (layer.layerType === 'coat-front' && res.imgFront) imgSrc = res.imgFront;
+        const visual = getLayerVisual(layer);
 
         const r = layerEl.getBoundingClientRect();
         visualLayers.push({
-          img: imgSrc,
+          img: visual.img,
           left: ((r.left - canvasRect.left) / cW * 100),
           top: ((r.top - canvasRect.top) / cH * 100),
           width: (r.width / cW * 100),
@@ -2568,32 +2615,28 @@
           layers: [
             { item: catalog.polos[0], layerType:'normal', state:null },
             { item: catalog.pants[0], layerType:'normal', state:null },
-            { item: catalog.abrigos[0], layerType:'coat-back', state:'cerrado' },
-            { item: catalog.abrigos[0], layerType:'coat-front', state:'cerrado' }
+            { item: catalog.abrigos[0], layerType:'single-outer', state:'cerrado' }
           ],
           items: [catalog.polos[0], catalog.pants[0], catalog.abrigos[0]],
           total: catalog.polos[0].price + catalog.pants[0].price + catalog.abrigos[0].price,
           visualLayers: [
-            { img:'img/vestidor/coat_001_marron_c_b.png', left:0, top:0, width:100, height:100, zIndex:1 },
-            { img:'img/vestidor/polo_001_blanco.png', left:0, top:0, width:100, height:100, zIndex:2 },
-            { img:'img/vestidor/pantalon_001_beige.png', left:0, top:0, width:100, height:100, zIndex:2 },
-            { img:'img/vestidor/coat_001_marron_c_f.png', left:0, top:0, width:100, height:100, zIndex:3 }
+            { img:'photos_demo/polo_001_blanco.png', left:0, top:0, width:100, height:100, zIndex:10 },
+            { img:'photos_demo/demo_jeans.png', left:0, top:0, width:100, height:100, zIndex:11 },
+            { img:'photos_demo/demo_coat_bown.png', left:0, top:0, width:100, height:100, zIndex:21 }
           ]
         },
         { id: 2, name: 'Look 2',
           layers: [
             { item: catalog.polos[1], layerType:'normal', state:null },
             { item: catalog.faldas[0], layerType:'normal', state:null },
-            { item: catalog.jackets[0], layerType:'coat-back', state:null },
-            { item: catalog.jackets[0], layerType:'coat-front', state:null }
+            { item: catalog.jackets[0], layerType:'single-outer', state:null }
           ],
           items: [catalog.polos[1], catalog.faldas[0], catalog.jackets[0]],
           total: catalog.polos[1].price + catalog.faldas[0].price + catalog.jackets[0].price,
           visualLayers: [
-            { img:'img/vestidor/jacket_001_verde_c_b.png', left:0, top:0, width:100, height:100, zIndex:1 },
-            { img:'img/vestidor/polo_001_marron.png', left:0, top:0, width:100, height:100, zIndex:2 },
-            { img:'img/vestidor/falda_001_verde.png', left:0, top:0, width:100, height:100, zIndex:2 },
-            { img:'img/vestidor/jacket_001_verde_c_f.png', left:0, top:0, width:100, height:100, zIndex:3 }
+            { img:'photos_demo/polo_001_marron.png', left:0, top:0, width:100, height:100, zIndex:10 },
+            { img:'photos_demo/demo_falda_green.png', left:0, top:0, width:100, height:100, zIndex:11 },
+            { img:'photos_demo/demo_jacket_green.png', left:0, top:0, width:100, height:100, zIndex:20 }
           ]
         },
         { id: 3, name: 'Look 3',
@@ -2604,8 +2647,8 @@
           items: [catalog.polos[0], catalog.pants[1]],
           total: catalog.polos[0].price + catalog.pants[1].price,
           visualLayers: [
-            { img:'img/vestidor/polo_001_blanco.png', left:0, top:0, width:100, height:100, zIndex:2 },
-            { img:'img/vestidor/pantalon_002_marron.png', left:0, top:0, width:100, height:100, zIndex:1 }
+            { img:'photos_demo/polo_001_blanco.png', left:0, top:0, width:100, height:100, zIndex:10 },
+            { img:'photos_demo/demo_jeans.png', left:0, top:0, width:100, height:100, zIndex:11 }
           ]
         }
       ];
@@ -2613,7 +2656,7 @@
 
     // Load saved looks from localStorage
     try {
-      const storedLooks = JSON.parse(localStorage.getItem('ct_saved_looks') || '[]');
+      const storedLooks = JSON.parse(localStorage.getItem('ct_saved_looks_v2') || '[]');
       storedLooks.forEach(sl => {
         // Reconstruct layers from saved item IDs
         const restoredLayers = (sl.layers || []).map(snap => {

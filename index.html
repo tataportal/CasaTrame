@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Casa Tramé — Moda Artesanal Contemporánea</title>
+  <title>Casa Tramé</title>
   <link rel="preload" href="fonts/GoiaDisplay-ExtraLightItalic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/GoiaDisplay-Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/GoiaDisplay-Light.woff2" as="font" type="font/woff2" crossorigin>
@@ -22,7 +22,7 @@
     .hero__video {
       position: absolute; inset: 0; z-index: 0;
       overflow: hidden; pointer-events: none;
-      filter: saturate(0.3);
+      filter: brightness(1.06) contrast(1.08) saturate(1.12);
     }
     .hero__video video {
       position: absolute;
@@ -34,11 +34,7 @@
     }
     .hero__overlay {
       position: absolute; inset: 0; z-index: 1;
-      background: linear-gradient(to bottom,
-        rgba(0,0,0,0.65) 0%,
-        rgba(0,0,0,0.30) 30%,
-        rgba(0,0,0,0.05) 55%,
-        rgba(0,0,0,0.35) 100%);
+      background: transparent;
       pointer-events: none;
     }
     .hero__content {
@@ -354,7 +350,7 @@
   <section class="hero" id="hero">
     <div class="hero__video">
       <video autoplay muted loop playsinline>
-        <source src="img/hero_video_opt.mp4" type="video/mp4">
+        <source src="img/trame_nuevovideo.mp4" type="video/mp4">
       </video>
     </div>
     <div class="hero__overlay"></div>
@@ -377,9 +373,8 @@
     <div class="brand-statement__content">
       <h2 class="brand-statement__title">Ropa que<br>trasciende el tiempo</h2>
       <p class="brand-statement__text">
-        Cada prenda de Casa Tramé nace con la intención de permanecer. Diseñamos piezas atemporales
-        que combinan técnicas artesanales con una visión contemporánea — para quienes eligen
-        calidad sobre cantidad y construyen un guardarropa con propósito.
+        En Casa Tramé creamos prendas pensadas para quedarse. Diseños atemporales con una mirada contemporánea, concebidos para quienes priorizan la calidad, el detalle y un estilo que evoluciona sin perder identidad.
+        Cada pieza es una inversión en un guardarropa con intención.
       </p>
     </div>
   </section>
@@ -435,9 +430,9 @@
 
   <!-- ===== VESTIDOR ===== -->
   <section class="vestidor">
-    <h2 class="vestidor__title">Pocas prendas,<br>Muchas combinaciones</h2>
+    <h2 class="vestidor__title">Menos prendas,<br>más combinaciones.</h2>
     <p class="vestidor__subtitle">
-      Explora, combina y encuentra el punto exacto con nuestra app de Vestidor.
+      En Casa Tramé, cada prenda se integra con naturalidad, descubre nuevas formas de combinarlas en el vestidor y construye un estilo propio con intención.
     </p>
     <div class="vestidor__mockup">
       <picture>
@@ -457,7 +452,7 @@
   <section class="newsletter">
     <div class="newsletter__bg"></div>
     <div class="newsletter__content">
-      <h2 class="newsletter__title">Sé parte de Casa Tramé</h2>
+      <h2 class="newsletter__title">Mantengámonos en contacto</h2>
       <form class="newsletter__form" onsubmit="event.preventDefault(); this.querySelector('input').value=''; toast('Gracias por suscribirte!');">
         <input class="newsletter__input" type="email" placeholder="Tu email" required>
         <div class="newsletter__submit-wrap">
@@ -469,8 +464,8 @@
     <footer class="footer">
       <div class="footer__grid">
         <div class="footer__brand">
-          <div class="footer__brand-name">CASA TRAMÉ</div>
-          <p>Moda artesanal con visión contemporánea. Diseñada para quienes valoran la calidad y la intención detrás de cada prenda.</p>
+          <div class="footer__brand-name">Casa Tramé</div>
+          <p>Diseñado en Argentina<br>Producido en Perú</p>
         </div>
         <div>
           <h4>Síguenos</h4>
@@ -499,7 +494,7 @@
         </div>
       </div>
       <div class="footer__bottom">
-        <span>&copy; 2026 Casa Tramé. Todos los derechos reservados.</span>
+        <span>&copy; Casa Tramé. Todos los derechos reservados.</span>
       </div>
     </footer>
   </section>
