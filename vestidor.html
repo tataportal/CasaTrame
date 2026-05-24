@@ -77,6 +77,8 @@
       flex-shrink: 0; width: 9.333rem; cursor: grab;
       position: relative; transition: 0.2s;
       border: 2px solid transparent;
+      box-sizing: border-box;
+      overflow: hidden;
     }
     .panel__item:active { cursor: grabbing; }
     .panel__item:hover { border-color: var(--text); }
@@ -90,7 +92,7 @@
       pointer-events: none;
     }
     .panel__item.selected .panel__item__check { display: flex; }
-    .panel__item img { width: 9.333rem; height: 11.667rem; object-fit: contain; background: #f5f5f5; }
+    .panel__item img { width: 100%; height: 11.667rem; object-fit: contain; background: #f5f5f5; }
     .panel__item__eye {
       display: none; position: absolute; bottom: 0.267rem; right: 0.267rem;
       width: 1.467rem; height: 1.467rem; border-radius: 50%;
@@ -531,6 +533,110 @@
       position: fixed; inset: 0; z-index: 10000;
       pointer-events: auto;
     }
+    .ob-map {
+      position: absolute; inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      background: rgba(12,12,12,0.42);
+      color: var(--text);
+      backdrop-filter: blur(3px);
+    }
+    .ob-map__panel {
+      width: min(1080px, calc(100vw - 44px));
+      background: rgba(255,255,255,0.98);
+      border: 1px solid rgba(0,0,0,0.12);
+      box-shadow: 0 26px 80px rgba(0,0,0,0.26);
+      padding: 57px 63px 51px;
+    }
+    .ob-map__eyebrow {
+      font-size: 0.8rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 10px;
+    }
+    .ob-map__title {
+      font-size: clamp(1.85rem, 3vw, 2.55rem);
+      line-height: 1.08;
+      letter-spacing: 0.04em;
+      font-weight: 300;
+      margin-bottom: 12px;
+    }
+    .ob-map__intro {
+      max-width: 780px;
+      font-size: 1.62rem;
+      line-height: 1.55;
+      color: var(--text-mid);
+      margin-bottom: 28px;
+    }
+    .ob-map__list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 30px 42px;
+      margin-bottom: 45px;
+    }
+    .ob-map__item {
+      border-top: 1px solid var(--border);
+      padding-top: 21px;
+    }
+    .ob-map__item-title {
+      font-size: 1.29rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+    .ob-map__item-text {
+      font-size: 1.53rem;
+      line-height: 1.42;
+      color: var(--text-mid);
+    }
+    .ob-map__controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 30px;
+    }
+    .ob-map__control {
+      border: 1px solid var(--border);
+      background: #fafafa;
+      padding: 14px 18px;
+      font-size: 1.29rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+    }
+    .ob-map__control strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+    .ob-map__actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .ob-map__done,
+    .ob-map__tour {
+      width: 100%;
+      padding: 24px 0;
+      font-size: 1.41rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .ob-map__done {
+      background: var(--text);
+      color: #fff;
+    }
+    .ob-map__done:hover { background: #333; }
+    .ob-map__tour {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--text);
+    }
+    .ob-map__tour:hover { background: #f3f3f3; }
     .ob-mask {
       position: absolute; inset: 0; width: 100%; height: 100%;
     }
@@ -710,7 +816,7 @@
       .panel__items::-webkit-scrollbar { display: none; }
       /* ── GARMENT THUMBNAILS: 30vw = ~117px on iPhone ── */
       .panel__item { width: 30vw; flex-shrink: 0; border-width: 1.5px; }
-      .panel__item img { width: 30vw; height: auto; object-fit: contain; background: #f5f5f5; }
+      .panel__item img { width: 100%; height: auto; object-fit: contain; background: #f5f5f5; }
       .panel__item__check { width: 5vw; height: 5vw; font-size: 2.5vw; top: 1vw; right: 1vw; }
       .panel__item__toggle { display: none; }
       .panel__item__eye { display: none !important; }
@@ -762,6 +868,19 @@
       .toast { font-size: 3.5vw; padding: 2vw 4vw; bottom: 2vw; }
 
       /* ── ONBOARDING TOOLTIPS ── */
+      .ob-map { align-items: flex-end; padding: 18px; }
+      .ob-map__panel { width: 100%; padding: 26px 22px 22px; }
+      .ob-map__title { font-size: 1.7rem; }
+      .ob-map__intro { font-size: 1rem; margin-bottom: 20px; }
+      .ob-map__list { grid-template-columns: 1fr; gap: 16px; margin-bottom: 22px; }
+      .ob-map__item { padding-top: 12px; }
+      .ob-map__item-title { font-size: 0.86rem; }
+      .ob-map__item-text { font-size: 0.96rem; }
+      .ob-map__controls { margin-bottom: 20px; }
+      .ob-map__control { font-size: 0.78rem; padding: 8px 10px; }
+      .ob-map__actions { grid-template-columns: 1fr; }
+      .ob-map__done,
+      .ob-map__tour { font-size: 0.95rem; padding: 15px 0; }
       .ob-tooltip {
         max-width: 90vw; padding: 4vw;
         left: 5vw !important; right: 5vw !important; width: auto !important;
@@ -850,10 +969,12 @@
           Mis Favoritos
         </button>
         <button class="cat-filter__option" data-cat="abrigos" onclick="selectCatFilter('abrigos')">Abrigos</button>
-        <button class="cat-filter__option" data-cat="jackets" onclick="selectCatFilter('jackets')">Casacas</button>
-        <button class="cat-filter__option" data-cat="polos" onclick="selectCatFilter('polos')">Polos / T-Shirts</button>
+        <button class="cat-filter__option" data-cat="camisas" onclick="selectCatFilter('camisas')">Camisas</button>
+        <button class="cat-filter__option" data-cat="denim" onclick="selectCatFilter('denim')">Denim</button>
         <button class="cat-filter__option" data-cat="faldas" onclick="selectCatFilter('faldas')">Faldas</button>
-        <button class="cat-filter__option" data-cat="pants" onclick="selectCatFilter('pants')">Pantalones</button>
+        <button class="cat-filter__option" data-cat="pantalones" onclick="selectCatFilter('pantalones')">Pantalones</button>
+        <button class="cat-filter__option" data-cat="poleras" onclick="selectCatFilter('poleras')">Poleras</button>
+        <button class="cat-filter__option" data-cat="polos" onclick="selectCatFilter('polos')">Polos</button>
       </div>
     </div>
 
@@ -879,28 +1000,20 @@
         </div>
         <div class="panel__items" id="items-abrigos"></div>
       </div>
-      <div class="panel__section" id="section-jackets">
-        <div class="panel__section-header" onclick="toggleSection('jackets')">
-          <span><span class="panel__section-title">Jackets</span><span class="panel__section-count" id="count-jackets"></span></span>
+      <div class="panel__section" id="section-camisas">
+        <div class="panel__section-header" onclick="toggleSection('camisas')">
+          <span><span class="panel__section-title">Camisas</span><span class="panel__section-count" id="count-camisas"></span></span>
           <span class="panel__section-toggle">&#9660;</span>
         </div>
-        <div class="panel__items" id="items-jackets"></div>
+        <div class="panel__items" id="items-camisas"></div>
       </div>
-      <div class="panel__section" id="section-polos">
-        <div class="panel__section-header" onclick="toggleSection('polos')">
-          <span><span class="panel__section-title">Polos / T-Shirts</span><span class="panel__section-count" id="count-polos"></span></span>
+      <div class="panel__section" id="section-denim">
+        <div class="panel__section-header" onclick="toggleSection('denim')">
+          <span><span class="panel__section-title">Denim</span><span class="panel__section-count" id="count-denim"></span></span>
           <span class="panel__section-toggle">&#9660;</span>
         </div>
-        <div class="panel__items" id="items-polos"></div>
+        <div class="panel__items" id="items-denim"></div>
       </div>
-      <div class="panel__section" id="section-blusas">
-        <div class="panel__section-header" onclick="toggleSection('blusas')">
-          <span><span class="panel__section-title">Blusas</span><span class="panel__section-count" id="count-blusas"></span></span>
-          <span class="panel__section-toggle">&#9660;</span>
-        </div>
-        <div class="panel__items" id="items-blusas"></div>
-      </div>
-      <!-- sweaters section removed in v2 -->
       <div class="panel__section" id="section-faldas">
         <div class="panel__section-header" onclick="toggleSection('faldas')">
           <span><span class="panel__section-title">Faldas</span><span class="panel__section-count" id="count-faldas"></span></span>
@@ -908,12 +1021,26 @@
         </div>
         <div class="panel__items" id="items-faldas"></div>
       </div>
-      <div class="panel__section" id="section-pants">
-        <div class="panel__section-header" onclick="toggleSection('pants')">
-          <span><span class="panel__section-title">Pantalones</span><span class="panel__section-count" id="count-pants"></span></span>
+      <div class="panel__section" id="section-pantalones">
+        <div class="panel__section-header" onclick="toggleSection('pantalones')">
+          <span><span class="panel__section-title">Pantalones</span><span class="panel__section-count" id="count-pantalones"></span></span>
           <span class="panel__section-toggle">&#9660;</span>
         </div>
-        <div class="panel__items" id="items-pants"></div>
+        <div class="panel__items" id="items-pantalones"></div>
+      </div>
+      <div class="panel__section" id="section-poleras">
+        <div class="panel__section-header" onclick="toggleSection('poleras')">
+          <span><span class="panel__section-title">Poleras</span><span class="panel__section-count" id="count-poleras"></span></span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-poleras"></div>
+      </div>
+      <div class="panel__section" id="section-polos">
+        <div class="panel__section-header" onclick="toggleSection('polos')">
+          <span><span class="panel__section-title">Polos</span><span class="panel__section-count" id="count-polos"></span></span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-polos"></div>
       </div>
     </div>
 
@@ -1072,10 +1199,12 @@
         all: 'Todas las prendas',
         favoritos: 'Mis Favoritos',
         abrigos: 'Abrigos',
-        jackets: 'Casacas',
-        polos: 'Polos / T-Shirts',
+        camisas: 'Camisas',
+        denim: 'Denim',
         faldas: 'Faldas',
-        pants: 'Pantalones'
+        pantalones: 'Pantalones',
+        poleras: 'Poleras',
+        polos: 'Polos'
       };
       document.getElementById('catFilterLabel').textContent = labels[cat] || cat;
 
@@ -1151,98 +1280,62 @@
          imgFront    → _f — imagen del frente
          doubleLayer → true = se divide en capa-espalda + capa-frente
        ============================================ */
+    const catalogProducts = [
+      { id:201, name:"Abrigo Suede Pampa", cat:"abrigos", slot:"outer", price:238, colors:[["Verde","#5d6b4c","abrigo-suede-pampa-verde.png"]] },
+      { id:202, name:"Blazer Palermo", cat:"abrigos", slot:"outer", price:289, colors:[["Azul","#263a62","blazer-palermo-azul.png"],["Beige","#d8d0bf","blazer-palermo-beige.png"],["Negro","#111111","blazer-palermo-negro.png"]] },
+      { id:203, name:"Tapado Córdoba", cat:"abrigos", slot:"outer", price:329, colors:[["Gris","#898985","tapado-simple-cordoba-gris.png"]] },
+      { id:204, name:"Tapado Mara con Cinturón", cat:"abrigos", slot:"outer", price:359, colors:[["Negro","#111111","tapado-mara-con-cinturon-negro.png"],["Rojo","#9f2b24","tapado-mara-con-cinturon-rojo.png"]] },
+      { id:206, name:"Capa Patagónica", cat:"abrigos", slot:"outer", price:229, colors:[["Camel","#b58a61","capa-patagonica-camel.png"],["Negra","#111111","capa-patagonica-negra.png"]] },
+      { id:207, name:"Camisa Oversize Belgrano", cat:"camisas", slot:"top", price:159, colors:[["Blanco","#f7f7f2","camisa-oversize-belgrano-blanco.png"],["Celeste","#9ebad3","camisa-oversize-belgrano-celeste.png"],["Negro","#111111","camisa-oversize-belgrano-negro.png"]] },
+      { id:208, name:"Camisa Básica Malabia", cat:"camisas", slot:"top", price:149, colors:[["Blanco","#f7f7f2","camisa-basica-malabia-blanco.png"]] },
+      { id:209, name:"Camisa Denim Soho", cat:"denim", slot:"top", price:169, colors:[["Denim","#6f8599","camisa-denim-soho.png"]] },
+      { id:216, name:"Jean Recto Ceibo", cat:"denim", slot:"bottom", price:189, colors:[["Claro","#9aa8b5","jean-recto-ceibo-claro.png"],["Oscuro","#26394f","jean-recto-ceibo-oscuro.png"]] },
+      { id:217, name:"Jean Wide Leg Corrientes", cat:"denim", slot:"bottom", price:199, colors:[["Claro","#9aa8b5","jean-wide-leg-corrientes-claro.png"],["Oscuro","#26394f","jean-wide-leg-corrientes-oscuro.png"]] },
+      { id:213, name:"Falda Suede Pampa", cat:"faldas", slot:"bottom", price:139, colors:[["Verde","#5d6b4c","falda-suede-pampa-verde.png"]] },
+      { id:212, name:"Jogging Cafayate", cat:"pantalones", slot:"bottom", price:169, colors:[["Blanco","#f7f4ed","jogging-cafayate-blanco.png"],["Negro","#111111","jogging-cafayate-negro.png"],["Verde","#556b2f","jogging-cafayate-verde.png"]] },
+      { id:215, name:"Pantalón Ancho Barolo", cat:"pantalones", slot:"bottom", price:209, colors:[["Azul","#314d72","pantalon-ancho-barolo-azul.png"],["Gris","#8d8d88","pantalon-ancho-barolo-gris.png"],["Marrón","#6b4a35","pantalon-ancho-barolo-marron.png"],["Negro","#111111","pantalon-ancho-barolo-negro.png"]] },
+      { id:214, name:"Pantalón Sastrero Jacarandá", cat:"pantalones", slot:"bottom", price:199, colors:[["Azul","#2e4a68","pantalon-sastrero-jacaranda-azul.png"],["Beige","#d8d0bf","pantalon-sastrero-jacaranda-beige.png"],["Gris","#9b9b9b","pantalon-sastrero-jacaranda-gris.png"]] },
+      { id:205, name:"Sweater Cuello Alto Bariloche", cat:"poleras", slot:"top", price:189, colors:[["Blanco","#f2eee7","sweater-cuello-alto-bariloche-blanco.png"],["Gris","#8e8f8b","sweater-cuello-alto-bariloche-gris.png"],["Negro","#111111","sweater-cuello-alto-bariloche-negro.png"]] },
+      { id:210, name:"Polera Cuello Alto Calafate", cat:"poleras", slot:"top", price:139, colors:[["Blanco","#f7f4ed","polera-cuello-alto-calafate-blanco.png"],["Negro","#111111","polera-cuello-alto-calafate-negro.png"],["Verde","#556b2f","polera-cuello-alto-calafate-verde.png"]] },
+      { id:211, name:"Polera con Capucha Aconcagua", cat:"poleras", slot:"top", price:159, colors:[["Blanco","#f7f4ed","polera-con-capucha-aconcagua-blanco.png"],["Negro","#111111","polera-con-capucha-aconcagua-negro.png"]] },
+      { id:219, name:"Polo Básico Trenque Lauquen", cat:"polos", slot:"top", price:119, colors:[["Azul","#314d72","polo-basico-trenque-lauquen-azul.png"],["Blanco","#f7f4ed","polo-basico-trenque-lauquen-blanco.png"],["Marrón","#6b4a35","polo-basico-trenque-lauquen-marron.png"],["Negro","#111111","polo-basico-trenque-lauquen-negro.png"]] },
+      { id:220, name:"Polo Cuello Alto Ushuaia", cat:"polos", slot:"top", price:129, colors:[["Azul","#314d72","polo-cuello-alto-ushuaia-azul.png"],["Blanco","#f7f4ed","polo-cuello-alto-ushuaia-blanco.png"],["Negro","#111111","polo-cuello-alto-ushuaia-negro.png"],["Rojo","#9f2b24","polo-cuello-alto-ushuaia-rojo.png"]] },
+      { id:218, name:"Polo Cuello Cuadrado Ombú", cat:"polos", slot:"top", price:129, colors:[["Azul","#314d72","polo-cuello-cuadrado-ombu-azul.png"],["Blanco","#f7f4ed","polo-cuello-cuadrado-ombu-blanco.png"],["Negro","#111111","polo-cuello-cuadrado-ombu-negro.png"],["Rojo","#9f2b24","polo-cuello-cuadrado-ombu-rojo.png"]] }
+    ];
+
     const catalog = {
-      /* SHOPIFY: Replace this hardcoded catalog with Liquid loop
-         {% for product in collections['vestidor'].products %} ... {% endfor %} */
-      abrigos: [
-        { id:101, name:"Abrigo Marrón", cat:"abrigos", price:2150,
-          sourceImg:"photos_demo/demo_coat_bown.png",
-          vestidor:{ src:"photos_demo/demo_coat_bown.png", singleLayer:true, layerType:"single-outer", fit:{ left:0, top:0, width:100, height:100 } },
-          imgDemo:"photos_demo/demo_coat_bown.png",
-          imgThumb:"img/vestidor/coat_001_marron_o_mini.png",
-          doubleLayer:true,
-          defaultState:'cerrado',
-          states: {
-            cerrado: { img:"img/vestidor/coat_001_marron_c_f.png",
-                       imgFront:"img/vestidor/coat_001_marron_c_f.png",
-                       imgBack:"img/vestidor/coat_001_marron_c_b.png" },
-            abierto: { img:"img/vestidor/coat_001_marron_o_f.png",
-                       imgFront:"img/vestidor/coat_001_marron_o_f.png",
-                       imgBack:"img/vestidor/coat_001_marron_o_b.png" }
-          }
-        },
-      ],
-      jackets: [
-        { id:201, name:"Jacket Verde Cerrada", cat:"jackets", price:1450,
-          sourceImg:"photos_demo/demo_jacket_green.png",
-          vestidor:{ src:"photos_demo/demo_jacket_green.png", singleLayer:true, layerType:"single-outer", fit:{ left:0, top:0, width:100, height:100 } },
-          imgDemo:"photos_demo/demo_jacket_green.png",
-          img:"img/vestidor/jacket_001_verde_c_f.png",
-          imgThumb:"img/vestidor/jacket_001_verde_c_mini.png",
-          imgFront:"img/vestidor/jacket_001_verde_c_f.png",
-          imgBack:"img/vestidor/jacket_001_verde_c_b.png",
-          doubleLayer:true },
-      ],
-      polos: [
-        { id:601, name:"Polo Manga Larga Blanco", cat:"polos", price:650,
-          sourceImg:"photos_demo/polo_001_blanco.png",
-          vestidor:{ src:"photos_demo/polo_001_blanco.png", fit:{ left:0, top:0, width:100, height:100 } },
-          imgDemo:"photos_demo/polo_001_blanco.png",
-          img:"img/vestidor/polo_001_blanco.png" },
-        { id:602, name:"Polo Manga Larga Marrón", cat:"polos", price:650,
-          sourceImg:"photos_demo/polo_001_marron.png",
-          vestidor:{ src:"photos_demo/polo_001_marron.png", fit:{ left:0, top:0, width:100, height:100 } },
-          imgDemo:"photos_demo/polo_001_marron.png",
-          img:"img/vestidor/polo_001_marron.png" },
-        { id:603, name:"Basic Tee Blanca", cat:"polos", price:450,
-          sourceImg:"photos_demo/demo_polo_gray.png",
-          vestidor:{ src:"photos_demo/demo_polo_gray.png", fit:{ left:0, top:0, width:100, height:100 } },
-          imgDemo:"photos_demo/demo_polo_gray.png",
-          img:"img/vestidor/polo_002_blanco.png" },
-        { id:604, name:"Polo Cuello Alto Blanco", cat:"polos", price:750,
-          sourceImg:"photos_demo/polo_003_blancoT.png",
-          vestidor:{ src:"photos_demo/polo_003_blancoT.png", bg:"#fff", fit:{ left:18.5, top:-1.7, width:62.5, height:62.5 } },
-          imgDemo:"photos_demo/polo_003_blancoT.png",
-          img:"img/vestidor/polo_003_blanco.png" },
-      ],
-      blusas: [
-        { id:701, name:"Camisa Negra", cat:"blusas", price:950,
-          sourceImg:"photos_demo/camisa_002_negro_c_f.png",
-          vestidor:{ src:"photos_demo/camisa_002_negro_c_f.png", singleLayer:true, fit:{ left:0, top:0, width:100, height:100 } },
-          imgDemo:"photos_demo/camisa_002_negro_c_f.png",
-          imgThumb:"img/vestidor/camisa_002_negro_c_f.png",
-          doubleLayer:true,
-          defaultState:'cerrado',
-          states: {
-            cerrado: { img:"img/vestidor/camisa_002_negro_c_f.png",
-                       imgFront:"img/vestidor/camisa_002_negro_c_f.png",
-                       imgBack:"img/vestidor/camisa_002_negro_c_f.png" },
-            abierto: { img:"img/vestidor/camisa_002_negro_o_f.png",
-                       imgFront:"img/vestidor/camisa_002_negro_o_f.png",
-                       imgBack:"img/vestidor/camisa_002_negro_o_b.png" }
-          }
-        },
-      ],
-      faldas: [
-        { id:301, name:"Falda Verde", cat:"faldas", price:850,
-          sourceImg:"photos_demo/demo_falda_green.png",
-          vestidor:{ src:"photos_demo/demo_falda_green.png", fit:{ left:0, top:0, width:100, height:100 } },
-          imgDemo:"photos_demo/demo_falda_green.png",
-          img:"img/vestidor/falda_001_verde.png" },
-      ],
-      pants: [
-        { id:501, name:"Pantalón Beige", cat:"pants", price:1050,
-          sourceImg:"photos_demo/demo_jeans.png",
-          vestidor:{ src:"photos_demo/demo_jeans.png", fit:{ left:0, top:0, width:100, height:100 } },
-          imgDemo:"photos_demo/demo_jeans.png",
-          img:"img/vestidor/pantalon_001_beige.png" },
-        { id:502, name:"Pantalón Marrón", cat:"pants", price:1050,
-          sourceImg:"photos_demo/demo_jeans.png",
-          vestidor:{ src:"photos_demo/demo_jeans.png", fit:{ left:0, top:0, width:100, height:100 } },
-          imgDemo:"photos_demo/demo_jeans.png",
-          img:"img/vestidor/pantalon_002_marron.png" },
-      ]
+      abrigos: [],
+      camisas: [],
+      denim: [],
+      faldas: [],
+      pantalones: [],
+      poleras: [],
+      polos: []
     };
+
+    catalogProducts.forEach(product => {
+      product.colors.forEach(([colorName, colorHex, filename], index) => {
+        const src = `img/productos/${filename}`;
+        catalog[product.cat].push({
+          id: product.id * 10 + index,
+          productId: product.id,
+          name: `${product.name} ${colorName}`,
+          productName: product.name,
+          colorName,
+          colorHex,
+          cat: product.cat,
+          slot: product.slot,
+          price: product.price,
+          sourceImg: src,
+          vestidor:{ src, bg:"#fff", layerType: product.slot === 'outer' ? "single-outer" : "normal" },
+          img: src
+        });
+      });
+    });
+
+    Object.keys(catalog).forEach(cat => {
+      catalog[cat].sort((a, b) => a.name.localeCompare(b.name, 'es', { sensitivity: 'base' }));
+    });
 
     /* ============================================
        STATE
@@ -1267,6 +1360,23 @@
       return item.vestidor?.bg || '#f5f5f5';
     }
 
+    const vestidorSlots = {
+      top: { left: 30, top: 12, width: 40, height: 50 },
+      bottom: { left: 29, top: 40, width: 42, height: 52.5 },
+      outer: { left: 22, top: 8, width: 56, height: 70 },
+      coat: { left: 18, top: 6, width: 64, height: 80 }
+    };
+
+    function getSlotFit(itemOrCat) {
+      const slot = typeof itemOrCat === 'string' ? null : itemOrCat.slot;
+      const cat = typeof itemOrCat === 'string' ? itemOrCat : itemOrCat.cat;
+      if (slot === 'bottom' || cat === 'pantalones' || cat === 'faldas') return vestidorSlots.bottom;
+      if (slot === 'top' || cat === 'polos' || cat === 'poleras' || cat === 'camisas') return vestidorSlots.top;
+      if (slot === 'outer') return vestidorSlots.coat;
+      if (cat === 'abrigos') return vestidorSlots.coat;
+      return { left: 0, top: 0, width: 100, height: 100 };
+    }
+
     function getLayerVisual(layer) {
       const resolved = resolveImages(layer.item, layer.state);
       let imgSrc = resolved.img || layer.item.img;
@@ -1278,7 +1388,7 @@
 
       return {
         img: imgSrc,
-        fit: Object.assign({ left: 0, top: 0, width: 100, height: 100 }, vestidor.fit || {})
+        fit: getSlotFit(layer.item)
       };
     }
 
@@ -1319,14 +1429,12 @@
     let dragItemData = null; // for panel→canvas drag
     let dragChipUid = null;  // for layer reorder drag
 
-    /* ── DEMO: Read favoritos from catalog wishlist — BORRAR CUANDO HAYA SHOPIFY ── */
+    /* Read favoritos from catalog wishlist. Shopify should replace IDs with product handles/metafields. */
     let favoritos = [];
     try {
       const stored = JSON.parse(localStorage.getItem('ct_wishlist') || '[]');
-      favoritos = [...new Set(stored.map(w => w.vid || w.id))]; // vid = vestidor ID
+      favoritos = [...new Set(stored.map(w => w.vid || w.id))]; // catalog product id or vestidor variant id
     } catch(e) {}
-    if (favoritos.length === 0) favoritos = [101, 201, 601];
-    /* ── FIN DEMO ── */
 
     function getAllItems() {
       const all = [];
@@ -1337,7 +1445,7 @@
     function renderFavoritos() {
       const container = document.getElementById('items-favoritos');
       const countEl = document.getElementById('count-favoritos');
-      const items = favoritos.map(id => getAllItems().find(i => i.id === id)).filter(Boolean);
+      const items = favoritos.map(id => getAllItems().find(i => i.id === id || i.productId === id)).filter(Boolean);
       countEl.textContent = items.length > 0 ? ` (${items.length})` : '';
 
       if (items.length === 0) {
@@ -1354,7 +1462,7 @@
             <span class="panel__item__check">&#10003;</span>
             <img src="${getItemSourceImage(item)}" alt="${item.name}" draggable="false" loading="lazy" style="background:${getItemBackground(item)}">
             <!-- SHOPIFY: Replace with /products/{{ product.handle }} -->
-            <button class="panel__item__eye" title="Ver producto" onclick="event.stopPropagation(); window.open('producto.html?id=${item.id}', '_blank')">
+            <button class="panel__item__eye" title="Ver producto" onclick="event.stopPropagation(); window.open('producto.html?id=${item.productId || item.id}', '_blank')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
           </div>`;
@@ -1385,7 +1493,7 @@
             <span class="panel__item__check">&#10003;</span>
             <img src="${thumbSrc}" alt="${item.name}" draggable="false" loading="lazy" style="background:${getItemBackground(item)}">
             ${toggleBtn}
-            <button class="panel__item__eye" title="Ver producto" onclick="event.stopPropagation(); window.open('producto.html?id=${item.id}', '_blank')">
+            <button class="panel__item__eye" title="Ver producto" onclick="event.stopPropagation(); window.open('producto.html?id=${item.productId || item.id}', '_blank')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
           </div>`;
@@ -1463,11 +1571,16 @@
        ============================================ */
     /* Slot groups: only 1 item per group allowed on canvas */
     const slotGroups = [
-      ['abrigos', 'jackets'],
-      ['polos'],
-      ['pants', 'faldas'],
+      ['abrigos'],
+      ['camisas', 'poleras', 'polos'],
+      ['denim', 'faldas', 'pantalones'],
     ];
-    function getSlotGroup(cat) { return slotGroups.find(g => g.includes(cat)); }
+    function getSlotGroup(cat, item) {
+      if (item?.slot === 'outer') return ['abrigos'];
+      if (item?.slot === 'top') return ['camisas', 'poleras', 'polos', 'denim'];
+      if (item?.slot === 'bottom') return ['denim', 'faldas', 'pantalones'];
+      return slotGroups.find(g => g.includes(cat));
+    }
 
     function addItemToCanvas(cat, id) {
       const item = catalog[cat].find(i => i.id === id);
@@ -1477,19 +1590,19 @@
       if (layers.some(l => l.item.id === id)) return;
 
       // Slot group: only 1 allowed per group — remove existing before adding new
-      const group = getSlotGroup(cat);
+      const group = getSlotGroup(cat, item);
       if (group) {
-        const existing = layers.filter(l => group.includes(l.item.cat));
+        const existing = layers.filter(l => group.includes(l.item.cat) && (!item.slot || l.item.slot === item.slot));
         existing.forEach(l => {
           document.querySelectorAll(`.panel__item[data-id="${l.item.id}"]`).forEach(el => el.classList.remove('selected'));
         });
-        layers = layers.filter(l => !group.includes(l.item.cat));
+        layers = layers.filter(l => !(group.includes(l.item.cat) && (!item.slot || l.item.slot === item.slot)));
       }
 
       const st = itemStates[item.id] || item.defaultState || null;
 
-      /* Layer priority: pants/faldas=0, polos=1, blusas(mid)=2, jackets=3, abrigos=4 */
-      const layerOrder = { pants:0, faldas:0, polos:1, blusas:2, jackets:3, abrigos:4 };
+      /* Layer priority: bottoms=0, tops=1, outerwear=4 */
+      const layerOrder = { pantalones:0, faldas:0, denim:item.slot === 'bottom' ? 0 : 1, polos:1, poleras:1, camisas:1, abrigos:4 };
       const itemOrder = layerOrder[cat] ?? 2;
 
       if (item.doubleLayer && !item.vestidor?.singleLayer && cat === 'blusas') {
@@ -1588,11 +1701,8 @@
         const cat = l.item.cat;
         const lt = l.layerType;
         if (lt === 'coat-back' && cat === 'abrigos')  z = 1;
-        else if (lt === 'coat-back' && cat === 'jackets')  z = 2;
         else if (lt === 'mid-back')                        z = 3;
-        else if (lt === 'single-outer' && cat === 'jackets') z = 20;
         else if (lt === 'single-outer' && cat === 'abrigos') z = 21;
-        else if (lt === 'coat-front' && cat === 'jackets') z = 20;
         else if (lt === 'coat-front' && cat === 'abrigos') z = 21;
         else { z = 10 + midCounter; midCounter++; } // middle zone: array order
         div.style.zIndex = z;
@@ -1629,12 +1739,14 @@
         chip.dataset.uid = l.uid;
 
         const typeLabel = l.layerType === 'coat-front' ? 'Abrigo' :
-                          l.layerType === 'mid-front' ? 'Blusa' :
+                          l.layerType === 'mid-front' ? 'Camisa' :
                           l.item.cat === 'abrigos' ? 'Abrigo' :
-                          l.item.cat === 'jackets' ? 'Jacket' :
-                          l.item.cat === 'blusas' ? 'Blusa' :
+                          l.item.cat === 'camisas' ? 'Camisa' :
+                          l.item.cat === 'denim' ? 'Denim' :
                           l.item.cat === 'faldas' ? 'Falda' :
-                          l.item.cat === 'pants' ? 'Pantalón' : l.item.cat;
+                          l.item.cat === 'pantalones' ? 'Pantalón' :
+                          l.item.cat === 'poleras' ? 'Polera' :
+                          l.item.cat === 'polos' ? 'Polo' : l.item.cat;
 
         const eyeIcon = l.hidden
           ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
@@ -1777,7 +1889,7 @@
         list.innerHTML = '<div class="summary__empty">Empieza eligiendo prendas</div>';
       } else {
         list.innerHTML = uniqueItems.map(item => `
-          <div class="summary__item" style="cursor:pointer" onclick="window.open('producto.html?id=${item.id}','_blank')">
+          <div class="summary__item" style="cursor:pointer" onclick="window.open('producto.html?id=${item.productId || item.id}','_blank')">
             <img class="summary__item-img" src="${getItemSourceImage(item)}" alt="${item.name}" loading="lazy" style="background:${getItemBackground(item)}">
             <div class="summary__item-info">
               <div class="summary__item-cat">${item.cat}</div>
@@ -1918,32 +2030,28 @@
 
       const pick = arr => arr.length ? arr[Math.floor(Math.random() * arr.length)] : null;
 
-      // Build outfit: 1 outerwear (coat OR jacket) + 1 top (polo OR blusa) + 1 bottom (pantalón, short OR falda)
+      // Build outfit: 1 outerwear + 1 top + 1 bottom
       const picks = [];
 
-      // 1. Outerwear: coat OR jacket (random)
-      const outerCats = ['abrigos', 'jackets'].filter(c => catalog[c]?.length);
+      // 1. Outerwear
+      const outerCats = ['abrigos'].filter(c => catalog[c]?.length);
       if (outerCats.length) {
         const outerCat = pick(outerCats);
         const outerItem = pick(catalog[outerCat]);
         if (outerItem) picks.push({ cat: outerCat, item: outerItem });
       }
 
-      // 2. Top: polo OR blusa (random)
-      const topCats = ['polos', 'blusas'].filter(c => catalog[c]?.length);
-      if (topCats.length) {
-        const topCat = pick(topCats);
-        const topItem = pick(catalog[topCat]);
-        if (topItem) picks.push({ cat: topCat, item: topItem });
-      }
+      // 2. Top
+      const topItems = ['camisas', 'denim', 'poleras', 'polos']
+        .flatMap(c => (catalog[c] || []).filter(item => item.slot === 'top').map(item => ({ cat:c, item })));
+      const topPick = pick(topItems);
+      if (topPick) picks.push(topPick);
 
-      // 3. Bottom: pantalón, short OR falda (random)
-      const bottomCats = ['pants', 'shorts', 'faldas'].filter(c => catalog[c]?.length);
-      if (bottomCats.length) {
-        const bottomCat = pick(bottomCats);
-        const bottomItem = pick(catalog[bottomCat]);
-        if (bottomItem) picks.push({ cat: bottomCat, item: bottomItem });
-      }
+      // 3. Bottom
+      const bottomItems = ['denim', 'faldas', 'pantalones']
+        .flatMap(c => (catalog[c] || []).filter(item => item.slot === 'bottom').map(item => ({ cat:c, item })));
+      const bottomPick = pick(bottomItems);
+      if (bottomPick) picks.push(bottomPick);
 
       // Randomize state for items with o/c toggle
       picks.forEach(p => {
@@ -2405,6 +2513,58 @@
 
     function startOnboarding() {
       onboardingIdx = 0;
+      showOnboardingMap();
+    }
+
+    function showOnboardingMap() {
+      const prev = document.getElementById('onboardingOverlay');
+      if (prev) prev.remove();
+
+      const overlay = document.createElement('div');
+      overlay.id = 'onboardingOverlay';
+      overlay.innerHTML = `
+        <div class="ob-map">
+          <div class="ob-map__panel">
+            <div class="ob-map__eyebrow">Vestidor&trade;</div>
+            <div class="ob-map__title">Arma tu look por capas.</div>
+            <div class="ob-map__intro">Elige prendas del panel izquierdo y combínalas en el vestidor. Los controles sirven para ajustar estado, orden y visibilidad sin perder el look.</div>
+            <div class="ob-map__list">
+              <div class="ob-map__item">
+                <div class="ob-map__item-title">Prendas</div>
+                <div class="ob-map__item-text">Click o arrastra una prenda para probarla.</div>
+              </div>
+              <div class="ob-map__item">
+                <div class="ob-map__item-title">Ojo</div>
+                <div class="ob-map__item-text">El ojo de la prenda abre su página de producto. En capas, el ojo oculta o muestra.</div>
+              </div>
+              <div class="ob-map__item">
+                <div class="ob-map__item-title">Adelante / atrás</div>
+                <div class="ob-map__item-text">Las flechas mandan una prenda adelante o atrás dentro del look.</div>
+              </div>
+              <div class="ob-map__item">
+                <div class="ob-map__item-title">Finalizar</div>
+                <div class="ob-map__item-text">Guarda el look o agrégalo al carrito desde el resumen.</div>
+              </div>
+            </div>
+            <div class="ob-map__controls" aria-label="Resumen de controles">
+              <span class="ob-map__control"><strong>ojo</strong> ver producto / ocultar</span>
+              <span class="ob-map__control"><strong>flechas</strong> adelante / atrás</span>
+              <span class="ob-map__control"><strong>guardar</strong> conserva el look</span>
+            </div>
+            <div class="ob-map__actions">
+              <button class="ob-map__tour" onclick="startFullOnboardingTour()">Ver tour completo</button>
+              <button class="ob-map__done" onclick="endOnboarding()">Entendido</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+    }
+
+    function startFullOnboardingTour() {
+      const prev = document.getElementById('onboardingOverlay');
+      if (prev) prev.remove();
+      onboardingIdx = 0;
       currentSteps = getOnboardingSteps();
       // On mobile, scroll to top so canvas is visible for step 1
       if (isMobileOnboarding()) window.scrollTo({ top: 0, behavior: 'instant' });
@@ -2608,56 +2768,16 @@
        ============================================ */
     initItemStates();
 
-    // Demo looks — pre-loaded on first visit so the grid isn't empty
+    // Shopify/local saved looks only. No demo looks.
     function getDefaultDemoLooks() {
-      return [
-        { id: 1, name: 'Look 1',
-          layers: [
-            { item: catalog.polos[0], layerType:'normal', state:null },
-            { item: catalog.pants[0], layerType:'normal', state:null },
-            { item: catalog.abrigos[0], layerType:'single-outer', state:'cerrado' }
-          ],
-          items: [catalog.polos[0], catalog.pants[0], catalog.abrigos[0]],
-          total: catalog.polos[0].price + catalog.pants[0].price + catalog.abrigos[0].price,
-          visualLayers: [
-            { img:'photos_demo/polo_001_blanco.png', left:0, top:0, width:100, height:100, zIndex:10 },
-            { img:'photos_demo/demo_jeans.png', left:0, top:0, width:100, height:100, zIndex:11 },
-            { img:'photos_demo/demo_coat_bown.png', left:0, top:0, width:100, height:100, zIndex:21 }
-          ]
-        },
-        { id: 2, name: 'Look 2',
-          layers: [
-            { item: catalog.polos[1], layerType:'normal', state:null },
-            { item: catalog.faldas[0], layerType:'normal', state:null },
-            { item: catalog.jackets[0], layerType:'single-outer', state:null }
-          ],
-          items: [catalog.polos[1], catalog.faldas[0], catalog.jackets[0]],
-          total: catalog.polos[1].price + catalog.faldas[0].price + catalog.jackets[0].price,
-          visualLayers: [
-            { img:'photos_demo/polo_001_marron.png', left:0, top:0, width:100, height:100, zIndex:10 },
-            { img:'photos_demo/demo_falda_green.png', left:0, top:0, width:100, height:100, zIndex:11 },
-            { img:'photos_demo/demo_jacket_green.png', left:0, top:0, width:100, height:100, zIndex:20 }
-          ]
-        },
-        { id: 3, name: 'Look 3',
-          layers: [
-            { item: catalog.polos[0], layerType:'normal', state:null },
-            { item: catalog.pants[1], layerType:'normal', state:null }
-          ],
-          items: [catalog.polos[0], catalog.pants[1]],
-          total: catalog.polos[0].price + catalog.pants[1].price,
-          visualLayers: [
-            { img:'photos_demo/polo_001_blanco.png', left:0, top:0, width:100, height:100, zIndex:10 },
-            { img:'photos_demo/demo_jeans.png', left:0, top:0, width:100, height:100, zIndex:11 }
-          ]
-        }
-      ];
+      return [];
     }
 
     // Load saved looks from localStorage
     try {
       const storedLooks = JSON.parse(localStorage.getItem('ct_saved_looks_v2') || '[]');
       storedLooks.forEach(sl => {
+        if ((sl.visualLayers || []).some(v => !String(v.img || '').startsWith('img/productos/'))) return;
         // Reconstruct layers from saved item IDs
         const restoredLayers = (sl.layers || []).map(snap => {
           const allItems = getAllItems();
@@ -2665,6 +2785,7 @@
           if (!item) return null;
           return { item, layerType: snap.layerType, state: snap.state || null };
         }).filter(Boolean);
+        if (restoredLayers.length === 0) return;
 
         const uniqueItems = [];
         const seen = new Set();
@@ -2682,15 +2803,8 @@
           visualLayers: sl.visualLayers || []
         });
       });
-    } catch(e) {}
-
-    // Seed demo looks on first visit (no saved looks in localStorage)
-    if (savedLooks.length === 0) {
-      const demos = getDefaultDemoLooks();
-      demos.forEach(d => savedLooks.push(d));
-      savedLookCounter = 3;
       syncLooksToStorage();
-    }
+    } catch(e) {}
 
     renderPanels();
     renderFavoritos();
