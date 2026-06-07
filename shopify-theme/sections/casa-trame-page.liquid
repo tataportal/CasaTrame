@@ -1,61 +1,10 @@
 {% liquid
   assign collection_url = routes.collections_url | append: '/coleccion-otono-invierno-2026'
   assign vestidor_collection = collections['coleccion-otono-invierno-2026']
-  assign about_url = routes.root_url | append: '#conocenos'
-  assign vestidor_url = '/pages/vestidor'
-  assign favorites_url = '/pages/favoritos'
 %}
 
 {% if page.handle == 'vestidor' %}
   <style>
-    .ct-v-nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      height: 6.667rem;
-      background: #f7f7f7;
-      border-bottom: 1px solid #e4e0da;
-    }
-    .ct-v-nav__inner {
-      height: 100%;
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      padding: 0 3.2rem;
-      gap: 2rem;
-    }
-    .ct-v-nav__left,
-    .ct-v-nav__right {
-      display: flex;
-      align-items: center;
-      gap: 2.667rem;
-    }
-    .ct-v-nav__right { justify-content: flex-end; }
-    .ct-v-nav a,
-    .ct-v-nav button {
-      color: #111;
-      font-family: inherit;
-      font-size: 1.467rem;
-      background: none;
-      border: 0;
-      padding: 0;
-      cursor: pointer;
-      text-decoration: none;
-    }
-    .ct-v-nav .underlined { border-bottom: 1px solid currentColor; }
-    .ct-v-nav__logo img {
-      display: block;
-      width: 16rem;
-      height: auto;
-    }
-    .ct-v-nav svg {
-      display: block;
-      width: 1.867rem;
-      height: 1.867rem;
-      stroke: currentColor;
-    }
     .ct-v {
       --nav-h: 6.667rem;
       --line: #e4e0da;
@@ -616,9 +565,6 @@
       line-height: 1.7;
     }
     @media (max-width: 980px) {
-      .ct-v-nav__inner { padding: 0 1.333rem; }
-      .ct-v-nav__left,
-      .ct-v-nav__right { gap: 1.2rem; }
       .ct-v {
         grid-template-columns: 1fr;
         height: auto;
@@ -656,12 +602,6 @@
       .ct-v__panel--right { display: none; }
     }
     @media (max-width: 720px) {
-      .ct-v-nav__left a:not(.underlined),
-      .ct-v-nav__right { display: none; }
-      .ct-v-nav__inner {
-        grid-template-columns: 1fr auto 1fr;
-      }
-      .ct-v-nav__logo img { width: 13rem; }
       .ct-v__toolbar {
         left: 0.6rem;
         right: 0.6rem;
@@ -674,32 +614,7 @@
     }
   </style>
 
-  <nav class="ct-v-nav">
-    <div class="ct-v-nav__inner">
-      <div class="ct-v-nav__left">
-        <a href="{{ collection_url }}">Colección</a>
-        <a href="{{ about_url }}">Conócenos</a>
-        <a class="underlined" href="{{ vestidor_url }}">Vestidor™</a>
-      </div>
-      <a href="{{ routes.root_url }}" class="ct-v-nav__logo">
-        <img src="{{ 'trame_horizontal-black.svg' | asset_url }}" alt="{{ shop.name | escape }}" width="1115" height="142">
-      </a>
-      <div class="ct-v-nav__right">
-        <a href="{{ routes.search_url }}" title="Buscar">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </a>
-        <a href="{{ routes.account_url }}" title="Cuenta">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </a>
-        <a href="{{ favorites_url }}" title="Favoritos">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-        </a>
-        <a href="{{ routes.cart_url }}" title="Carrito">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-        </a>
-      </div>
-    </div>
-  </nav>
+  {% render 'casa-trame-nav', active: 'vestidor', collection_url: collection_url %}
 
   <main class="ct-v" data-empty-vestidor>
     <aside class="ct-v__panel" aria-label="Prendas">

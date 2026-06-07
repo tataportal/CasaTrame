@@ -120,6 +120,55 @@ ul { list-style: none; }
 .nav__hamburger.is-open span:nth-child(3) { transform: translateY(-0.467rem) rotate(-45deg); }
 .nav__mobile-menu { display: none; }
 
+.ct-v-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 6.667rem;
+  background: #f7f7f7;
+  border-bottom: 1px solid #e4e0da;
+}
+.ct-v-nav__inner {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 3.2rem;
+  gap: 2rem;
+}
+.ct-v-nav__left,
+.ct-v-nav__right {
+  display: flex;
+  align-items: center;
+  gap: 2.667rem;
+}
+.ct-v-nav__right { justify-content: flex-end; }
+.ct-v-nav a,
+.ct-v-nav button {
+  color: #111;
+  font-family: inherit;
+  font-size: 1.467rem;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+.ct-v-nav .underlined { border-bottom: 1px solid currentColor; }
+.ct-v-nav__logo img {
+  display: block;
+  width: 16rem;
+  height: auto;
+}
+.ct-v-nav svg {
+  display: block;
+  width: 1.867rem;
+  height: 1.867rem;
+  stroke: currentColor;
+}
+
 .btn-outline {
   display: inline-flex;
   align-items: center;
@@ -1539,6 +1588,9 @@ ul { list-style: none; }
 @media (max-width: 1024px) {
   .catalog-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .footer__grid { grid-template-columns: 1fr 1fr; }
+  .ct-v-nav__inner { padding: 0 1.333rem; }
+  .ct-v-nav__left,
+  .ct-v-nav__right { gap: 1.2rem; }
 }
 @media (max-width: 768px) {
   .hero__video {
@@ -1546,7 +1598,7 @@ ul { list-style: none; }
   }
 
   :root {
-    --nav-h: 8rem;
+    --nav-h: 6.667rem;
     --fs-hero: 4rem;
     --fs-section: 3.2rem;
     --fs-page: 2.8rem;
@@ -1593,6 +1645,12 @@ ul { list-style: none; }
   }
   .nav__mobile-menu a.underlined { text-decoration: underline; text-underline-offset: 0.333rem; }
   .nav__mobile-menu hr { border: none; border-top: 1px solid var(--border); width: 100%; margin: 0.267rem 0; }
+  .ct-v-nav__left a:not(.underlined),
+  .ct-v-nav__right { display: none; }
+  .ct-v-nav__inner {
+    grid-template-columns: 1fr auto 1fr;
+  }
+  .ct-v-nav__logo img { width: 13rem; }
 
   .hero { min-height: 100vh; margin-bottom: 2rem; }
   .hero__content { bottom: 12rem; }

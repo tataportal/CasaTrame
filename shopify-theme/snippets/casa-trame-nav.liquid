@@ -1,0 +1,42 @@
+{% liquid
+  assign nav_collection_url = routes.collections_url | append: '/coleccion-otono-invierno-2026'
+  if collection != blank and collection.url != blank
+    assign nav_collection_url = collection.url
+  endif
+  if collection_url != blank
+    assign nav_collection_url = collection_url
+  endif
+
+  assign nav_about_url = routes.root_url | append: '#conocenos'
+  assign nav_vestidor_url = '/pages/vestidor'
+  assign nav_favorites_url = '/pages/favoritos'
+
+  assign nav_active = active | default: ''
+%}
+
+<nav class="ct-v-nav">
+  <div class="ct-v-nav__inner">
+    <div class="ct-v-nav__left">
+      <a href="{{ nav_collection_url }}"{% if nav_active == 'collection' %} class="underlined"{% endif %}>Colección</a>
+      <a href="{{ nav_about_url }}"{% if nav_active == 'about' %} class="underlined"{% endif %}>Conócenos</a>
+      <a href="{{ nav_vestidor_url }}"{% if nav_active == 'vestidor' %} class="underlined"{% endif %}>Vestidor™</a>
+    </div>
+    <a href="{{ routes.root_url }}" class="ct-v-nav__logo">
+      <img src="{{ 'trame_horizontal-black.svg' | asset_url }}" alt="{{ shop.name | escape }}" width="1115" height="142">
+    </a>
+    <div class="ct-v-nav__right">
+      <a href="{{ routes.search_url }}" title="Buscar">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </a>
+      <a href="{{ routes.account_url }}" title="Cuenta">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </a>
+      <a href="{{ nav_favorites_url }}" title="Favoritos">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+      </a>
+      <a href="{{ routes.cart_url }}" title="Carrito">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      </a>
+    </div>
+  </div>
+</nav>
