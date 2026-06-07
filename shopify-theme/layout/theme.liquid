@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code | default: 'es' }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page_title | default: shop.name }}</title>
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+    {% if canonical_url != blank %}
+      <link rel="canonical" href="{{ canonical_url }}">
+    {% endif %}
+    <meta name="theme-color" content="#f7f7f7">
+    {{ content_for_header }}
+
+    {{ 'ct-theme.css' | asset_url | stylesheet_tag }}
+  </head>
+  <body>
+    {{ content_for_layout }}
+
+    <script src="{{ 'ct-theme.js' | asset_url }}" defer></script>
+  </body>
+</html>

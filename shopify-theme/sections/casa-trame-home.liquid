@@ -1,0 +1,555 @@
+{% liquid
+  assign collection_url = routes.all_products_collection_url
+  if section.settings.featured_collection != blank
+    assign collection_url = section.settings.featured_collection.url
+  endif
+
+  assign vestidor_url = section.settings.vestidor_url
+  if vestidor_url == blank
+    assign vestidor_url = '/pages/vestidor'
+  endif
+
+  assign favorites_url = section.settings.favorites_url
+  if favorites_url == blank
+    assign favorites_url = '/pages/favoritos'
+  endif
+
+  assign concept_asset = 'concepto.png'
+  assign concept_webp_asset = 'concepto.webp'
+  assign vestidor_asset = 'app.png'
+  assign vestidor_webp_asset = 'app.webp'
+%}
+
+<nav class="nav nav--transparent" id="mainNav">
+  <div class="nav__inner">
+    <div class="nav__left" id="navLinks">
+      {% if section.settings.header_menu != blank %}
+        {% for link in section.settings.header_menu.links %}
+          <a href="{{ link.url }}" {% if link.url contains '#conocenos' %}class="underlined"{% endif %}>{{ link.title }}</a>
+        {% endfor %}
+      {% else %}
+        <a href="{{ collection_url }}">{{ section.settings.collection_label }}</a>
+        <a href="#conocenos" class="underlined">{{ section.settings.about_label }}</a>
+        <a href="{{ vestidor_url }}">{{ section.settings.vestidor_label }}</a>
+      {% endif %}
+    </div>
+    <button class="nav__hamburger" type="button" onclick="toggleMobileMenu()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="{{ routes.root_url }}" class="nav__logo">
+      <img src="{{ 'trame_horizontal-black.svg' | asset_url }}" alt="{{ shop.name | escape }}" width="1115" height="142">
+    </a>
+    <div class="nav__right">
+      <a href="{{ routes.search_url }}" title="Buscar">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </a>
+      <a href="{{ routes.account_url }}" title="Cuenta">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </a>
+      <a href="{{ favorites_url }}" title="Favoritos">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+      </a>
+      <a href="{{ routes.cart_url }}" title="Carrito" class="nav__cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        {% if cart.item_count > 0 %}<span class="nav__cart-dot"></span>{% endif %}
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="nav__mobile-menu" id="mobileMenu">
+  {% if section.settings.header_menu != blank %}
+    {% for link in section.settings.header_menu.links %}
+      <a href="{{ link.url }}" {% if link.url contains '#conocenos' %}class="underlined"{% endif %}>{{ link.title }}</a>
+    {% endfor %}
+  {% else %}
+    <a href="{{ collection_url }}">{{ section.settings.collection_label }}</a>
+    <a href="#conocenos" class="underlined">{{ section.settings.about_label }}</a>
+    <a href="{{ vestidor_url }}">{{ section.settings.vestidor_label }}</a>
+  {% endif %}
+  <hr>
+  <a href="{{ favorites_url }}">{{ section.settings.favorites_label }}</a>
+  <a href="{{ routes.search_url }}">Buscar</a>
+  <a href="{{ routes.cart_url }}">Carrito</a>
+</div>
+
+<section class="hero" id="hero">
+  <div class="hero__video">
+    <video class="hero__video-el" autoplay muted loop playsinline preload="metadata" poster="{{ 'trame_home_lookbook_poster_horizontal.jpg' | asset_url }}">
+      <source src="{{ 'trame_home_lookbook_vertical.mp4' | asset_url }}" type="video/mp4" media="(max-width: 768px)">
+      <source src="{{ 'trame_home_lookbook_horizontal.mp4' | asset_url }}" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero__overlay"></div>
+  <div class="hero__content">
+    <a href="{{ collection_url }}" class="hero__cta">
+      {{ section.settings.hero_cta_label }}
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
+
+<section class="brand-statement" id="conocenos">
+  <div class="brand-statement__img">
+    {% if section.settings.brand_image != blank %}
+      <img
+        src="{{ section.settings.brand_image | image_url: width: 1400 }}"
+        alt="{{ section.settings.brand_image.alt | default: section.settings.brand_title | escape }}"
+        width="{{ section.settings.brand_image.width }}"
+        height="{{ section.settings.brand_image.height }}"
+        loading="lazy"
+      >
+    {% else %}
+      <picture>
+        <source srcset="{{ concept_webp_asset | asset_url }}" type="image/webp">
+        <img src="{{ concept_asset | asset_url }}" alt="{{ section.settings.brand_title | escape }}" width="1000" height="732" loading="lazy">
+      </picture>
+    {% endif %}
+  </div>
+  <div class="brand-statement__content">
+    <h2 class="brand-statement__title">{{ section.settings.brand_title | escape | newline_to_br }}</h2>
+    <p class="brand-statement__text">
+      {{ section.settings.brand_text | escape | newline_to_br }}
+    </p>
+  </div>
+</section>
+
+<section class="collection-section">
+  <h3 class="collection-section__title">{{ section.settings.collection_title }}</h3>
+  <div class="collection-grid">
+    <div class="collection-grid__track">
+      {% for block in section.blocks %}
+        {% assign card_url = block.settings.link %}
+        {% if card_url == blank %}
+          {% assign card_url = collection_url %}
+        {% endif %}
+        <a href="{{ card_url }}" class="collection-card" {{ block.shopify_attributes }}>
+          <div class="collection-card__img">
+            {% if block.settings.image != blank %}
+              <img
+                src="{{ block.settings.image | image_url: width: 1200 }}"
+                alt="{{ block.settings.image.alt | default: block.settings.title | escape }}"
+                width="{{ block.settings.image.width }}"
+                height="{{ block.settings.image.height }}"
+                loading="lazy"
+              >
+            {% elsif block.settings.asset_fallback != blank %}
+              <img src="{{ block.settings.asset_fallback | asset_url }}" alt="{{ block.settings.title | escape }}" width="1200" height="1500" loading="lazy">
+            {% endif %}
+          </div>
+          <span class="collection-card__name">{{ block.settings.title }}</span>
+        </a>
+      {% endfor %}
+    </div>
+    <button class="carousel-arrow carousel-arrow--left" type="button" aria-label="Anterior">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <button class="carousel-arrow carousel-arrow--right" type="button" aria-label="Siguiente">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+  <div class="collection-section__cta">
+    <a href="{{ collection_url }}" class="btn-outline">
+      {{ section.settings.collection_cta_label }}
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
+
+<section class="vestidor">
+  <h2 class="vestidor__title">{{ section.settings.vestidor_title | escape | newline_to_br }}</h2>
+  <p class="vestidor__subtitle">
+    {{ section.settings.vestidor_text | escape | newline_to_br }}
+  </p>
+  <div class="vestidor__mockup">
+    {% if section.settings.vestidor_image != blank %}
+      <img
+        src="{{ section.settings.vestidor_image | image_url: width: 1800 }}"
+        alt="{{ section.settings.vestidor_image.alt | default: section.settings.vestidor_title | escape }}"
+        width="{{ section.settings.vestidor_image.width }}"
+        height="{{ section.settings.vestidor_image.height }}"
+        loading="lazy"
+      >
+    {% else %}
+      <picture>
+        <source srcset="{{ vestidor_webp_asset | asset_url }}" type="image/webp">
+        <img src="{{ vestidor_asset | asset_url }}" alt="{{ section.settings.vestidor_title | escape }}" width="1904" height="805" loading="lazy">
+      </picture>
+    {% endif %}
+  </div>
+  <div class="collection-section__cta">
+    <a href="{{ vestidor_url }}" class="btn-outline">
+      {{ section.settings.vestidor_cta_label }}
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
+
+<section class="newsletter">
+  <div
+    class="newsletter__bg"
+    {% if section.settings.newsletter_bg != blank %}
+      style="--newsletter-bg-image: url('{{ section.settings.newsletter_bg | image_url: width: 2200 }}');"
+    {% endif %}
+  ></div>
+  <div class="newsletter__content">
+    <h2 class="newsletter__title">{{ section.settings.newsletter_title | escape | newline_to_br }}</h2>
+    {% form 'customer', class: 'newsletter__form' %}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <input class="newsletter__input" type="email" name="contact[email]" placeholder="{{ section.settings.newsletter_placeholder }}" value="{{ form.email }}" required>
+      <div class="newsletter__submit-wrap">
+        <span class="newsletter__legal-tip">{{ section.settings.newsletter_legal_tip }}</span>
+        <button class="newsletter__submit" type="submit">{{ section.settings.newsletter_button_label }}</button>
+      </div>
+      {% if form.posted_successfully? %}
+        <p class="newsletter__status" role="status">{{ section.settings.newsletter_success_message }}</p>
+      {% endif %}
+      {% if form.errors %}
+        <div class="newsletter__errors">
+          {{ form.errors | default_errors }}
+        </div>
+      {% endif %}
+    {% endform %}
+  </div>
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <div class="footer__brand-name">{{ section.settings.footer_brand_name }}</div>
+        <p>{{ section.settings.footer_brand_text | escape | newline_to_br }}</p>
+      </div>
+      <div>
+        <h4>{{ section.settings.social_heading }}</h4>
+        <ul>
+          {% if section.settings.instagram_url != blank %}
+            <li><a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener">Instagram</a></li>
+          {% endif %}
+          {% if section.settings.tiktok_url != blank %}
+            <li><a href="{{ section.settings.tiktok_url }}" target="_blank" rel="noopener">TikTok</a></li>
+          {% endif %}
+        </ul>
+      </div>
+      <div>
+        <h4>{{ section.settings.info_heading }}</h4>
+        {% if section.settings.footer_info_menu != blank %}
+          <ul>
+            {% for link in section.settings.footer_info_menu.links %}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <ul>
+            <li><a href="#conocenos">{{ section.settings.about_label }}</a></li>
+            <li><a href="/pages/contact">Contacto</a></li>
+          </ul>
+        {% endif %}
+      </div>
+      <div>
+        <h4>{{ section.settings.help_heading }}</h4>
+        {% if section.settings.footer_help_menu != blank %}
+          <ul>
+            {% for link in section.settings.footer_help_menu.links %}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <ul>
+            <li><a href="/pages/contact">Contacto</a></li>
+            <li><a href="/policies/terms-of-service">Términos</a></li>
+            <li><a href="/policies/privacy-policy">Privacidad</a></li>
+          </ul>
+        {% endif %}
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; {{ 'now' | date: '%Y' }} {{ section.settings.footer_brand_name }}. {{ section.settings.footer_bottom_text }}</span>
+    </div>
+  </footer>
+</section>
+
+{% schema %}
+{
+  "name": "Casa Tramé Home",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "featured_collection",
+      "label": "Colección principal"
+    },
+    {
+      "type": "link_list",
+      "id": "header_menu",
+      "label": "Menú principal"
+    },
+    {
+      "type": "text",
+      "id": "collection_label",
+      "label": "Label colección",
+      "default": "Colección"
+    },
+    {
+      "type": "text",
+      "id": "about_label",
+      "label": "Label conócenos",
+      "default": "Conócenos"
+    },
+    {
+      "type": "text",
+      "id": "vestidor_label",
+      "label": "Label vestidor",
+      "default": "Vestidor™"
+    },
+    {
+      "type": "url",
+      "id": "vestidor_url",
+      "label": "Link vestidor"
+    },
+    {
+      "type": "text",
+      "id": "favorites_label",
+      "label": "Label favoritos móvil",
+      "default": "Favoritos"
+    },
+    {
+      "type": "url",
+      "id": "favorites_url",
+      "label": "Link favoritos"
+    },
+    {
+      "type": "text",
+      "id": "hero_cta_label",
+      "label": "CTA hero",
+      "default": "Conoce la colección"
+    },
+    {
+      "type": "image_picker",
+      "id": "brand_image",
+      "label": "Imagen manifiesto"
+    },
+    {
+      "type": "text",
+      "id": "brand_title",
+      "label": "Título manifiesto",
+      "default": "Ropa que\ntrasciende el tiempo"
+    },
+    {
+      "type": "textarea",
+      "id": "brand_text",
+      "label": "Texto manifiesto",
+      "default": "En Casa Tramé creamos prendas pensadas para quedarse. Diseños atemporales con una mirada contemporánea, concebidos para quienes priorizan la calidad, el detalle y un estilo que evoluciona sin perder identidad.\nCada pieza es una inversión en un guardarropa con intención."
+    },
+    {
+      "type": "text",
+      "id": "collection_title",
+      "label": "Título colección",
+      "default": "Colección Otoño – Invierno"
+    },
+    {
+      "type": "text",
+      "id": "collection_cta_label",
+      "label": "CTA colección",
+      "default": "Ver todos"
+    },
+    {
+      "type": "image_picker",
+      "id": "vestidor_image",
+      "label": "Imagen vestidor"
+    },
+    {
+      "type": "text",
+      "id": "vestidor_title",
+      "label": "Título vestidor",
+      "default": "Menos prendas,\nmás combinaciones."
+    },
+    {
+      "type": "textarea",
+      "id": "vestidor_text",
+      "label": "Texto vestidor",
+      "default": "En Casa Tramé, cada prenda se integra con naturalidad, descubre nuevas formas de combinarlas en el vestidor y construye un estilo propio con intención."
+    },
+    {
+      "type": "text",
+      "id": "vestidor_cta_label",
+      "label": "CTA vestidor",
+      "default": "Ir al vestidor"
+    },
+    {
+      "type": "image_picker",
+      "id": "newsletter_bg",
+      "label": "Fondo newsletter"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_title",
+      "label": "Título newsletter",
+      "default": "Mantengámonos en contacto"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_placeholder",
+      "label": "Placeholder newsletter",
+      "default": "Tu email"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_button_label",
+      "label": "Botón newsletter",
+      "default": "Enviar"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_legal_tip",
+      "label": "Texto legal newsletter",
+      "default": "Al suscribirte aceptas recibir mensajes y bases legales."
+    },
+    {
+      "type": "text",
+      "id": "newsletter_success_message",
+      "label": "Mensaje de éxito newsletter",
+      "default": "Gracias por suscribirte."
+    },
+    {
+      "type": "text",
+      "id": "footer_brand_name",
+      "label": "Nombre footer",
+      "default": "Casa Tramé"
+    },
+    {
+      "type": "textarea",
+      "id": "footer_brand_text",
+      "label": "Texto footer",
+      "default": "Diseñado en Argentina\nProducido en Perú"
+    },
+    {
+      "type": "text",
+      "id": "social_heading",
+      "label": "Título redes",
+      "default": "Síguenos"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram"
+    },
+    {
+      "type": "url",
+      "id": "tiktok_url",
+      "label": "TikTok"
+    },
+    {
+      "type": "text",
+      "id": "info_heading",
+      "label": "Título info",
+      "default": "Info"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_info_menu",
+      "label": "Menú info"
+    },
+    {
+      "type": "text",
+      "id": "help_heading",
+      "label": "Título atención",
+      "default": "Atención"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_help_menu",
+      "label": "Menú atención"
+    },
+    {
+      "type": "text",
+      "id": "footer_bottom_text",
+      "label": "Texto legal footer",
+      "default": "Todos los derechos reservados."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card colección",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Título",
+          "default": "Abrigos"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Imagen"
+        },
+        {
+          "type": "text",
+          "id": "asset_fallback",
+          "label": "Asset fallback",
+          "default": "abrigo-suede-pampa-verde.png",
+          "info": "Nombre de archivo en assets del theme si todavía no cargas una imagen en Shopify."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Casa Tramé Home",
+      "blocks": [
+        {
+          "type": "card",
+          "settings": {
+            "title": "Abrigos",
+            "asset_fallback": "abrigo-suede-pampa-verde.png"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Camisas",
+            "asset_fallback": "camisa-oversize-belgrano-blanco.png"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Denim",
+            "asset_fallback": "jean-wide-leg-corrientes-claro.png"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Poleras",
+            "asset_fallback": "polera-con-capucha-aconcagua-blanco.png"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Polos",
+            "asset_fallback": "polo-basico-trenque-lauquen-blanco.png"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Faldas",
+            "asset_fallback": "falda-suede-pampa-verde.png"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Pantalones",
+            "asset_fallback": "pantalon-ancho-barolo-marron.png"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

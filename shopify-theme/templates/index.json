@@ -1,0 +1,71 @@
+{
+  "sections": {
+    "main": {
+      "type": "casa-trame-home",
+      "settings": {
+        "featured_collection": "coleccion-otono-invierno-2026"
+      },
+      "blocks": {
+        "category_abrigos": {
+          "type": "card",
+          "settings": {
+            "title": "Abrigos",
+            "asset_fallback": "trame_abrigos.jpg"
+          }
+        },
+        "category_camisas": {
+          "type": "card",
+          "settings": {
+            "title": "Camisas",
+            "asset_fallback": "trame_camisas.jpg"
+          }
+        },
+        "category_denim": {
+          "type": "card",
+          "settings": {
+            "title": "Denim",
+            "asset_fallback": "trame_denim.jpg"
+          }
+        },
+        "category_faldas": {
+          "type": "card",
+          "settings": {
+            "title": "Faldas",
+            "asset_fallback": "trame_faldas.jpg"
+          }
+        },
+        "category_pantalones": {
+          "type": "card",
+          "settings": {
+            "title": "Pantalones",
+            "asset_fallback": "trame_pantalones.jpg"
+          }
+        },
+        "category_poleras": {
+          "type": "card",
+          "settings": {
+            "title": "Poleras",
+            "asset_fallback": "trame_poleras.jpg"
+          }
+        },
+        "category_polos": {
+          "type": "card",
+          "settings": {
+            "title": "Polos",
+            "asset_fallback": "trame_polos.jpg"
+          }
+        }
+      },
+      "block_order": [
+        "category_abrigos",
+        "category_camisas",
+        "category_denim",
+        "category_faldas",
+        "category_pantalones",
+        "category_poleras",
+        "category_polos"
+      ]
+    }
+  },
+  "order": ["main"]
+}

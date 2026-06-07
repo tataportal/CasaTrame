@@ -1,0 +1,1605 @@
+{% liquid
+  assign collection_url = routes.collections_url | append: '/coleccion-otono-invierno-2026'
+  assign vestidor_collection = collections['coleccion-otono-invierno-2026']
+  assign about_url = routes.root_url | append: '#conocenos'
+  assign vestidor_url = '/pages/vestidor'
+  assign favorites_url = '/pages/favoritos'
+%}
+
+{% if page.handle == 'vestidor' %}
+  <style>
+    .ct-v-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      height: 6.667rem;
+      background: #f7f7f7;
+      border-bottom: 1px solid #e4e0da;
+    }
+    .ct-v-nav__inner {
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 0 3.2rem;
+      gap: 2rem;
+    }
+    .ct-v-nav__left,
+    .ct-v-nav__right {
+      display: flex;
+      align-items: center;
+      gap: 2.667rem;
+    }
+    .ct-v-nav__right { justify-content: flex-end; }
+    .ct-v-nav a,
+    .ct-v-nav button {
+      color: #111;
+      font-family: inherit;
+      font-size: 1.467rem;
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .ct-v-nav .underlined { border-bottom: 1px solid currentColor; }
+    .ct-v-nav__logo img {
+      display: block;
+      width: 16rem;
+      height: auto;
+    }
+    .ct-v-nav svg {
+      display: block;
+      width: 1.867rem;
+      height: 1.867rem;
+      stroke: currentColor;
+    }
+    .ct-v {
+      --nav-h: 6.667rem;
+      --line: #e4e0da;
+      --text: #111;
+      --muted: #8a8580;
+      display: grid;
+      grid-template-columns: minmax(18rem, 25vw) minmax(32rem, 1fr) minmax(20rem, 25vw);
+      height: 100vh;
+      padding-top: var(--nav-h);
+      background: #f7f7f7;
+      color: var(--text);
+      overflow: hidden;
+    }
+    .ct-v button { font-family: inherit; }
+    .ct-v__panel {
+      min-width: 0;
+      height: calc(100vh - var(--nav-h));
+      overflow: auto;
+      border-right: 1px solid var(--line);
+      background: #f7f7f7;
+    }
+    .ct-v__panel--right {
+      border-right: 0;
+      border-left: 1px solid var(--line);
+    }
+    .ct-v__section { border-bottom: 1px solid var(--line); }
+    .ct-v__section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      width: 100%;
+      padding: 1.333rem 1.667rem;
+      color: var(--text);
+      border: 0;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+    .ct-v__section-title {
+      font-size: 1.333rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .ct-v__count {
+      color: var(--muted);
+      font-size: 0.933rem;
+      letter-spacing: 0.06em;
+      margin-left: 0.4rem;
+    }
+    .ct-v__items {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.533rem;
+      padding: 0 1rem 1.333rem;
+      min-height: 7rem;
+    }
+    .ct-v__empty-list {
+      grid-column: 1 / -1;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.45;
+      padding: 1.333rem 0.333rem;
+      font-style: italic;
+    }
+    .ct-v__catalog-item {
+      position: relative;
+      min-width: 0;
+      padding: 0;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+      overflow: hidden;
+    }
+    .ct-v__catalog-item:hover,
+    .ct-v__catalog-item.is-selected {
+      border-color: var(--text);
+    }
+    .ct-v__catalog-item img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: contain;
+      background: #f5f5f5;
+    }
+    .ct-v__catalog-item span {
+      display: block;
+      padding-top: 0.333rem;
+      font-size: 0.733rem;
+      line-height: 1.2;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ct-v__center {
+      min-width: 0;
+      height: calc(100vh - var(--nav-h));
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+    .ct-v__canvas {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      background: #fafafa;
+      border-bottom: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .ct-v__silhouette {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0.065;
+    }
+    .ct-v__empty {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 1.133rem;
+      text-align: center;
+      pointer-events: none;
+    }
+    .ct-v__empty.is-hidden { display: none; }
+    .ct-v__layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .ct-v__layer img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+    .ct-v__toolbar {
+      position: absolute;
+      left: 1rem;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      pointer-events: none;
+    }
+    .ct-v__toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 0.533rem;
+      pointer-events: auto;
+    }
+    .ct-v__toolbar > .ct-v__btn {
+      pointer-events: auto;
+    }
+    .ct-v__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      min-height: 3.333rem;
+      padding: 0 1.733rem;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.92);
+      color: var(--text);
+      font-size: 0.933rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .ct-v__btn:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+    .ct-v__btn svg { width: 1rem; height: 1rem; }
+    .ct-v__layers {
+      flex: 0 0 8.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.533rem;
+      padding: 0.8rem;
+      background: #f7f7f7;
+      overflow: auto;
+    }
+    .ct-v__layers.has-layers {
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .ct-v__layers-title {
+      color: var(--muted);
+      font-size: 1rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .ct-v__layers.has-layers .ct-v__layers-title { display: none; }
+    .ct-v__chip {
+      width: 18rem;
+      flex: 0 0 18rem;
+      display: grid;
+      grid-template-columns: 3rem minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.667rem;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    .ct-v__chip.is-hidden-layer {
+      opacity: 0.55;
+    }
+    .ct-v__chip-thumb {
+      width: 3rem;
+      height: 3.75rem;
+      object-fit: contain;
+      background: #f5f5f5;
+    }
+    .ct-v__chip-name {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-size: 0.933rem;
+    }
+    .ct-v__chip-type {
+      margin-top: 0.2rem;
+      color: var(--muted);
+      font-size: 0.733rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .ct-v__chip-actions {
+      display: flex;
+      gap: 0.133rem;
+    }
+    .ct-v__chip-btn {
+      width: 1.9rem;
+      height: 1.9rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .ct-v__chip-btn:hover {
+      background: #f1f1f1;
+      color: var(--text);
+    }
+    .ct-v__chip-btn svg {
+      width: 1.1rem;
+      height: 1.1rem;
+    }
+    .ct-v__summary {
+      padding: 2rem 1.733rem;
+    }
+    .ct-v__summary-title,
+    .ct-v__saved-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+    .ct-v__summary-list {
+      min-height: 14rem;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 1.333rem;
+    }
+    .ct-v__summary-empty {
+      color: var(--muted);
+      font-size: 1rem;
+      font-style: italic;
+      text-align: center;
+      padding-top: 2.5rem;
+    }
+    .ct-v__summary-item {
+      display: grid;
+      grid-template-columns: 3rem minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.533rem 0;
+    }
+    .ct-v__summary-item img {
+      width: 3rem;
+      height: 3.75rem;
+      object-fit: contain;
+      background: #f5f5f5;
+    }
+    .ct-v__summary-name {
+      font-size: 0.933rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .ct-v__summary-price {
+      font-size: 0.933rem;
+      color: var(--muted);
+    }
+    .ct-v__total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.333rem 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--line);
+    }
+    .ct-v__checkout {
+      width: 100%;
+      margin-top: 1.333rem;
+      min-height: 3.333rem;
+      border: 1px solid var(--text);
+      background: var(--text);
+      color: #fff;
+      font-size: 0.933rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .ct-v__checkout:disabled {
+      opacity: 0.25;
+      cursor: default;
+    }
+    .ct-v__saved {
+      padding-top: 2rem;
+    }
+    .ct-v__saved-empty {
+      color: var(--muted);
+      font-size: 0.933rem;
+      line-height: 1.5;
+      text-align: center;
+    }
+    .ct-v__saved-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.533rem;
+    }
+    .ct-v__saved-look {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      border: 1px solid transparent;
+      background: #fff;
+      overflow: hidden;
+    }
+    .ct-v__saved-look:hover {
+      border-color: var(--text);
+    }
+    .ct-v__saved-look-main {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .ct-v__saved-look-thumbs {
+      width: 100%;
+      height: 100%;
+      background: #f5f5f5;
+      overflow: hidden;
+    }
+    .ct-v__saved-look-thumbs img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .ct-v__saved-remove {
+      position: absolute;
+      top: 0.267rem;
+      right: 0.267rem;
+      z-index: 2;
+      width: 1.6rem;
+      height: 1.6rem;
+      border: 0;
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+    }
+    .ct-v__saved-remove:hover { background: #fff; }
+    .ct-v__toast {
+      position: fixed;
+      left: 50%;
+      bottom: 1.6rem;
+      z-index: 5000;
+      transform: translateX(-50%) translateY(1rem);
+      background: #111;
+      color: #fff;
+      padding: 0.8rem 1.8rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.2s ease;
+      font-size: 0.933rem;
+    }
+    .ct-v__toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .ct-v__help-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 6000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: rgba(17, 17, 17, 0.42);
+    }
+    .ct-v__help-overlay[hidden] { display: none; }
+    .ct-v__help-modal {
+      width: min(48rem, 100%);
+      max-height: min(46rem, calc(100vh - 4rem));
+      overflow: auto;
+      background: #f7f7f7;
+      border: 1px solid var(--line);
+      box-shadow: 0 1.6rem 4rem rgba(17, 17, 17, 0.18);
+      color: var(--text);
+    }
+    .ct-v__help-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1.333rem;
+      padding: 2rem 2rem 1.333rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .ct-v__help-kicker {
+      margin-bottom: 0.533rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .ct-v__help-title {
+      margin: 0;
+      font-size: 1.667rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .ct-v__help-close {
+      width: 2.6rem;
+      height: 2.6rem;
+      flex: 0 0 2.6rem;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+    .ct-v__help-body { padding: 1.667rem 2rem 2rem; }
+    .ct-v__help-lead {
+      margin: 0 0 1.6rem;
+      max-width: 34rem;
+      color: #4d4945;
+      font-size: 1rem;
+      line-height: 1.55;
+    }
+    .ct-v__help-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin-bottom: 1.333rem;
+    }
+    .ct-v__help-card {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 1rem;
+    }
+    .ct-v__help-card strong {
+      display: block;
+      margin-bottom: 0.333rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .ct-v__help-card span {
+      display: block;
+      color: #5e5954;
+      font-size: 0.933rem;
+      line-height: 1.45;
+    }
+    .ct-v__help-guide-btn {
+      width: 100%;
+      min-height: 3.2rem;
+      border: 1px solid var(--text);
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.867rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .ct-v__help-guide {
+      margin-top: 1.333rem;
+      padding: 1.333rem;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    .ct-v__help-guide[hidden] { display: none; }
+    .ct-v__help-guide ol {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .ct-v__help-guide li {
+      margin: 0.667rem 0;
+      color: #4d4945;
+      font-size: 0.933rem;
+      line-height: 1.45;
+    }
+    .ct-page {
+      min-height: 100vh;
+      padding: 12rem min(7vw, 8rem);
+      background: #f7f7f7;
+      color: #111;
+    }
+    .ct-page__inner {
+      max-width: 72rem;
+      margin: 0 auto;
+    }
+    .ct-page h1 {
+      font-size: clamp(2.6rem, 5vw, 5rem);
+      font-weight: 300;
+      margin-bottom: 2rem;
+    }
+    .ct-page__content {
+      font-size: 1.2rem;
+      line-height: 1.7;
+    }
+    @media (max-width: 980px) {
+      .ct-v-nav__inner { padding: 0 1.333rem; }
+      .ct-v-nav__left,
+      .ct-v-nav__right { gap: 1.2rem; }
+      .ct-v {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+      }
+      .ct-v__panel,
+      .ct-v__panel--right {
+        height: auto;
+        border: 0;
+      }
+      .ct-v__center {
+        height: calc(100vh - var(--nav-h));
+        min-height: 42rem;
+        order: -1;
+      }
+      .ct-v__panel { border-top: 1px solid var(--line); }
+      .ct-v__items {
+        display: flex;
+        overflow-x: auto;
+        min-height: 7rem;
+      }
+      .ct-v__catalog-item {
+        flex: 0 0 7.8rem;
+      }
+      .ct-v__empty-list { min-width: 18rem; }
+      .ct-v__help-overlay {
+        align-items: flex-end;
+        padding: 1rem;
+      }
+      .ct-v__help-modal { max-height: calc(100vh - 2rem); }
+      .ct-v__help-head { padding: 1.333rem 1.333rem 1rem; }
+      .ct-v__help-body { padding: 1.333rem; }
+      .ct-v__help-grid { grid-template-columns: 1fr; }
+      .ct-v__panel--right { display: none; }
+    }
+    @media (max-width: 720px) {
+      .ct-v-nav__left a:not(.underlined),
+      .ct-v-nav__right { display: none; }
+      .ct-v-nav__inner {
+        grid-template-columns: 1fr auto 1fr;
+      }
+      .ct-v-nav__logo img { width: 13rem; }
+      .ct-v__toolbar {
+        left: 0.6rem;
+        right: 0.6rem;
+      }
+      .ct-v__btn {
+        padding: 0 1rem;
+        font-size: 0.8rem;
+      }
+      .ct-v__layers { display: none; }
+    }
+  </style>
+
+  <nav class="ct-v-nav">
+    <div class="ct-v-nav__inner">
+      <div class="ct-v-nav__left">
+        <a href="{{ collection_url }}">Colección</a>
+        <a href="{{ about_url }}">Conócenos</a>
+        <a class="underlined" href="{{ vestidor_url }}">Vestidor™</a>
+      </div>
+      <a href="{{ routes.root_url }}" class="ct-v-nav__logo">
+        <img src="{{ 'trame_horizontal-black.svg' | asset_url }}" alt="{{ shop.name | escape }}" width="1115" height="142">
+      </a>
+      <div class="ct-v-nav__right">
+        <a href="{{ routes.search_url }}" title="Buscar">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </a>
+        <a href="{{ routes.account_url }}" title="Cuenta">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
+        <a href="{{ favorites_url }}" title="Favoritos">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        </a>
+        <a href="{{ routes.cart_url }}" title="Carrito">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="ct-v" data-empty-vestidor>
+    <aside class="ct-v__panel" aria-label="Prendas">
+      <div class="ct-v__section" data-section="favoritos">
+        <button class="ct-v__section-head" type="button" data-toggle-section="favoritos">
+          <span><span class="ct-v__section-title">Favoritos</span><span class="ct-v__count" data-count="favoritos"></span></span>
+          <span>▼</span>
+        </button>
+        <div class="ct-v__items" data-items="favoritos"></div>
+      </div>
+      <div class="ct-v__section" data-section="abrigos">
+        <button class="ct-v__section-head" type="button" data-toggle-section="abrigos">
+          <span><span class="ct-v__section-title">Abrigos</span><span class="ct-v__count" data-count="abrigos"></span></span>
+          <span>▼</span>
+        </button>
+        <div class="ct-v__items" data-items="abrigos"></div>
+      </div>
+      <div class="ct-v__section" data-section="camisas">
+        <button class="ct-v__section-head" type="button" data-toggle-section="camisas">
+          <span><span class="ct-v__section-title">Camisas</span><span class="ct-v__count" data-count="camisas"></span></span>
+          <span>▼</span>
+        </button>
+        <div class="ct-v__items" data-items="camisas"></div>
+      </div>
+      <div class="ct-v__section" data-section="denim">
+        <button class="ct-v__section-head" type="button" data-toggle-section="denim">
+          <span><span class="ct-v__section-title">Denim</span><span class="ct-v__count" data-count="denim"></span></span>
+          <span>▼</span>
+        </button>
+        <div class="ct-v__items" data-items="denim"></div>
+      </div>
+      <div class="ct-v__section" data-section="faldas">
+        <button class="ct-v__section-head" type="button" data-toggle-section="faldas">
+          <span><span class="ct-v__section-title">Faldas</span><span class="ct-v__count" data-count="faldas"></span></span>
+          <span>▼</span>
+        </button>
+        <div class="ct-v__items" data-items="faldas"></div>
+      </div>
+      <div class="ct-v__section" data-section="pantalones">
+        <button class="ct-v__section-head" type="button" data-toggle-section="pantalones">
+          <span><span class="ct-v__section-title">Pantalones</span><span class="ct-v__count" data-count="pantalones"></span></span>
+          <span>▼</span>
+        </button>
+        <div class="ct-v__items" data-items="pantalones"></div>
+      </div>
+      <div class="ct-v__section" data-section="poleras">
+        <button class="ct-v__section-head" type="button" data-toggle-section="poleras">
+          <span><span class="ct-v__section-title">Poleras</span><span class="ct-v__count" data-count="poleras"></span></span>
+          <span>▼</span>
+        </button>
+        <div class="ct-v__items" data-items="poleras"></div>
+      </div>
+      <div class="ct-v__section" data-section="polos">
+        <button class="ct-v__section-head" type="button" data-toggle-section="polos">
+          <span><span class="ct-v__section-title">Polos</span><span class="ct-v__count" data-count="polos"></span></span>
+          <span>▼</span>
+        </button>
+        <div class="ct-v__items" data-items="polos"></div>
+      </div>
+    </aside>
+
+    <section class="ct-v__center" aria-label="Canvas del vestidor">
+      <div class="ct-v__canvas" id="ctVestidorCanvas">
+        <div class="ct-v__toolbar">
+          <div class="ct-v__toolbar-group">
+            <button class="ct-v__btn" type="button" data-randomize>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+              Randomizar
+            </button>
+            <button class="ct-v__btn" type="button" data-clear>Limpiar</button>
+            <button class="ct-v__btn" type="button" data-help>?</button>
+          </div>
+          <button class="ct-v__btn" type="button" data-save disabled>Guardar</button>
+        </div>
+
+        <div class="ct-v__silhouette" aria-hidden="true">
+          <svg viewBox="0 0 200 400" width="200" height="400" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="100" cy="30" rx="20" ry="26" stroke="#111" stroke-width="1"/>
+            <line x1="100" y1="56" x2="100" y2="72" stroke="#111" stroke-width="1"/>
+            <path d="M58 82 L58 200 Q58 210 68 210 L132 210 Q142 210 142 200 L142 82" stroke="#111" stroke-width="1"/>
+            <line x1="58" y1="82" x2="142" y2="82" stroke="#111" stroke-width="1"/>
+            <path d="M58 82 L32 155" stroke="#111" stroke-width="1"/>
+            <path d="M142 82 L168 155" stroke="#111" stroke-width="1"/>
+            <path d="M78 210 L68 385" stroke="#111" stroke-width="1"/>
+            <path d="M122 210 L132 385" stroke="#111" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="ct-v__empty" data-canvas-empty>Elige prendas del panel izquierdo para probar combinaciones</div>
+      </div>
+      <div class="ct-v__layers" data-layer-stack>
+        <div class="ct-v__layers-title">Capas del look</div>
+      </div>
+    </section>
+
+    <aside class="ct-v__panel ct-v__panel--right" aria-label="Resumen">
+      <div class="ct-v__summary">
+        <div class="ct-v__summary-title">Tu outfit</div>
+        <div class="ct-v__summary-list" data-summary-list>
+          <div class="ct-v__summary-empty">Empieza eligiendo prendas</div>
+        </div>
+        <div class="ct-v__total">
+          <span>Total outfit</span>
+          <span data-summary-total>S/ 0</span>
+        </div>
+        <button class="ct-v__checkout" type="button" disabled>Agregar outfit al carrito</button>
+        <div class="ct-v__saved">
+          <div class="ct-v__saved-title">Looks guardados</div>
+          <div class="ct-v__saved-list" data-saved-list>
+            <div class="ct-v__saved-empty">Aún no tienes looks guardados.</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <div class="ct-v__toast" data-vestidor-toast></div>
+  <div class="ct-v__help-overlay" data-help-modal hidden>
+    <div class="ct-v__help-modal" role="dialog" aria-modal="true" aria-labelledby="ctVestidorHelpTitle">
+      <div class="ct-v__help-head">
+        <div>
+          <div class="ct-v__help-kicker">Guía rápida</div>
+          <h2 class="ct-v__help-title" id="ctVestidorHelpTitle">Cómo usar el vestidor</h2>
+        </div>
+        <button class="ct-v__help-close" type="button" data-close-help aria-label="Cerrar">×</button>
+      </div>
+      <div class="ct-v__help-body">
+        <p class="ct-v__help-lead">Arma combinaciones eligiendo prendas del panel izquierdo. El canvas usa imágenes preparadas para calzar entre sí; las miniaturas son las fotos del catálogo.</p>
+        <div class="ct-v__help-grid">
+          <div class="ct-v__help-card">
+            <strong>Prendas</strong>
+            <span>Haz click en una miniatura para agregar o quitar esa prenda del look.</span>
+          </div>
+          <div class="ct-v__help-card">
+            <strong>Capas</strong>
+            <span>Usa el ojo para ocultar una prenda. Las flechas mueven tops y bottoms adelante o atrás entre sí.</span>
+          </div>
+          <div class="ct-v__help-card">
+            <strong>B / F</strong>
+            <span>Algunas prendas tienen espalda y frente para envolver el outfit automáticamente.</span>
+          </div>
+          <div class="ct-v__help-card">
+            <strong>Acciones</strong>
+            <span>Randomizar propone un look; limpiar reinicia el canvas; guardar conservará la combinación.</span>
+          </div>
+        </div>
+        <button class="ct-v__help-guide-btn" type="button" data-help-guide-toggle>Ver guía completa</button>
+        <div class="ct-v__help-guide" data-help-guide hidden>
+          <ol>
+            <li>Empieza por una prenda inferior: pantalón, denim o falda.</li>
+            <li>Agrega un top: polo, camisa, blusa, polera o sweater.</li>
+            <li>Suma abrigo/blazer o outerwear cuando quieras probar volumen. Randomizar no combina sweater con abrigo.</li>
+            <li>Solo puede haber una prenda por tipo: un top, un bottom, un abrigo y un outerwear.</li>
+            <li>Usa las flechas para decidir si el top va delante o detrás del bottom.</li>
+            <li>Usa el ojo para ocultar o mostrar una prenda sin sacarla del look.</li>
+            <li>Si una prenda tiene espalda y frente, el vestidor coloca la espalda detrás y el frente encima.</li>
+            <li>Guarda el look para verlo como miniatura y rearmarlo con un click.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const root = document.querySelector('[data-empty-vestidor]');
+      if (!root) return;
+
+      const catalog = {
+        favoritos: [],
+        abrigos: [],
+        camisas: [],
+        denim: [],
+        faldas: [],
+        pantalones: [],
+        poleras: [],
+        polos: [],
+      };
+
+      {% liquid
+        assign vestidor_single_keys = '|sweater-cuello-alto-bariloche-negro|sweater-cuello-alto-bariloche-perla|sweater-cuello-alto-bariloche-gris|camisa-oversize-belgrano-perla|camisa-oversize-belgrano-negro|camisa-oversize-belgrano-celeste|camisa-basica-malabia-blanca|camisa-denim-soho-denim-oscuro|polera-cuello-alto-calafate-negro|polera-cuello-alto-calafate-perla|polera-cuello-alto-calafate-verde|polera-con-capucha-aconcagua-negro|polera-con-capucha-aconcagua-perla|jogging-cafayate-negro|jogging-cafayate-perla|jogging-cafayate-verde|falda-suede-pampa-verde|pantalon-sastrero-jacaranda-negro|pantalon-sastrero-jacaranda-azul-oscuro|pantalon-sastrero-jacaranda-beige|pantalon-sastrero-jacaranda-gris|pantalon-ancho-barolo-negro|pantalon-ancho-barolo-azul-oscuro|pantalon-ancho-barolo-gris|pantalon-ancho-barolo-marron|jean-recto-ceibo-denim-oscuro|jean-recto-ceibo-denim-claro|jean-wide-leg-corrientes-denim-oscuro|jean-wide-leg-corrientes-denim-claro|polo-cuello-cuadrado-ombu-blanco|polo-cuello-cuadrado-ombu-negro|polo-cuello-cuadrado-ombu-guinda|polo-cuello-cuadrado-ombu-azul|polo-basico-trenque-lauquen-perla|polo-basico-trenque-lauquen-negro|polo-basico-trenque-lauquen-marron|polo-basico-trenque-lauquen-azul|polo-cuello-alto-ushuaia-blanco|polo-cuello-alto-ushuaia-negro|polo-cuello-alto-ushuaia-guinda|polo-cuello-alto-ushuaia-azul|'
+        assign vestidor_double_keys = '|abrigo-suede-pampa-verde|blazer-palermo-negro|blazer-palermo-azul-oscuro|blazer-palermo-beige|tapado-cordoba-gris|tapado-mara-con-cinturon-negro|tapado-mara-con-cinturon-guinda|capa-patagonica-negro|capa-patagonica-camel|'
+      %}
+
+      {% for product in vestidor_collection.products %}
+        {% liquid
+          assign product_handle = product.handle
+          assign category_key = 'pantalones'
+          if product_handle contains 'abrigo' or product_handle contains 'blazer' or product_handle contains 'capa' or product_handle contains 'tapado'
+            assign category_key = 'abrigos'
+          elsif product_handle contains 'camisa-basica' or product_handle contains 'camisa-oversize'
+            assign category_key = 'camisas'
+          elsif product_handle contains 'denim' or product_handle contains 'jean'
+            assign category_key = 'denim'
+          elsif product_handle contains 'falda'
+            assign category_key = 'faldas'
+          elsif product_handle contains 'polera' or product_handle contains 'sweater'
+            assign category_key = 'poleras'
+          elsif product_handle contains 'polo'
+            assign category_key = 'polos'
+          endif
+
+          assign color_option = blank
+          assign color_option_position = 0
+          for option in product.options_with_values
+            assign option_name = option.name | downcase
+            if option_name contains 'color' or option_name contains 'colour'
+              assign color_option = option
+              assign color_option_position = forloop.index
+            endif
+          endfor
+        %}
+        {% if color_option != blank %}
+          {% for color_value in color_option.values %}
+            {% liquid
+              assign color_slug = color_value | handleize
+              assign color_display = color_value
+              if color_value == 'Black'
+                assign color_display = 'Negro'
+              endif
+              assign vestidor_color_slug = color_slug
+              if color_slug == 'black'
+                assign vestidor_color_slug = 'negro'
+              elsif color_slug == 'verde-pacay' or color_slug == 'verde-botella'
+                assign vestidor_color_slug = 'verde'
+              elsif color_slug == 'gris-oscuro'
+                assign vestidor_color_slug = 'gris'
+              elsif color_slug == 'azul-oscuro' and product.handle contains 'polo'
+                assign vestidor_color_slug = 'azul'
+              endif
+              assign thumb_color_slug = color_slug
+              if thumb_color_slug == 'black'
+                assign thumb_color_slug = 'negro'
+              elsif thumb_color_slug == 'verde-pacay' or thumb_color_slug == 'verde-botella'
+                assign thumb_color_slug = 'verde'
+              elsif thumb_color_slug == 'gris-oscuro'
+                assign thumb_color_slug = 'gris'
+              elsif thumb_color_slug == 'azul-oscuro'
+                assign thumb_color_slug = 'azul'
+              elsif thumb_color_slug == 'perla'
+                assign thumb_color_slug = 'blanco'
+              endif
+              assign vestidor_key = product.handle | append: '-' | append: vestidor_color_slug
+              assign vestidor_lookup_key = '|' | append: vestidor_key | append: '|'
+              assign thumb_asset_name = product.handle | append: '-' | append: thumb_color_slug | append: '.png'
+              assign has_vestidor_single = false
+              assign has_vestidor_double = false
+              if vestidor_single_keys contains vestidor_lookup_key
+                assign has_vestidor_single = true
+                assign asset_name = 'vestidor-' | append: vestidor_key | append: '.webp'
+              elsif vestidor_double_keys contains vestidor_lookup_key
+                assign has_vestidor_double = true
+                assign asset_name = 'vestidor-' | append: vestidor_key | append: '-f.webp'
+                assign asset_back_name = 'vestidor-' | append: vestidor_key | append: '-b.webp'
+                assign asset_front_name = 'vestidor-' | append: vestidor_key | append: '-f.webp'
+              endif
+              assign item_name = product.title | append: ' · ' | append: color_display
+              assign variant_url = product.url
+              for variant in product.variants
+                assign variant_color = ''
+                case color_option_position
+                  when 1
+                    assign variant_color = variant.option1
+                  when 2
+                    assign variant_color = variant.option2
+                  when 3
+                    assign variant_color = variant.option3
+                endcase
+                if variant_color == color_value
+                  assign variant_url = product.url | append: '?variant=' | append: variant.id
+                  break
+                endif
+              endfor
+            %}
+            {% if has_vestidor_single or has_vestidor_double %}
+              catalog[{{ category_key | json }}].push({
+                id: {{ product.id | append: '-' | append: color_slug | json }},
+                productId: {{ product.id | json }},
+                handle: {{ product.handle | json }},
+                name: {{ item_name | json }},
+                productName: {{ product.title | json }},
+                color: {{ color_display | json }},
+                price: {{ product.price | divided_by: 100 | json }},
+                url: {{ variant_url | json }},
+                img: {{ asset_name | asset_url | json }},
+                imgThumb: {{ thumb_asset_name | asset_url | json }},
+                {% if has_vestidor_double %}
+                  doubleLayer: true,
+                  imgBack: {{ asset_back_name | asset_url | json }},
+                  imgFront: {{ asset_front_name | asset_url | json }},
+                {% endif %}
+                category: {{ category_key | json }}
+              });
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          {% liquid
+            assign vestidor_key = product.handle
+            assign vestidor_lookup_key = '|' | append: vestidor_key | append: '|'
+            assign has_vestidor_single = false
+            if vestidor_single_keys contains vestidor_lookup_key
+              assign has_vestidor_single = true
+              assign asset_name = 'vestidor-' | append: vestidor_key | append: '.webp'
+              assign thumb_asset_name = product.handle | append: '.png'
+            endif
+          %}
+          {% if has_vestidor_single %}
+            catalog[{{ category_key | json }}].push({
+              id: {{ product.id | json }},
+              productId: {{ product.id | json }},
+              handle: {{ product.handle | json }},
+              name: {{ product.title | json }},
+              productName: {{ product.title | json }},
+              color: '',
+              price: {{ product.price | divided_by: 100 | json }},
+              url: {{ product.url | json }},
+              img: {{ asset_name | asset_url | json }},
+              imgThumb: {{ thumb_asset_name | asset_url | json }},
+              category: {{ category_key | json }}
+            });
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+
+      let layers = [];
+      let uidCounter = 0;
+      let topOverBottom = false;
+      const savedStorageKey = 'casa-trame-vestidor-looks-v1';
+
+      const canvas = document.getElementById('ctVestidorCanvas');
+      const empty = root.querySelector('[data-canvas-empty]');
+      const stack = root.querySelector('[data-layer-stack]');
+      const summaryList = root.querySelector('[data-summary-list]');
+      const summaryTotal = root.querySelector('[data-summary-total]');
+      const saveBtn = root.querySelector('[data-save]');
+      const savedList = root.querySelector('[data-saved-list]');
+      const toastEl = document.querySelector('[data-vestidor-toast]');
+      const helpModal = document.querySelector('[data-help-modal]');
+      const helpGuide = document.querySelector('[data-help-guide]');
+      const helpGuideToggle = document.querySelector('[data-help-guide-toggle]');
+      let savedLooks = loadSavedLooks();
+
+      function toast(message) {
+        if (!toastEl) return;
+        toastEl.textContent = message;
+        toastEl.classList.add('show');
+        window.setTimeout(() => toastEl.classList.remove('show'), 1600);
+      }
+
+      function loadSavedLooks() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(savedStorageKey) || '[]');
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function persistSavedLooks() {
+        try {
+          localStorage.setItem(savedStorageKey, JSON.stringify(savedLooks));
+        } catch (error) {
+          toast('No se pudo guardar en este navegador');
+        }
+      }
+
+      function formatMoney(value) {
+        return 'S/ ' + Number(value || 0).toLocaleString('es-PE');
+      }
+
+      function escapeHtml(value) {
+        return String(value || '').replace(/[&<>"']/g, (char) => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        }[char]));
+      }
+
+      function resolveImages(item, state) {
+        if (!item) return {};
+        if (item.states && state && item.states[state]) return item.states[state];
+        return item;
+      }
+
+      function itemThumb(item, state) {
+        const resolved = resolveImages(item, state);
+        return item.imgThumb || resolved.img || resolved.imgFront || item.img || '';
+      }
+
+      function allCatalogItems() {
+        return Object.values(catalog).flat();
+      }
+
+      function catalogItemById(id) {
+        return allCatalogItems().find((item) => String(item.id) === String(id));
+      }
+
+      function itemSlot(item) {
+        const handle = String(item?.handle || '').toLowerCase();
+        const category = String(item?.category || '').toLowerCase();
+        if (handle.includes('capa') || handle.includes('tapado')) return 'outerwear';
+        if (handle.includes('abrigo') || handle.includes('blazer')) return 'abrigo';
+        if (category === 'pantalones' || category === 'denim' || category === 'faldas') return 'bottom';
+        if (category === 'camisas') return 'blusa';
+        if (category === 'polos' || category === 'poleras') return 'polo';
+        return category || handle;
+      }
+
+      function isSweaterItem(item) {
+        return String(item?.handle || '').toLowerCase().includes('sweater');
+      }
+
+      function layerOrderScore(layer) {
+        const slot = itemSlot(layer.item);
+        const backSlotOrder = {
+          outerwear: -200,
+          abrigo: -190,
+          bottom: -180,
+          blusa: -170,
+          polo: -170
+        };
+        const slotOrder = {
+          polo: topOverBottom ? 20 : 10,
+          blusa: topOverBottom ? 20 : 10,
+          bottom: topOverBottom ? 10 : 20,
+          abrigo: 30,
+          outerwear: 40
+        };
+        if (layer.layerType === 'coat-back') return backSlotOrder[slot] ?? -210;
+        return slotOrder[slot] || 0;
+      }
+
+      function normalizeLayerOrder() {
+        layers = [...layers].sort((a, b) => {
+          const scoreDiff = layerOrderScore(a) - layerOrderScore(b);
+          if (scoreDiff) return scoreDiff;
+          return a.uid - b.uid;
+        });
+      }
+
+      function removeSlot(slot) {
+        if (!slot) return;
+        layers = layers.filter((layer) => itemSlot(layer.item) !== slot);
+      }
+
+      function addItem(item) {
+        if (!item) return;
+        const existing = layers.find((layer) => layer.item.id === item.id);
+        if (existing) {
+          removeLayer(existing.uid);
+          return;
+        }
+
+        removeSlot(itemSlot(item));
+        const state = item.defaultState || null;
+        if (item.doubleLayer) {
+          layers.push({ uid: ++uidCounter, item, layerType: 'coat-back', state });
+          layers.push({ uid: ++uidCounter, item, layerType: 'coat-front', state });
+        } else {
+          layers.push({ uid: ++uidCounter, item, layerType: 'normal', state });
+        }
+        renderAll();
+      }
+
+      function renderCatalog() {
+        Object.keys(catalog).forEach((cat) => {
+          const itemsEl = root.querySelector(`[data-items="${cat}"]`);
+          const countEl = root.querySelector(`[data-count="${cat}"]`);
+          const items = catalog[cat] || [];
+          if (countEl) countEl.textContent = items.length ? `(${items.length})` : '';
+          if (!itemsEl) return;
+          if (!items.length) {
+            itemsEl.innerHTML = '<div class="ct-v__empty-list">Sin prendas cargadas.</div>';
+            return;
+          }
+          itemsEl.innerHTML = items.map((item) => `
+            <button class="ct-v__catalog-item" type="button" data-item-id="${item.id}" aria-label="Agregar ${escapeHtml(item.name)}">
+              <img src="${itemThumb(item)}" alt="${escapeHtml(item.name)}" loading="lazy">
+            </button>
+          `).join('');
+          itemsEl.querySelectorAll('[data-item-id]').forEach((button) => {
+            button.addEventListener('click', () => {
+              const id = button.dataset.itemId;
+              addItem(items.find((item) => String(item.id) === id));
+            });
+          });
+        });
+      }
+
+      function renderCanvas() {
+        canvas.querySelectorAll('.ct-v__layer').forEach((layer) => layer.remove());
+        if (empty) empty.classList.toggle('is-hidden', layers.length > 0);
+
+        layers.forEach((layer, index) => {
+          if (layer.hidden) return;
+          const resolved = resolveImages(layer.item, layer.state);
+          let imgSrc = resolved.img || layer.item.img || '';
+          if (layer.layerType === 'coat-back' && resolved.imgBack) imgSrc = resolved.imgBack;
+          if (layer.layerType === 'coat-front' && resolved.imgFront) imgSrc = resolved.imgFront;
+          if (!imgSrc) return;
+
+          const div = document.createElement('div');
+          div.className = 'ct-v__layer';
+          div.dataset.uid = layer.uid;
+          div.dataset.layerType = layer.layerType;
+          div.style.zIndex = String(index + 2);
+          div.innerHTML = `<img src="${imgSrc}" alt="${layer.item.name}">`;
+          canvas.appendChild(div);
+        });
+      }
+
+      function renderLayerStack() {
+        stack.innerHTML = '<div class="ct-v__layers-title">Capas del look</div>';
+        stack.classList.toggle('has-layers', layers.length > 0);
+        if (!layers.length) return;
+
+        [...layers].reverse().filter((layer) => layer.layerType !== 'coat-back').forEach((layer) => {
+          const chip = document.createElement('div');
+          chip.className = 'ct-v__chip';
+          if (layer.hidden) chip.classList.add('is-hidden-layer');
+          chip.dataset.uid = layer.uid;
+          const typeLabel = layer.layerType === 'coat-front' ? 'Frente' : 'Prenda';
+          const thumb = itemThumb(layer.item, layer.state);
+          const slot = itemSlot(layer.item);
+          const canMoveAgainstBottom = slot === 'bottom' || slot === 'polo' || slot === 'blusa';
+          const moveButtons = canMoveAgainstBottom ? `
+              <button class="ct-v__chip-btn" type="button" data-move="1" title="Adelante"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg></button>
+              <button class="ct-v__chip-btn" type="button" data-move="-1" title="Atrás"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+            ` : '';
+          const eyeIcon = layer.hidden
+            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.94 10.94 0 0112 20C7 20 2.73 16.89 1 12a11.8 11.8 0 012.06-3.31"/><path d="M10.58 10.58a2 2 0 002.83 2.83"/><path d="M9.88 4.24A10.74 10.74 0 0112 4c5 0 9.27 3.11 11 8a11.79 11.79 0 01-4.22 5.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+            : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+          chip.innerHTML = `
+            ${thumb ? `<img class="ct-v__chip-thumb" src="${thumb}" alt="">` : '<div class="ct-v__chip-thumb"></div>'}
+            <div>
+              <div class="ct-v__chip-name">${layer.item.name}</div>
+              <div class="ct-v__chip-type">${typeLabel}</div>
+            </div>
+            <div class="ct-v__chip-actions">
+              <button class="ct-v__chip-btn" type="button" data-toggle-hidden title="${layer.hidden ? 'Mostrar capa' : 'Ocultar capa'}">${eyeIcon}</button>
+              ${moveButtons}
+              <button class="ct-v__chip-btn" type="button" data-remove title="Quitar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+          `;
+          chip.querySelector('[data-toggle-hidden]').addEventListener('click', () => toggleLayerVisibility(layer.uid));
+          chip.querySelectorAll('[data-move]').forEach((button) => {
+            button.addEventListener('click', () => moveLayer(layer.uid, Number(button.dataset.move)));
+          });
+          chip.querySelector('[data-remove]').addEventListener('click', () => removeLayer(layer.uid));
+          stack.appendChild(chip);
+        });
+      }
+
+      function renderSummary() {
+        const unique = [];
+        layers.forEach((layer) => {
+          if (!unique.some((item) => item.id === layer.item.id)) unique.push(layer.item);
+        });
+        if (!unique.length) {
+          summaryList.innerHTML = '<div class="ct-v__summary-empty">Empieza eligiendo prendas</div>';
+        } else {
+          summaryList.innerHTML = unique.map((item) => {
+            const thumb = itemThumb(item, item.defaultState);
+            return `
+              <div class="ct-v__summary-item">
+                ${thumb ? `<img src="${thumb}" alt="">` : '<div></div>'}
+                <div class="ct-v__summary-name">${item.name}</div>
+                <div class="ct-v__summary-price">${formatMoney(item.price)}</div>
+              </div>
+            `;
+          }).join('');
+        }
+        const total = unique.reduce((sum, item) => sum + Number(item.price || 0), 0);
+        summaryTotal.textContent = formatMoney(total);
+        if (saveBtn) saveBtn.disabled = !unique.length;
+      }
+
+      function uniqueItemsFromLayerRefs(layerRefs) {
+        const unique = [];
+        layerRefs.forEach((layer) => {
+          const item = catalogItemById(layer.itemId);
+          if (item && !unique.some((entry) => entry.id === item.id)) unique.push(item);
+        });
+        return unique;
+      }
+
+      function renderSavedLooks() {
+        if (!savedList) return;
+        if (!savedLooks.length) {
+          savedList.innerHTML = '<div class="ct-v__saved-empty">Aún no tienes looks guardados.</div>';
+          return;
+        }
+
+        savedList.innerHTML = savedLooks.map((look, index) => {
+          const items = uniqueItemsFromLayerRefs(look.layers || []);
+          const fallbackThumb = items.map((item) => itemThumb(item, item.defaultState)).find(Boolean);
+          const thumb = look.snapshot || fallbackThumb || '';
+          return `
+            <div class="ct-v__saved-look" data-look-id="${escapeHtml(look.id)}">
+              <button class="ct-v__saved-look-main" type="button" data-rebuild-look="${escapeHtml(look.id)}" aria-label="Rearmar look ${String(savedLooks.length - index).padStart(2, '0')}">
+                <div class="ct-v__saved-look-thumbs">${thumb ? `<img src="${thumb}" alt="">` : ''}</div>
+              </button>
+              <button class="ct-v__saved-remove" type="button" data-remove-look="${escapeHtml(look.id)}" aria-label="Eliminar look">×</button>
+            </div>
+          `;
+        }).join('');
+
+        savedList.querySelectorAll('[data-rebuild-look]').forEach((button) => {
+          button.addEventListener('click', () => rebuildSavedLook(button.dataset.rebuildLook));
+        });
+        savedList.querySelectorAll('[data-remove-look]').forEach((button) => {
+          button.addEventListener('click', () => removeSavedLook(button.dataset.removeLook));
+        });
+      }
+
+      function renderAll() {
+        normalizeLayerOrder();
+        renderCanvas();
+        renderLayerStack();
+        renderSummary();
+        renderSavedLooks();
+      }
+
+      function loadImage(src) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = src;
+        });
+      }
+
+      function drawContain(ctx, img, width, height) {
+        const scale = Math.min(width / img.naturalWidth, height / img.naturalHeight);
+        const drawWidth = img.naturalWidth * scale;
+        const drawHeight = img.naturalHeight * scale;
+        ctx.drawImage(img, (width - drawWidth) / 2, (height - drawHeight) / 2, drawWidth, drawHeight);
+      }
+
+      async function buildLookSnapshot() {
+        normalizeLayerOrder();
+        const width = 240;
+        const height = 300;
+        const output = document.createElement('canvas');
+        output.width = width;
+        output.height = height;
+        const ctx = output.getContext('2d');
+        ctx.fillStyle = '#f7f7f7';
+        ctx.fillRect(0, 0, width, height);
+
+        for (const layer of layers) {
+          if (layer.hidden) continue;
+          const resolved = resolveImages(layer.item, layer.state);
+          let imgSrc = resolved.img || layer.item.img || '';
+          if (layer.layerType === 'coat-back' && resolved.imgBack) imgSrc = resolved.imgBack;
+          if (layer.layerType === 'coat-front' && resolved.imgFront) imgSrc = resolved.imgFront;
+          if (!imgSrc) continue;
+          const img = await loadImage(imgSrc);
+          drawContain(ctx, img, width, height);
+        }
+
+        return output.toDataURL('image/webp', 0.82);
+      }
+
+      function moveLayer(uid, direction) {
+        const layer = layers.find((item) => item.uid === uid);
+        if (!layer) return;
+        const slot = itemSlot(layer.item);
+        if (slot === 'polo' || slot === 'blusa') topOverBottom = direction > 0;
+        if (slot === 'bottom') topOverBottom = direction < 0;
+        renderAll();
+      }
+
+      function removeLayer(uid) {
+        const layer = layers.find((item) => item.uid === uid);
+        if (!layer) return;
+        if (layer.item.doubleLayer) {
+          layers = layers.filter((item) => item.item.id !== layer.item.id);
+        } else {
+          layers = layers.filter((item) => item.uid !== uid);
+        }
+        renderAll();
+      }
+
+      function toggleLayerVisibility(uid) {
+        const layer = layers.find((item) => item.uid === uid);
+        if (!layer) return;
+        if (layer.item.doubleLayer) {
+          const itemLayers = layers.filter((item) => item.item.id === layer.item.id);
+          const shouldHide = itemLayers.some((item) => !item.hidden);
+          itemLayers.forEach((item) => {
+            item.hidden = shouldHide;
+          });
+        } else {
+          layer.hidden = !layer.hidden;
+        }
+        renderAll();
+      }
+
+      async function saveCurrentLook() {
+        if (!layers.length) {
+          toast('Agrega prendas para guardar');
+          return;
+        }
+        if (saveBtn) saveBtn.disabled = true;
+
+        const layerRefs = layers.map((layer) => ({
+          itemId: layer.item.id,
+          layerType: layer.layerType,
+          state: layer.state || null,
+          hidden: Boolean(layer.hidden)
+        }));
+        const signature = JSON.stringify({ topOverBottom, layers: layerRefs });
+        if (savedLooks.some((look) => JSON.stringify({ topOverBottom: Boolean(look.topOverBottom), layers: look.layers || [] }) === signature)) {
+          toast('Este look ya está guardado');
+          if (saveBtn) saveBtn.disabled = false;
+          return;
+        }
+
+        let snapshot = '';
+        try {
+          snapshot = await buildLookSnapshot();
+        } catch (error) {
+          snapshot = '';
+        }
+
+        savedLooks.unshift({
+          id: `look-${Date.now()}`,
+          createdAt: new Date().toISOString(),
+          snapshot,
+          topOverBottom,
+          layers: layerRefs
+        });
+        savedLooks = savedLooks.slice(0, 12);
+        persistSavedLooks();
+        renderAll();
+        toast('Look guardado');
+      }
+
+      function rebuildSavedLook(lookId) {
+        const look = savedLooks.find((entry) => entry.id === lookId);
+        if (!look || !Array.isArray(look.layers)) return;
+
+        const rebuilt = [];
+        topOverBottom = Boolean(look.topOverBottom);
+        look.layers.forEach((layer) => {
+          const item = catalogItemById(layer.itemId);
+          if (!item) return;
+          const slot = itemSlot(item);
+          const slotHasOtherItem = rebuilt.some((entry) => itemSlot(entry.item) === slot && entry.item.id !== item.id);
+          if (slotHasOtherItem) {
+            for (let index = rebuilt.length - 1; index >= 0; index -= 1) {
+              if (itemSlot(rebuilt[index].item) === slot) rebuilt.splice(index, 1);
+            }
+          }
+          rebuilt.push({
+            uid: ++uidCounter,
+            item,
+            layerType: layer.layerType || 'normal',
+            state: layer.state || null,
+            hidden: Boolean(layer.hidden)
+          });
+        });
+
+        if (!rebuilt.length) {
+          toast('Ese look ya no tiene prendas disponibles');
+          return;
+        }
+
+        layers = rebuilt;
+        renderAll();
+        toast('Look rearmado');
+      }
+
+      function removeSavedLook(lookId) {
+        savedLooks = savedLooks.filter((look) => look.id !== lookId);
+        persistSavedLooks();
+        renderAll();
+        toast('Look eliminado');
+      }
+
+      function randomItem(category) {
+        const items = catalog[category] || [];
+        if (!items.length) return null;
+        return items[Math.floor(Math.random() * items.length)];
+      }
+
+      function randomItemFrom(categories) {
+        const items = categories.flatMap((category) => catalog[category] || []);
+        if (!items.length) return null;
+        return items[Math.floor(Math.random() * items.length)];
+      }
+
+      function randomItemBySlot(slot) {
+        const items = allCatalogItems().filter((item) => itemSlot(item) === slot);
+        if (!items.length) return null;
+        return items[Math.floor(Math.random() * items.length)];
+      }
+
+      function pushRandomLayer(item) {
+        if (!item) return;
+        const state = item.defaultState || null;
+        if (item.doubleLayer) {
+          layers.push({ uid: ++uidCounter, item, layerType: 'coat-back', state });
+          layers.push({ uid: ++uidCounter, item, layerType: 'coat-front', state });
+          return;
+        }
+        layers.push({ uid: ++uidCounter, item, layerType: 'normal', state });
+      }
+
+      function randomizeLook() {
+        layers = [];
+        topOverBottom = false;
+        const outer = randomItemBySlot('outerwear');
+        const bottom = randomItemFrom(['pantalones', 'denim', 'faldas']);
+        const top = randomItemFrom(['polos', 'camisas', 'poleras']);
+        const abrigo = isSweaterItem(top) ? null : randomItemBySlot('abrigo');
+
+        pushRandomLayer(outer);
+        pushRandomLayer(abrigo);
+        pushRandomLayer(bottom);
+        pushRandomLayer(top);
+
+        if (!layers.length) {
+          toast('Aún no hay prendas para randomizar');
+          return;
+        }
+
+        renderAll();
+        toast('Look randomizado');
+      }
+
+      function openHelpModal() {
+        if (!helpModal) return;
+        helpModal.hidden = false;
+        helpModal.querySelector('[data-close-help]')?.focus();
+      }
+
+      function closeHelpModal() {
+        if (!helpModal) return;
+        helpModal.hidden = true;
+      }
+
+      function toggleFullGuide() {
+        if (!helpGuide || !helpGuideToggle) return;
+        const shouldOpen = helpGuide.hidden;
+        helpGuide.hidden = !shouldOpen;
+        helpGuideToggle.textContent = shouldOpen ? 'Ocultar guía completa' : 'Ver guía completa';
+      }
+
+      root.querySelectorAll('[data-toggle-section]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const items = root.querySelector(`[data-items="${button.dataset.toggleSection}"]`);
+          if (items) items.hidden = !items.hidden;
+        });
+      });
+
+      root.querySelector('[data-clear]')?.addEventListener('click', () => {
+        layers = [];
+        topOverBottom = false;
+        renderAll();
+        toast('Vestidor limpio');
+      });
+      root.querySelector('[data-randomize]')?.addEventListener('click', randomizeLook);
+      root.querySelector('[data-help]')?.addEventListener('click', openHelpModal);
+      root.querySelector('[data-save]')?.addEventListener('click', saveCurrentLook);
+
+      helpGuideToggle?.addEventListener('click', toggleFullGuide);
+      helpModal?.addEventListener('click', (event) => {
+        if (event.target === helpModal || event.target.closest('[data-close-help]')) closeHelpModal();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && helpModal && !helpModal.hidden) closeHelpModal();
+      });
+
+      renderCatalog();
+      renderAll();
+    })();
+  </script>
+{% else %}
+  <main class="ct-page">
+    <div class="ct-page__inner">
+      <h1>{{ page.title | escape }}</h1>
+      <div class="ct-page__content">
+        {{ page.content }}
+      </div>
+    </div>
+  </main>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Casa Trame Page",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Casa Trame Page"
+    }
+  ]
+}
+{% endschema %}

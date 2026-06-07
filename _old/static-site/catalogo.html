@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Casa Tramé — Otoño Invierno</title>
+  <link rel="preload" href="fonts/GoiaDisplay-ExtraLightItalic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/GoiaDisplay-Bold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/GoiaDisplay-Light.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    /* Catalogo-specific: images default + nav override */
+    img { max-width: 100%; height: auto; display: block; }
+    /* NAVBAR — override: always solid with border */
+    .nav { background: var(--bg); border-bottom: 1px solid var(--border); }
+
+    /* ===========================================
+       MAIN LAYOUT
+       Sidebar (1fr) | Product grid (3fr)
+       =========================================== */
+    .main {
+      margin-top: var(--nav-h);
+      display: grid;
+      grid-template-columns: 1fr 3fr;
+      min-height: 100vh;
+    }
+
+    /* --- SIDEBAR --- */
+    .sidebar {
+      padding: 3.2rem 2rem 3.2rem 2.8rem;
+      position: sticky; top: var(--nav-h);
+      align-self: start;
+      max-height: calc(100vh - var(--nav-h));
+      overflow-y: auto;
+    }
+
+    .sidebar__tag {
+      display: inline-block;
+      font-size: var(--fs-label); letter-spacing: 0.22em;
+      border: 1.5px solid var(--text); padding: 0.3rem 1rem;
+      margin-bottom: 1.6rem; font-weight: 300;
+    }
+
+    .sidebar__title {
+      font-family: var(--heading);
+      font-style: italic;
+      font-size: var(--fs-section);
+      line-height: 1.0;
+      font-weight: 200;
+      text-transform: uppercase;
+      margin-bottom: 1.4rem;
+    }
+
+    .sidebar__subtitle {
+      font-size: var(--fs-body); color: var(--text);
+      line-height: 1.55; margin-bottom: 3.2rem;
+      max-width: 18rem;
+    }
+
+    .sidebar__filters { display: flex; flex-direction: column; gap: 0; }
+    .sidebar__filters a {
+      font-size: var(--fs-body); color: var(--text);
+      padding: 0.7rem 0; display: block;
+      text-transform: uppercase; letter-spacing: 0.02em;
+      border-bottom: 1px solid transparent;
+      transition: 0.2s ease;
+    }
+    .sidebar__filters a.active {
+      border-bottom: 0.5px solid var(--text);
+      padding-bottom: 0.533rem;
+    }
+    .sidebar__filters a:hover { opacity: 0.7; }
+
+    /* Sort & Color filter */
+    .sidebar__section-title {
+      font-size: var(--fs-label); text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text-light); margin-top: 2.4rem; margin-bottom: 0.8rem;
+    }
+    .sidebar__section-title--filtrar { display: none; }
+    /* Desktop: hide mobile toggles, show collapsible content */
+    .sidebar__mobile-toggles { display: none; }
+    .sidebar__collapsible { display: block; }
+    .sidebar__sort { display: flex; flex-direction: column; gap: 0; }
+    .sidebar__sort a {
+      font-size: var(--fs-body); color: var(--text); padding: 0.6rem 0;
+      text-transform: uppercase; letter-spacing: 0.02em;
+      cursor: pointer; transition: 0.2s;
+    }
+    .sidebar__sort a.active { border-bottom: 1.5px solid var(--text); padding-bottom: 0.4rem; }
+    .sidebar__sort a:hover { opacity: 0.7; }
+    .sidebar__sort-arrow { display: inline-block; transition: transform 0.2s; }
+    .sidebar__sort-toggle.flipped .sidebar__sort-arrow { transform: rotate(180deg); }
+
+    /* --- GRID AREA --- */
+    .grid-area { padding: 0 0 4rem 0; border-top: none; }
+    .grid-view-toggle { display: none; }
+
+    /* Product grid: 3 columns, no dividers */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.133rem clamp(0.267rem, 2%, 1.6rem);
+    }
+
+    /* ===========================================
+       PRODUCT CARD
+       =========================================== */
+    .product-card {
+      position: relative; cursor: pointer;
+      padding: 0;
+    }
+
+    /* IMAGE */
+    .product-card__image {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      background-color: #f4f2ef;
+    }
+    .product-card__image::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('img/bg_3.png');
+      background-size: cover;
+      background-position: var(--product-bg-x, 50%) center;
+      background-repeat: no-repeat;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+    .product-card__image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.03);
+      pointer-events: none;
+      z-index: 2;
+    }
+    .product-card__image img {
+      position: relative;
+      z-index: 1;
+      width: 100%; height: 100%;
+      object-fit: contain;
+      object-position: center;
+      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 0;
+    }
+
+    /* Wishlist heart — top right */
+    .product-card__wish {
+      position: absolute; top: 0.8rem; right: 0.933rem;
+      z-index: 3; font-size: 1.2rem; color: var(--text);
+      transition: 0.2s;
+    }
+    .product-card__wish.liked { color: var(--text); }
+    .product-card__wish svg { width: 1.8rem; height: 1.8rem; }
+
+    /* Quick Look eye icon */
+    .product-card__quick {
+      position: absolute; bottom: 0.933rem; right: 0.933rem; z-index: 3;
+      width: 2.533rem; height: 2.533rem; border-radius: 50%;
+      background: rgba(255,255,255,0.9); backdrop-filter: blur(0.267rem);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.25s;
+      cursor: pointer; border: none; color: var(--text);
+    }
+    .product-card__quick svg { width: 1.333rem; height: 1.333rem; }
+    .product-card__image:hover .product-card__quick { opacity: 1; }
+    .product-card__quick:hover { background: #fff; }
+
+    /* Wish selector popup */
+    .wish-selector {
+      position: absolute; top: 0.667rem; right: 0.667rem; z-index: 10;
+      background: #fff; padding: 2.133rem 2.4rem;
+      min-width: 22.667rem;
+      box-shadow: 0 0.267rem 2.133rem rgba(0,0,0,0.15);
+    }
+    .wish-selector__label {
+      font-size: 1.3rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-light); margin-bottom: 1.067rem;
+    }
+    .wish-selector__colors { display: flex; gap: 1.067rem; margin-bottom: 1.867rem; }
+    .wish-selector__colors .wdot {
+      width: 2.4rem; height: 2.4rem; border-radius: 50%; cursor: pointer;
+      border: 2px solid transparent; transition: 0.15s;
+    }
+    .wish-selector__colors .wdot.active { border-color: var(--text); box-shadow: 0 0 0 2px var(--text); }
+    .wish-selector__sizes { display: flex; gap: 0.667rem; margin-bottom: 1.867rem; }
+    .wish-selector__sizes button {
+      padding: 0.533rem 1.333rem; font-size: 1.36rem; letter-spacing: 0.08em;
+      border: 1px solid var(--border); background: none; cursor: pointer;
+      font-family: var(--body); transition: 0.15s;
+    }
+    .wish-selector__sizes button.active { border-color: var(--text); background: var(--text); color: #fff; }
+    .wish-selector__add {
+      width: 100%; padding: 1.067rem 0; font-size: 1.36rem; letter-spacing: 0.12em;
+      text-transform: uppercase; border: 1px solid var(--text); background: var(--text);
+      color: #fff; cursor: pointer; font-family: var(--body); transition: 0.15s;
+    }
+    .wish-selector__add:hover { background: #333; }
+    .wish-selector__close {
+      position: absolute; top: 0.8rem; right: 1.333rem; background: none; border: none;
+      font-size: 2rem; cursor: pointer; color: var(--text-light); line-height: 1;
+    }
+
+    /* INFO below image */
+    .product-card__info {
+      padding: 0.667rem 0.933rem 1.067rem;
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 0.533rem;
+    }
+
+    .product-card__name {
+      font-size: var(--fs-body); color: var(--text); line-height: 1.3;
+    }
+    .product-card__price {
+      font-size: var(--fs-body); color: var(--text); margin-top: 0.133rem;
+    }
+
+    /* Color dots — right side */
+    .product-card__dots {
+      display: flex; gap: 0.4rem; align-items: center;
+      flex-shrink: 0; margin-top: 0.267rem;
+    }
+    .dot {
+      width: 1.4rem; height: 1.4rem; border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      transition: 0.15s ease;
+    }
+    .dot:hover { transform: scale(1.2); }
+    .dot.active { box-shadow: 0 0 0 1.5px var(--bg), 0 0 0 0.2rem var(--text); }
+
+    /* ===========================================
+       PRODUCT MODAL
+       =========================================== */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,0.4); backdrop-filter: blur(0.267rem);
+      align-items: center; justify-content: center; padding: 1.6rem;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--bg); max-width: 73.333rem; width: 92%;
+      max-height: 92vh; overflow-y: auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      position: relative;
+    }
+    .modal__close {
+      position: absolute; top: 1.067rem; right: 1.2rem; font-size: 1.8rem;
+      z-index: 10; color: var(--text); width: 2.8rem; height: 2.8rem;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg); border-radius: 50%;
+    }
+    .modal__gallery {
+      background-color: #f4f2ef;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100%; position: sticky; top: 0; align-self: stretch;
+    }
+    .modal__gallery::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('img/bg_3.png');
+      background-size: cover;
+      background-position: var(--product-bg-x, 50%) center;
+      background-repeat: no-repeat;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+    .modal__gallery img { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: contain; }
+    .modal__info { padding: 3.2rem 2.667rem; }
+    .modal__cat { font-size: 1.17rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-light); margin-bottom: 0.533rem; }
+    .modal__name { font-family: var(--heading); font-size: var(--fs-section); margin-bottom: 0.933rem; font-weight: 700; }
+    .modal__price { font-size: 1.95rem; margin-bottom: 1.867rem; }
+    .modal__desc { color: var(--text-mid); line-height: 1.7; margin-bottom: 2.133rem; font-size: var(--fs-subtitle); }
+    .modal__label { font-size: 1.23rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; margin-bottom: 0.8rem; }
+    .sizes { display: flex; gap: 0.667rem; margin-bottom: 1.867rem; }
+    .size-btn {
+      width: 4rem; height: 4rem; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.38rem; transition: 0.2s; background: none;
+    }
+    .size-btn:hover, .size-btn.active { border-color: var(--text); background: var(--text); color: #fff; }
+    .modal__actions { display: flex; gap: 0.933rem; margin-top: 1.867rem; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 1.467rem 3.2rem; font-size: 1.35rem;
+      letter-spacing: 0.08em; text-transform: uppercase; transition: 0.2s; font-weight: 500;
+    }
+    .btn--primary { background: var(--text); color: #fff; flex: 1; }
+    .btn--primary:hover { background: #333; }
+    .btn--outline { border: 1px solid var(--border); color: var(--text); padding: 1.467rem 1.6rem; font-size: 1.65rem; }
+    .btn--outline:hover { border-color: var(--text); }
+    details { border-top: 1px solid #eee; margin-top: 0.933rem; }
+    details summary { cursor: pointer; font-size: 0.92rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500; padding: 0.8rem 0; }
+    details > div { padding: 0 0 0.933rem; color: var(--text-mid); font-size: 0.95rem; line-height: 1.6; }
+/* ===========================================
+       WISHLIST PAGE
+       =========================================== */
+    .wishlist-page {
+      display: none;
+      position: fixed; top: var(--nav-h); left: 0; right: 0; bottom: 0;
+      z-index: 1500;
+      background: var(--bg);
+      padding: 0 3.2rem 4rem;
+      overflow-y: auto;
+    }
+    .wishlist-page.open { display: block; }
+    .wishlist-page__header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 0.8rem; padding-top: 1.333rem;
+    }
+    .wishlist-page__title {
+      font-family: var(--body); font-size: var(--fs-page);
+      font-weight: 800; text-transform: uppercase;
+      letter-spacing: -0.02em; line-height: 1;
+    }
+    .wishlist-page__close {
+      font-size: 2rem; color: var(--text); padding: 0.267rem 0.533rem;
+    }
+    .wishlist-page__count {
+      font-size: 1.35rem; color: var(--text); margin-bottom: 0.4rem;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .wishlist-page__hint {
+      font-size: 1.35rem; color: var(--text-mid); margin-bottom: 2.667rem;
+    }
+    .wishlist-page__empty { margin-bottom: 2.667rem; }
+    .wishlist-page__cta {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 1.067rem 3.2rem; border: 1px solid var(--text);
+      font-size: 1.28rem; text-transform: uppercase;
+      letter-spacing: 0.08em; font-weight: 500;
+      color: var(--text); background: none; margin-top: 2.133rem;
+      transition: 0.2s;
+    }
+    .wishlist-page__cta:hover { background: var(--text); color: #fff; }
+    .wishlist-page__breadcrumb {
+      margin-top: 4rem; padding-bottom: 2.667rem;
+      font-size: 1.17rem; color: var(--text-light);
+    }
+    .wishlist-page__breadcrumb strong { color: var(--text); }
+
+    /* Looks Guardados inside wishlist page */
+    .wishlist-page__looks {
+      margin-top: 4rem; padding-top: 2.667rem;
+      border-top: 1px solid var(--border);
+    }
+    .wishlist-page__looks-title {
+      font-family: var(--body); font-size: 2.4rem;
+      font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.02em; margin-bottom: 1.333rem;
+    }
+    .wishlist-page__looks-empty {
+      color: var(--text-mid); font-size: 1.43rem; line-height: 1.6;
+    }
+    .wishlist-page__looks-empty p { margin-bottom: 0.4rem; }
+    .wishlist-page__looks-empty strong { color: var(--text); }
+    .wishlist-page__looks-actions {
+      display: flex; gap: 0.8rem; margin-top: 1.6rem; flex-wrap: wrap;
+    }
+    .wishlist-page__cta--ghost {
+      background: none; border-color: var(--text-light); color: var(--text-light);
+    }
+    .wishlist-page__cta--ghost:hover {
+      background: var(--text-light); color: #fff; border-color: var(--text-light);
+    }
+    .wishlist-page__looks-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.133rem;
+    }
+    .wishlist-page__grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.133rem;
+    }
+    .wishlist-card {
+      position: relative; cursor: pointer;
+    }
+    .wishlist-card__image {
+      aspect-ratio: 0.78; overflow: hidden; background: none; position: relative;
+    }
+    .wishlist-card__image::after {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(0,0,0,0.03); pointer-events: none;
+    }
+    .wishlist-card__image img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .wishlist-card__remove {
+      position: absolute; top: 0.667rem; right: 0.8rem; z-index: 2;
+      color: var(--text); font-size: 1.1rem;
+    }
+    .wishlist-card__remove svg { width: 1.467rem; height: 1.467rem; }
+    .wishlist-card__info { padding: 0.667rem 0.933rem 1.067rem; }
+    .wishlist-card__name { font-size: 1.28rem; color: var(--text); line-height: 1.3; }
+    .wishlist-card__price { font-size: 1.28rem; color: var(--text); margin-top: 0.067rem; }
+
+    @media (max-width: 768px) {
+      .wishlist-page { padding: 1.067rem 1.067rem 2.667rem; top: 0; z-index: 1600; }
+      .wishlist-page__header { padding-top: calc(var(--nav-h) + 0.533rem); }
+      .wishlist-page__close { font-size: 2.4rem; padding: 0.533rem 0.8rem; min-width: 2.933rem; min-height: 2.933rem; display: flex; align-items: center; justify-content: center; }
+      .wishlist-page__title { font-size: 1.8rem; }
+      .wishlist-page__count { font-size: 0.9rem; }
+      .wishlist-page__hint { font-size: 0.9rem; margin-bottom: 1.6rem; }
+      .wishlist-page__grid { grid-template-columns: repeat(2, 1fr); gap: 0.533rem; }
+      .wishlist-page__looks-grid { grid-template-columns: repeat(2, 1fr); }
+      .wishlist-page__looks-title { font-size: 1.4rem; }
+      .wishlist-page__cta { padding: 0.933rem 2.133rem; font-size: 0.9rem; }
+      .wishlist-card__name { font-size: 0.9rem; }
+      .wishlist-card__price { font-size: 0.9rem; }
+      .wishlist-page__grid .product-card__name { font-size: 0.9rem; }
+      .wishlist-page__grid .product-card__price { font-size: 0.85rem; }
+      .wishlist-page__grid .product-card__dots { display: none; }
+      .wishlist-page__grid .product-card__quick { display: flex; opacity: 1; }
+      .wishlist-page__grid .wishlist-card__cart-btn { font-size: 0.8rem; padding: 0.5rem 0; }
+      .wishlist-page__breadcrumb { font-size: 0.85rem; margin-top: 2.133rem; padding-bottom: 1.333rem; }
+    }
+
+    /* ===========================================
+       CART DRAWER
+       =========================================== */
+    /* Cart CSS now in styles.css */
+    .wishlist-card__cart-btn {
+      display: block; width: 100%; padding: 0.6rem 0; margin-top: 0;
+      font-size: 1.02rem; text-transform: uppercase; letter-spacing: 0.1em;
+      border: 1px solid var(--text); background: none; color: var(--text);
+      cursor: pointer; font-family: var(--body); transition: 0.2s;
+    }
+    .wishlist-card__cart-btn:hover { background: var(--text); color: #fff; }
+
+    /* ===========================================
+       SEARCH MODAL
+       =========================================== */
+    .search-overlay {
+      display: none; position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(0.267rem);
+    }
+    .search-overlay.open { display: flex; align-items: flex-start; justify-content: center; padding-top: 8rem; }
+    .search-modal {
+      background: #fff; width: 95%; max-width: 90rem;
+      box-shadow: 0 1.333rem 4rem rgba(0,0,0,0.15);
+      animation: searchSlide 0.25s ease;
+    }
+    @keyframes searchSlide { from { opacity: 0; transform: translateY(-1.333rem); } to { opacity: 1; transform: translateY(0); } }
+    .search-modal__header {
+      display: flex; align-items: center; gap: 1.4rem;
+      padding: 2rem 2.4rem; border-bottom: 1px solid var(--border);
+    }
+    .search-modal__header svg { width: 2rem; height: 2rem; color: var(--text-light); flex-shrink: 0; }
+    .search-modal__input {
+      flex: 1; border: none; outline: none;
+      font-family: var(--body); font-size: var(--fs-subtitle); font-weight: 300;
+      color: var(--text); background: none;
+    }
+    .search-modal__input::placeholder { color: var(--text-light); }
+    .search-modal__close {
+      background: none; border: none; font-size: 2rem;
+      color: var(--text-light); cursor: pointer; padding: 0 0.4rem;
+      font-family: var(--body);
+    }
+    .search-modal__close:hover { color: var(--text); }
+    .search-modal__results {
+      max-height: 36rem; overflow-y: auto;
+    }
+    .search-modal__empty {
+      padding: 3.6rem 2.4rem; text-align: center;
+      color: var(--text-light); font-size: var(--fs-body);
+    }
+    .search-result {
+      display: grid; grid-template-columns: 6rem 1fr auto;
+      gap: 1.4rem; align-items: center;
+      padding: 1.2rem 2.4rem; border-bottom: 1px solid #f5f5f5;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .search-result:hover { background: #fafafa; }
+    .search-result__img {
+      position: relative;
+      width: 6rem; height: 7.5rem; overflow: hidden;
+      background-color: #f4f2ef;
+    }
+    .search-result__img::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('img/bg_3.png');
+      background-size: cover;
+      background-position: var(--product-bg-x, 50%) center;
+      background-repeat: no-repeat;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+    .search-result__img img { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: contain; }
+    .search-result__info { display: flex; flex-direction: column; gap: 0.267rem; }
+    .search-result__name { font-size: var(--fs-body); color: var(--text); font-weight: 400; }
+    .search-result__cat {
+      font-size: 0.9rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-light);
+    }
+    .search-result__price { font-size: var(--fs-body); color: var(--text); white-space: nowrap; }
+    .search-modal__hint {
+      padding: 1rem 2.4rem; font-size: 0.9rem;
+      color: var(--text-light); text-align: center;
+      border-top: 1px solid #f5f5f5;
+      letter-spacing: 0.03em;
+    }
+/* ===========================================
+       RESPONSIVE
+       =========================================== */
+    @media (max-width: 1024px) {
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .main { grid-template-columns: 1fr; }
+      .sidebar { position: relative; top: 0; padding: 1.333rem 1.333rem 0.8rem; max-height: none; text-align: center; }
+      .sidebar__tag { font-size: 0.7rem; }
+      .sidebar__title { font-size: 2rem; margin-bottom: 0.4rem; }
+      .sidebar__subtitle { font-size: 1rem; margin-bottom: 1.6rem; }
+      /* Mobile toggle buttons */
+      .sidebar__mobile-toggles {
+        display: flex; gap: 0.533rem; margin-bottom: 0;
+      }
+      .sidebar__toggle-btn {
+        flex: 1; padding: 0.667rem 1.067rem;
+        font-size: 0.8rem; font-family: var(--body);
+        text-transform: uppercase; letter-spacing: 0.1em;
+        background: none; border: 1px solid var(--border);
+        color: var(--text); cursor: pointer;
+        display: flex; justify-content: space-between; align-items: center;
+        transition: 0.2s;
+      }
+      .sidebar__toggle-btn.active { border-color: var(--text); }
+      .sidebar__toggle-icon { font-size: 1rem; font-weight: 300; }
+      /* Collapsible sections: hidden by default on mobile */
+      .sidebar__collapsible {
+        display: none;
+        padding: 0.8rem 0 0.267rem;
+      }
+      .sidebar__collapsible.open { display: block; }
+      .sidebar__section-title--filtrar { display: none; }
+      .sidebar__section-title { margin-top: 0.8rem; margin-bottom: 0.4rem; }
+      .sidebar__filters { flex-direction: row; flex-wrap: wrap; gap: 0.267rem 0.8rem; }
+      .sidebar__filters a { font-size: 0.8rem; padding: 0.267rem 0; }
+      .sidebar__sort a { font-size: 0.8rem; padding: 0.267rem 0; }
+      .grid-area { padding: 0 0.8rem 2.667rem; overflow: hidden; max-width: 100vw; }
+      .grid-view-toggle {
+        display: flex; justify-content: flex-end; gap: 0.533rem;
+        padding: 0.8rem 0; margin-bottom: 0.267rem;
+      }
+      .grid-view-btn {
+        width: 2.133rem; height: 2.133rem; padding: 0.333rem;
+        background: none; border: 1px solid var(--border); border-radius: 0.267rem;
+        color: var(--text-light); cursor: pointer; transition: 0.2s;
+      }
+      .grid-view-btn.active { color: var(--text); border-color: var(--text); }
+      .grid-view-btn svg { width: 100%; height: 100%; }
+      .product-card__quick { display: none; }
+      .product-grid { grid-template-columns: repeat(2, 1fr); gap: 1.067rem 0.533rem; }
+      .product-grid.cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.8rem 0.267rem;
+      }
+      .product-grid.cols-3 .product-card__info { padding: 0.4rem 0.267rem 0.667rem; }
+      .product-grid.cols-3 .product-card__name { font-size: 0.75rem; }
+      .product-grid.cols-3 .product-card__price { font-size: 0.7rem; }
+      .product-grid.cols-3 .product-card__dots { display: none; }
+      .product-grid.cols-3 .product-card__wish svg { width: 1.067rem; height: 1.067rem; }
+      .product-grid.cols-3 .product-card__wish { top: 0.4rem; right: 0.4rem; }
+      .product-grid.cols-1 { grid-template-columns: 1fr; gap: 1.6rem 0.533rem; }
+      .modal-overlay { padding: 0; align-items: flex-end; }
+      .modal { grid-template-columns: 1fr; width: 100%; max-height: 95vh; border-radius: 0.8rem 0.8rem 0 0; }
+      .modal__close { top: 0.667rem; right: 0.8rem; width: 2.933rem; height: 2.933rem; font-size: 2rem; }
+      .modal__gallery { min-height: 18.667rem; max-height: 40vh; position: relative; }
+      .modal__gallery img { object-fit: cover; }
+      .modal__info { padding: 1.333rem 1.067rem 2.133rem; }
+      .modal__cat { font-size: 0.8rem; margin-bottom: 0.267rem; }
+      .modal__name { font-size: 1.4rem; margin-bottom: 0.533rem; }
+      .modal__price { font-size: 1.2rem; margin-bottom: 1.067rem; }
+      .modal__desc { font-size: 0.9rem; margin-bottom: 1.333rem; }
+      .modal__label { font-size: 0.8rem; margin-bottom: 0.533rem; }
+      .size-btn { width: 3.2rem; height: 3.2rem; font-size: 0.9rem; }
+      .modal__actions { flex-direction: column; gap: 0.533rem; }
+      .btn { padding: 1.067rem 1.6rem; font-size: 0.9rem; }
+      .btn--outline { padding: 1.067rem 1.333rem; font-size: 1.2rem; }
+      .wish-selector { min-width: auto; width: calc(100vw - 2.667rem); max-width: 22.667rem; right: 0; left: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="nav">
+    <div class="nav__inner">
+      <div class="nav__left" id="navLinks">
+        <a href="catalogo.html" class="underlined">Colección</a>
+        <a href="index.html#conocenos">Conócenos</a>
+        <a href="vestidor.html">Vestidor™</a>
+      </div>
+      <button class="nav__hamburger" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="index.html" class="nav__logo">
+        <img src="img/trame_horizontal-black.svg" alt="Casa Tramé">
+      </a>
+      <div class="nav__right">
+        <button title="Buscar" onclick="openSearch()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <a href="#" title="Cuenta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
+        <a href="#" onclick="event.preventDefault(); openWishlistPage();" title="Favoritos" id="navWish" style="position:relative;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          <span id="wishBadge" style="display:none;position:absolute;top:-0.267rem;right:-0.267rem;background:var(--text);width:0.533rem;height:0.533rem;border-radius:50%;"></span>
+        </a>
+        <a href="#" onclick="event.preventDefault(); openCart();" title="Carrito" style="position:relative;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span id="cartBadge" style="display:none;position:absolute;top:-0.267rem;right:-0.267rem;background:var(--text);width:0.533rem;height:0.533rem;border-radius:50%;"></span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="nav__mobile-menu" id="mobileMenu">
+    <a href="catalogo.html" class="underlined">Colección</a>
+    <a href="index.html#conocenos">Conócenos</a>
+    <a href="vestidor.html">Vestidor&trade;</a>
+    <hr>
+    <a href="#" onclick="event.preventDefault(); toggleMobileMenu(); openWishlistPage();">Favoritos</a>
+    <a href="#" onclick="event.preventDefault(); toggleMobileMenu(); openSearch();">Buscar</a>
+    <a href="#" onclick="event.preventDefault(); toggleMobileMenu(); openCart();">Carrito</a>
+  </div>
+
+  <!-- ===== MAIN: SIDEBAR + GRID ===== -->
+  <div class="main">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <h1 class="sidebar__title">OTOÑO<br>INVIERNO</h1>
+      <p class="sidebar__subtitle">Una colección que nace desde lo esencial: versátil, cómoda, y pensada para acompañarte en el día a día.</p>
+
+      <!-- Mobile: collapsible toggles | Desktop: always visible -->
+      <div class="sidebar__mobile-toggles">
+        <button class="sidebar__toggle-btn" onclick="toggleSidebarSection('filter')">
+          Filtrar <span class="sidebar__toggle-icon" id="filterIcon">+</span>
+        </button>
+        <button class="sidebar__toggle-btn" onclick="toggleSidebarSection('sort')">
+          Ordenar <span class="sidebar__toggle-icon" id="sortIcon">+</span>
+        </button>
+      </div>
+
+      <div class="sidebar__collapsible sidebar__collapsible--filter" id="filterSection">
+        <p class="sidebar__section-title sidebar__section-title--filtrar">Filtrar</p>
+        <div class="sidebar__filters" id="filters">
+          <a href="#" data-filter="all" class="active">VER TODO</a>
+          <a href="#" data-filter="abrigos">ABRIGOS</a>
+          <a href="#" data-filter="camisas">CAMISAS</a>
+          <a href="#" data-filter="denim">DENIM</a>
+          <a href="#" data-filter="faldas">FALDAS</a>
+          <a href="#" data-filter="pantalones">PANTALONES</a>
+          <a href="#" data-filter="poleras">POLERAS</a>
+          <a href="#" data-filter="polos">POLOS</a>
+        </div>
+      </div>
+
+      <div class="sidebar__collapsible sidebar__collapsible--sort" id="sortSection">
+        <div class="sidebar__sort">
+          <a href="#" class="sidebar__sort-toggle" id="priceSortToggle" data-dir="asc">Ordenar por precio <span class="sidebar__sort-arrow">↑</span></a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- GRID AREA -->
+    <div class="grid-area">
+      <!-- GRID VIEW TOGGLE (mobile only) -->
+      <div class="grid-view-toggle" id="gridViewToggle">
+        <button class="grid-view-btn" data-cols="3" title="3 columnas">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="21" height="21" rx="2"/><line x1="8" y1="1.5" x2="8" y2="22.5"/><line x1="16" y1="1.5" x2="16" y2="22.5"/><line x1="1.5" y1="8.5" x2="22.5" y2="8.5"/><line x1="1.5" y1="15.5" x2="22.5" y2="15.5"/></svg>
+        </button>
+        <button class="grid-view-btn active" data-cols="2" title="2 columnas">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="21" height="21" rx="2"/><line x1="12" y1="1.5" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="22.5" y2="12"/></svg>
+        </button>
+        <button class="grid-view-btn" data-cols="1" title="1 columna">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="21" height="21" rx="2"/><line x1="1.5" y1="8.5" x2="22.5" y2="8.5"/><line x1="1.5" y1="15.5" x2="22.5" y2="15.5"/></svg>
+        </button>
+      </div>
+      <!-- PRODUCT GRID -->
+      <div class="product-grid" id="productGrid"></div>
+    </div>
+
+  </div>
+
+  <!-- ===== PRODUCT MODAL ===== -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal">
+      <button class="modal__close" onclick="closeModal()">&times;</button>
+      <div class="modal__gallery">
+        <img id="modalImg" src="img/productos/abrigo-suede-pampa-verde.png" alt="Producto">
+      </div>
+      <div class="modal__info">
+        <div class="modal__cat" id="modalCat"></div>
+        <h2 class="modal__name" id="modalName"></h2>
+        <div class="modal__price" id="modalPrice"></div>
+        <p class="modal__desc" id="modalDesc"></p>
+        <p class="modal__label">Talla</p>
+        <div class="sizes">
+          <button class="size-btn" onclick="pickSize(this)">XS</button>
+          <button class="size-btn" onclick="pickSize(this)">S</button>
+          <button class="size-btn active" onclick="pickSize(this)">M</button>
+          <button class="size-btn" onclick="pickSize(this)">L</button>
+          <button class="size-btn" onclick="pickSize(this)">XL</button>
+        </div>
+        <div class="modal__actions">
+          <button class="btn btn--primary" onclick="addToCartFromModal(); closeModal();">Añadir al carrito</button>
+          <button class="btn btn--outline" id="modalWishBtn" onclick="addToWishlistFromModal()"><svg viewBox="0 0 24 24" style="width:1.467rem;height:1.467rem" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
+        </div>
+        <a id="modalProductLink" href="#" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:0.667rem; margin-top:1.867rem; padding:1.2rem 0; border:2px solid var(--text); font-size:1.1rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text); font-family:var(--body); font-weight:300; transition:0.2s; text-decoration:none;" onmouseover="this.style.background='var(--text)';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='var(--text)'">Ver todos los detalles <svg viewBox="0 0 24 24" style="width:1.2rem;height:1.2rem" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== WISHLIST PAGE ===== -->
+  <div class="wishlist-page" id="wishlistPage">
+    <div class="wishlist-page__header">
+      <h2 class="wishlist-page__title">FAVORITOS</h2>
+      <button class="wishlist-page__close" onclick="closeWishlistPage()">&times;</button>
+    </div>
+    <div class="wishlist-page__count" id="wishlistCount">0 ITEMS</div>
+    <div class="wishlist-page__hint" id="wishlistHint">Toca el icono de corazón en cualquier artículo para guardarlo aquí.</div>
+    <div class="wishlist-page__empty" id="wishlistEmpty">
+      <button class="wishlist-page__cta" onclick="closeWishlistPage()">EXPLORAR COLECCIÓN</button>
+    </div>
+    <div class="wishlist-page__grid" id="wishlistGrid"></div>
+
+    <!-- Looks Guardados Section -->
+    <div class="wishlist-page__looks" id="wishlistLooks">
+      <h3 class="wishlist-page__looks-title">Looks Guardados</h3>
+      <div class="wishlist-page__looks-empty" id="wishlistLooksEmpty">
+        <p>Aún no tienes looks guardados.</p>
+        <p>Crea combinaciones únicas en el <strong>Vestidor™</strong> o descubre los favoritos de la comunidad.</p>
+        <div class="wishlist-page__looks-actions">
+          <a href="vestidor.html" class="wishlist-page__cta" onclick="closeWishlistPage()">Ir al Vestidor™</a>
+          <button class="wishlist-page__cta wishlist-page__cta--ghost" onclick="toast('Looks de la comunidad — próximamente')">Explorar Comunidad</button>
+        </div>
+      </div>
+      <div class="wishlist-page__looks-grid" id="wishlistLooksGrid"></div>
+    </div>
+
+    <div class="wishlist-page__breadcrumb">CASATRAME.COM / <strong>FAVORITOS</strong></div>
+  </div>
+
+  <!-- ===== CART DRAWER ===== -->
+  <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer__header">
+      <span class="cart-drawer__title">Carrito</span>
+      <button class="cart-drawer__close" onclick="closeCart()">&times;</button>
+    </div>
+    <div class="cart-drawer__items" id="cartItems">
+      <div class="cart-drawer__empty" id="cartEmpty">Tu carrito está vacío.</div>
+    </div>
+    <div class="cart-drawer__footer" id="cartFooter" style="display:none;">
+      <div class="cart-drawer__subtotal">
+        <span class="cart-drawer__subtotal-label">Subtotal</span>
+        <span class="cart-drawer__subtotal-value" id="cartSubtotal">$ 0</span>
+      </div>
+      <!-- TODO: Replace href with Shopify checkout URL -->
+      <button class="cart-drawer__checkout" onclick="toast('Checkout con Shopify próximamente')">Finalizar Compra</button>
+      <button class="cart-drawer__continue" onclick="closeCart()">Seguir comprando</button>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <div class="footer__brand-name">CASA TRAMÉ</div>
+        <p>Moda artesanal con visión contemporánea. Diseñada para quienes valoran la calidad y la intención detrás de cada prenda.</p>
+      </div>
+      <div class="footer__col-comprar">
+        <h4>Comprar</h4>
+        <ul>
+          <li><a href="#">Nueva colección</a></li>
+          <li><a href="#">Abrigos</a></li>
+          <li><a href="#">Pantalones</a></li>
+          <li><a href="#">Poleras</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Info</h4>
+        <ul>
+          <li><a href="index.html#conocenos">Conócenos</a></li>
+          <li><a href="#">Sustentabilidad</a></li>
+          <li><a href="#">Guía de tallas</a></li>
+          <li><a href="#">Envíos y devoluciones</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Atención</h4>
+        <ul>
+          <li><a href="#">Contacto</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Términos</a></li>
+          <li><a href="#">Privacidad</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; Casa Tramé. Todos los derechos reservados.</span>
+      <div class="footer__social">
+        <a href="#" title="Instagram">IG</a>
+        <a href="#" title="Pinterest">PI</a>
+        <a href="#" title="TikTok">TK</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== SEARCH MODAL ===== -->
+  <div class="search-overlay" id="searchOverlay" onclick="if(event.target===this)closeSearch()">
+    <div class="search-modal">
+      <div class="search-modal__header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-modal__input" id="searchInput" type="text" placeholder="Buscar prendas..." autocomplete="off">
+        <button class="search-modal__close" onclick="closeSearch()">&times;</button>
+      </div>
+      <div class="search-modal__results" id="searchResults">
+        <div class="search-modal__empty">Escribe para buscar en la colección</div>
+      </div>
+      <div class="search-modal__hint">ESC para cerrar · ENTER para ver resultado</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toastEl"></div>
+
+  <script src="cart.js"></script>
+  <!-- ===========================================
+       JAVASCRIPT
+       =========================================== -->
+  <script>
+    /* ---- Grid View Toggle (mobile) ---- */
+    document.querySelectorAll('.grid-view-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cols = btn.dataset.cols;
+        const grid = document.getElementById('productGrid');
+        document.querySelectorAll('.grid-view-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        grid.classList.remove('cols-1', 'cols-3');
+        if (cols !== '2') grid.classList.add('cols-' + cols);
+      });
+    });
+
+    /* ---- Mobile Menu Toggle ---- */
+    const mobileMenu = document.getElementById('mobileMenu');
+    const hamburger = document.querySelector('.nav__hamburger');
+    let menuOpen = false;
+    function toggleMobileMenu() {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      document.body.style.overflow = menuOpen ? 'hidden' : '';
+      hamburger.classList.toggle('is-open', menuOpen);
+    }
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && menuOpen) {
+        menuOpen = false; mobileMenu.classList.remove('open');
+        document.body.style.overflow = ''; hamburger.classList.remove('is-open');
+      }
+    });
+
+    /* ---- SIDEBAR TOGGLE (mobile) ---- */
+    function toggleSidebarSection(type) {
+      const filterSection = document.getElementById('filterSection');
+      const sortSection = document.getElementById('sortSection');
+      const filterIcon = document.getElementById('filterIcon');
+      const sortIcon = document.getElementById('sortIcon');
+      const filterBtn = filterIcon.closest('.sidebar__toggle-btn');
+      const sortBtn = sortIcon.closest('.sidebar__toggle-btn');
+
+      if (type === 'filter') {
+        const isOpen = filterSection.classList.toggle('open');
+        filterIcon.textContent = isOpen ? '−' : '+';
+        filterBtn.classList.toggle('active', isOpen);
+        // Close other
+        sortSection.classList.remove('open');
+        sortIcon.textContent = '+';
+        sortBtn.classList.remove('active');
+      } else {
+        const isOpen = sortSection.classList.toggle('open');
+        sortIcon.textContent = isOpen ? '−' : '+';
+        sortBtn.classList.toggle('active', isOpen);
+        // Close other
+        filterSection.classList.remove('open');
+        filterIcon.textContent = '+';
+        filterBtn.classList.remove('active');
+      }
+    }
+
+    /* ---- PRODUCT DATA ---- */
+    const products = [
+      { id:201, name:"Abrigo Suede Pampa", cat:"abrigos", price:238,
+        colors:["#5d6b4c"],
+        colorNames:{"#5d6b4c":"Verde"},
+        colorImgs:{"#5d6b4c":"img/productos/abrigo-suede-pampa-verde.png"},
+        img:"img/productos/abrigo-suede-pampa-verde.png",
+        imgLg:"img/productos/abrigo-suede-pampa-verde.png",
+        desc:"Abrigo suede verde con forro interno y un botón de bronce en el cuello. Cuenta con bolsillos laterales.",
+        details:"96% policotton / 4% spandex. Forro: 100% poliéster."
+      },
+      { id:202, name:"Blazer Palermo", cat:"abrigos", price:289,
+        colors:["#263a62","#d8d0bf","#111111"],
+        colorNames:{"#263a62":"Azul","#d8d0bf":"Beige","#111111":"Negro"},
+        colorImgs:{
+          "#263a62":"img/productos/blazer-palermo-azul.png",
+          "#d8d0bf":"img/productos/blazer-palermo-beige.png",
+          "#111111":"img/productos/blazer-palermo-negro.png"
+        },
+        img:"img/productos/blazer-palermo-azul.png",
+        imgLg:"img/productos/blazer-palermo-azul.png",
+        desc:"Blazer de corte recto y largo medio con solapas en pico, mangas largas, bolsillos frontales, botón frontal y botones decorativos en puños.",
+        details:"70% poliéster / 30% viscosa. Forro: 100% poliéster."
+      },
+      { id:203, name:"Tapado Córdoba", cat:"abrigos", price:329,
+        colors:["#898985"],
+        colorNames:{"#898985":"Gris"},
+        colorImgs:{"#898985":"img/productos/tapado-simple-cordoba-gris.png"},
+        img:"img/productos/tapado-simple-cordoba-gris.png",
+        imgLg:"img/productos/tapado-simple-cordoba-gris.png",
+        desc:"Abrigo largo midi de corte recto, con solapas en punta y botón. Dos bolsillos funcionales en los laterales frontales.",
+        details:"60% poliéster / 20% viscosa / 20% acrílico. Forro: 100% poliéster."
+      },
+      { id:204, name:"Tapado Mara con Cinturón", cat:"abrigos", price:359,
+        colors:["#111111","#9f2b24"],
+        colorNames:{"#111111":"Negro","#9f2b24":"Rojo"},
+        colorImgs:{
+          "#111111":"img/productos/tapado-mara-con-cinturon-negro.png",
+          "#9f2b24":"img/productos/tapado-mara-con-cinturon-rojo.png"
+        },
+        img:"img/productos/tapado-mara-con-cinturon-negro.png",
+        imgLg:"img/productos/tapado-mara-con-cinturon-negro.png",
+        desc:"Abrigo largo de silueta recta, con solapas en media punta, botón press on frontal y cinturón.",
+        details:"65% acrílico / 35% poliéster. Forro: 100% poliéster."
+      },
+      { id:205, name:"Sweater Cuello Alto Bariloche", cat:"poleras", price:189,
+        colors:["#f2eee7","#8e8f8b","#111111"],
+        colorNames:{"#f2eee7":"Blanco","#8e8f8b":"Gris","#111111":"Negro"},
+        colorImgs:{
+          "#f2eee7":"img/productos/sweater-cuello-alto-bariloche-blanco.png",
+          "#8e8f8b":"img/productos/sweater-cuello-alto-bariloche-gris.png",
+          "#111111":"img/productos/sweater-cuello-alto-bariloche-negro.png"
+        },
+        img:"img/productos/sweater-cuello-alto-bariloche-blanco.png",
+        imgLg:"img/productos/sweater-cuello-alto-bariloche-blanco.png",
+        desc:"Sweater tejido holgado con cuello alto y puño con doblez.",
+        details:"15% alpaca / 85% dralón."
+      },
+      { id:206, name:"Capa Patagónica", cat:"abrigos", price:229,
+        colors:["#b58a61","#111111"],
+        colorNames:{"#b58a61":"Camel","#111111":"Negra"},
+        colorImgs:{
+          "#b58a61":"img/productos/capa-patagonica-camel.png",
+          "#111111":"img/productos/capa-patagonica-negra.png"
+        },
+        img:"img/productos/capa-patagonica-camel.png",
+        imgLg:"img/productos/capa-patagonica-camel.png",
+        desc:"Capa con abertura frontal, botón decorativo y gancho oculto.",
+        details:"55% lana / 45% viscosa."
+      },
+      { id:207, name:"Camisa Oversize Belgrano", cat:"camisas", price:159,
+        colors:["#f7f7f2","#9ebad3","#111111"],
+        colorNames:{"#f7f7f2":"Blanco","#9ebad3":"Celeste","#111111":"Negro"},
+        colorImgs:{
+          "#f7f7f2":"img/productos/camisa-oversize-belgrano-blanco.png",
+          "#9ebad3":"img/productos/camisa-oversize-belgrano-celeste.png",
+          "#111111":"img/productos/camisa-oversize-belgrano-negro.png"
+        },
+        img:"img/productos/camisa-oversize-belgrano-blanco.png",
+        imgLg:"img/productos/camisa-oversize-belgrano-blanco.png",
+        desc:"Camisa holgada con botones frontales y en puños.",
+        details:"97% rayón / 3% spandex."
+      },
+      { id:208, name:"Camisa Básica Malabia", cat:"camisas", price:149,
+        colors:["#f7f7f2"],
+        colorNames:{"#f7f7f2":"Blanco"},
+        colorImgs:{"#f7f7f2":"img/productos/camisa-basica-malabia-blanco.png"},
+        img:"img/productos/camisa-basica-malabia-blanco.png",
+        imgLg:"img/productos/camisa-basica-malabia-blanco.png",
+        desc:"Camisa al cuerpo con botones frontales ocultos, botones en puños y cuello estructurado.",
+        details:"75% algodón / 25% poliéster."
+      },
+      { id:209, name:"Camisa Denim Soho", cat:"denim", price:169,
+        colors:["#6f8599"],
+        colorNames:{"#6f8599":"Denim"},
+        colorImgs:{"#6f8599":"img/productos/camisa-denim-soho.png"},
+        img:"img/productos/camisa-denim-soho.png",
+        imgLg:"img/productos/camisa-denim-soho.png",
+        desc:"Camisa de denim rígido holgada con botones frontales y en puños.",
+        details:"100% algodón."
+      },
+      { id:210, name:"Polera Cuello Alto Calafate", cat:"poleras", price:139,
+        colors:["#556b2f","#f7f4ed","#111111"],
+        colorNames:{"#556b2f":"Verde","#f7f4ed":"Blanco","#111111":"Negro"},
+        colorImgs:{
+          "#556b2f":"img/productos/polera-cuello-alto-calafate-hero.png",
+          "#f7f4ed":"img/productos/polera-cuello-alto-calafate-blanco.png",
+          "#111111":"img/productos/polera-cuello-alto-calafate-negro.png"
+        },
+        img:"img/productos/polera-cuello-alto-calafate-hero.png",
+        imgLg:"img/productos/polera-cuello-alto-calafate-hero.png",
+        hoverImg:"img/productos/polera-cuello-alto-calafate-hero.png",
+        desc:"Polera de cuello alto acanalado, con mangas acampanadas e interior con cepillado suave.",
+        details:"66% algodón / 34% poliéster."
+      },
+      { id:211, name:"Polera con Capucha Aconcagua", cat:"poleras", price:159,
+        colors:["#f7f4ed","#111111"],
+        colorNames:{"#f7f4ed":"Blanco","#111111":"Negro"},
+        colorImgs:{
+          "#f7f4ed":"img/productos/polera-con-capucha-aconcagua-blanco.png",
+          "#111111":"img/productos/polera-con-capucha-aconcagua-negro.png"
+        },
+        img:"img/productos/polera-con-capucha-aconcagua-blanco.png",
+        imgLg:"img/productos/polera-con-capucha-aconcagua-blanco.png",
+        desc:"Polera con capucha, cordón ajustable, mangas acampanadas e interior con cepillado suave.",
+        details:"66% algodón / 34% poliéster."
+      },
+      { id:212, name:"Jogging Cafayate", cat:"pantalones", price:169,
+        colors:["#f7f4ed","#111111","#556b2f"],
+        colorNames:{"#f7f4ed":"Blanco","#111111":"Negro","#556b2f":"Verde"},
+        colorImgs:{
+          "#f7f4ed":"img/productos/jogging-cafayate-blanco.png",
+          "#111111":"img/productos/jogging-cafayate-negro.png",
+          "#556b2f":"img/productos/jogging-cafayate-verde.png"
+        },
+        img:"img/productos/jogging-cafayate-blanco.png",
+        imgLg:"img/productos/jogging-cafayate-blanco.png",
+        desc:"Pantalón largo holgado de buzo con elástico en cintura, cordón de ajuste y bolsillos laterales.",
+        details:"66% algodón / 34% poliéster."
+      },
+      { id:213, name:"Falda Suede Pampa", cat:"faldas", price:139,
+        colors:["#5d6b4c"],
+        colorNames:{"#5d6b4c":"Verde"},
+        colorImgs:{"#5d6b4c":"img/productos/falda-suede-pampa-verde.png"},
+        img:"img/productos/falda-suede-pampa-verde.png",
+        imgLg:"img/productos/falda-suede-pampa-verde.png",
+        desc:"Falda corta entrecruzada, con press on interno y gancho de cierre lateral.",
+        details:"96% policotton / 4% spandex."
+      },
+      { id:214, name:"Pantalón Sastrero Jacarandá", cat:"pantalones", price:199,
+        colors:["#2e4a68","#d8d0bf","#9b9b9b"],
+        colorNames:{"#2e4a68":"Azul","#d8d0bf":"Beige","#9b9b9b":"Gris"},
+        colorImgs:{
+          "#2e4a68":"img/productos/pantalon-sastrero-jacaranda-azul.png",
+          "#d8d0bf":"img/productos/pantalon-sastrero-jacaranda-beige.png",
+          "#9b9b9b":"img/productos/pantalon-sastrero-jacaranda-gris.png"
+        },
+        img:"img/productos/pantalon-sastrero-jacaranda-azul.png",
+        imgLg:"img/productos/pantalon-sastrero-jacaranda-azul.png",
+        desc:"Pantalón sastrero recto con cierre, broche oculto, pinzas, bolsillos laterales y presillas en cintura.",
+        details:"70% poliéster / 30% viscosa."
+      },
+      { id:215, name:"Pantalón Ancho Barolo", cat:"pantalones", price:209,
+        colors:["#314d72","#8d8d88","#6b4a35","#111111"],
+        colorNames:{"#314d72":"Azul","#8d8d88":"Gris","#6b4a35":"Marrón","#111111":"Negro"},
+        colorImgs:{
+          "#314d72":"img/productos/pantalon-ancho-barolo-azul.png",
+          "#8d8d88":"img/productos/pantalon-ancho-barolo-gris.png",
+          "#6b4a35":"img/productos/pantalon-ancho-barolo-marron.png",
+          "#111111":"img/productos/pantalon-ancho-barolo-negro.png"
+        },
+        img:"img/productos/pantalon-ancho-barolo-azul.png",
+        imgLg:"img/productos/pantalon-ancho-barolo-azul.png",
+        desc:"Pantalón sastrero ancho con cierre, broche oculto, pinzas frontales y posteriores, bolsillos laterales y presillas.",
+        details:"70% poliéster / 30% viscosa."
+      },
+      { id:216, name:"Jean Recto Ceibo", cat:"denim", price:189,
+        colors:["#9aa8b5","#26394f"],
+        colorNames:{"#9aa8b5":"Claro","#26394f":"Oscuro"},
+        colorImgs:{
+          "#9aa8b5":"img/productos/jean-recto-ceibo-claro.png",
+          "#26394f":"img/productos/jean-recto-ceibo-oscuro.png"
+        },
+        img:"img/productos/jean-recto-ceibo-claro.png",
+        imgLg:"img/productos/jean-recto-ceibo-claro.png",
+        desc:"Jean en denim rígido de corte recto con cintura alta, cierre, botón metálico y bolsillos funcionales.",
+        details:"100% algodón."
+      },
+      { id:217, name:"Jean Wide Leg Corrientes", cat:"denim", price:199,
+        colors:["#9aa8b5","#26394f"],
+        colorNames:{"#9aa8b5":"Claro","#26394f":"Oscuro"},
+        colorImgs:{
+          "#9aa8b5":"img/productos/jean-wide-leg-corrientes-claro.png",
+          "#26394f":"img/productos/jean-wide-leg-corrientes-oscuro.png"
+        },
+        img:"img/productos/jean-wide-leg-corrientes-claro.png",
+        imgLg:"img/productos/jean-wide-leg-corrientes-claro.png",
+        desc:"Jean en denim rígido de pierna ancha con cintura alta, cierre, botón metálico y bolsillos funcionales.",
+        details:"100% algodón."
+      },
+      { id:218, name:"Polo Cuello Cuadrado Ombú", cat:"polos", price:129,
+        colors:["#314d72","#f7f4ed","#111111","#9f2b24"],
+        colorNames:{"#314d72":"Azul","#f7f4ed":"Blanco","#111111":"Negro","#9f2b24":"Rojo"},
+        colorImgs:{
+          "#314d72":"img/productos/polo-cuello-cuadrado-ombu-azul.png",
+          "#f7f4ed":"img/productos/polo-cuello-cuadrado-ombu-blanco.png",
+          "#111111":"img/productos/polo-cuello-cuadrado-ombu-negro.png",
+          "#9f2b24":"img/productos/polo-cuello-cuadrado-ombu-rojo.png"
+        },
+        img:"img/productos/polo-cuello-cuadrado-ombu-azul.png",
+        imgLg:"img/productos/polo-cuello-cuadrado-ombu-azul.png",
+        desc:"Polo entallado con escote cuadrado y mangas largas.",
+        details:"93% algodón / 7% Lycra."
+      },
+      { id:219, name:"Polo Básico Trenque Lauquen", cat:"polos", price:119,
+        colors:["#314d72","#f7f4ed","#6b4a35","#111111"],
+        colorNames:{"#314d72":"Azul","#f7f4ed":"Blanco","#6b4a35":"Marrón","#111111":"Negro"},
+        colorImgs:{
+          "#314d72":"img/productos/polo-basico-trenque-lauquen-azul.png",
+          "#f7f4ed":"img/productos/polo-basico-trenque-lauquen-blanco.png",
+          "#6b4a35":"img/productos/polo-basico-trenque-lauquen-marron.png",
+          "#111111":"img/productos/polo-basico-trenque-lauquen-negro.png"
+        },
+        img:"img/productos/polo-basico-trenque-lauquen-azul.png",
+        imgLg:"img/productos/polo-basico-trenque-lauquen-azul.png",
+        desc:"Polo holgado con cuello bote, mangas largas y cortes laterales.",
+        details:"100% algodón."
+      },
+      { id:220, name:"Polo Cuello Alto Ushuaia", cat:"polos", price:129,
+        colors:["#314d72","#f7f4ed","#111111","#9f2b24"],
+        colorNames:{"#314d72":"Azul","#f7f4ed":"Blanco","#111111":"Negro","#9f2b24":"Rojo"},
+        colorImgs:{
+          "#314d72":"img/productos/polo-cuello-alto-ushuaia-azul.png",
+          "#f7f4ed":"img/productos/polo-cuello-alto-ushuaia-blanco.png",
+          "#111111":"img/productos/polo-cuello-alto-ushuaia-negro.png",
+          "#9f2b24":"img/productos/polo-cuello-alto-ushuaia-rojo.png"
+        },
+        img:"img/productos/polo-cuello-alto-ushuaia-azul.png",
+        imgLg:"img/productos/polo-cuello-alto-ushuaia-azul.png",
+        desc:"Polo entallado con cuello alto y mangas largas.",
+        details:"93% algodón / 7% Lycra."
+      }
+    ];
+    products.sort((a, b) => a.name.localeCompare(b.name, 'es', { sensitivity: 'base' }));
+
+    const productBgPositions = ['8%', '18%', '29%', '41%', '53%', '64%', '76%', '88%'];
+    function productBgX(productId, offset = 0) {
+      const index = Math.abs(((productId || 0) * 3 + offset * 5) % productBgPositions.length);
+      return productBgPositions[index];
+    }
+    function productBgStyle(productId, offset = 0) {
+      return `style="--product-bg-x:${productBgX(productId, offset)}"`;
+    }
+
+    /* ---- STATE ---- */
+    let currentCatFilter = 'all';
+    let currentSort = null;        // null | 'price-asc' | 'price-desc'
+    function productPriceLabel(product) {
+      return product.priceLabel || `$ ${product.price.toLocaleString()}`;
+    }
+    // Convert hex to HSL lightness for color sorting
+    function hexToLightness(hex) {
+      hex = hex.replace('#', '');
+      if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+      const r = parseInt(hex.substring(0,2), 16) / 255;
+      const g = parseInt(hex.substring(2,4), 16) / 255;
+      const b = parseInt(hex.substring(4,6), 16) / 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      return (max + min) / 2; // lightness 0–1
+    }
+    function avgLightness(product) {
+      if (!product.colors || product.colors.length === 0) return 0.5;
+      const sum = product.colors.reduce((acc, c) => acc + hexToLightness(c), 0);
+      return sum / product.colors.length;
+    }
+
+    function applyFilters() {
+      let list = currentCatFilter === 'all' ? [...products] : products.filter(p => p.cat === currentCatFilter);
+
+      // Sort
+      if (currentSort === 'price-asc') list.sort((a, b) => a.price - b.price);
+      if (currentSort === 'price-desc') list.sort((a, b) => b.price - a.price);
+      if (currentSort === 'color-dark') list.sort((a, b) => avgLightness(a) - avgLightness(b));
+      if (currentSort === 'color-light') list.sort((a, b) => avgLightness(b) - avgLightness(a));
+
+      const grid = document.getElementById('productGrid');
+
+      if (list.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1; display:flex; align-items:center; justify-content:center; min-height:60vh;"><p style="text-align:center; color:var(--text-mid); font-size:1.3rem; letter-spacing:0.03em;">Próximamente</p></div>';
+        return;
+      }
+
+      grid.innerHTML = list.map(p => {
+        const dotsHtml = p.colors.map((c, i) => {
+          const imgPath = p.colorImgs ? (p.colorImgs[c] || p.img) : p.img;
+          const colorName = p.colorNames ? (p.colorNames[c] || c) : c;
+          return `<span class="dot ${i===0?'active':''}" style="background:${c}" title="${colorName}" data-img="${imgPath}" data-bg-x="${productBgX(p.id, i)}" onclick="event.stopPropagation(); swapColor(this)"></span>`;
+        }).join('');
+
+        const hoverAttr = p.hoverImg ? `data-hover-img="${p.hoverImg}"` : '';
+
+        return `
+          <div class="product-card" data-id="${p.id}" ${hoverAttr}>
+            <div class="product-card__image" ${productBgStyle(p.id)}>
+              <img src="${p.img}" alt="${p.name}" loading="lazy">
+              <button class="product-card__wish" onclick="event.stopPropagation(); toggleWish(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+              </button>
+              <button class="product-card__quick" onclick="event.stopPropagation(); openModal(${p.id})" title="Vista rápida">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <div class="product-card__info">
+              <div class="product-card__text">
+                <div class="product-card__name">${p.name}</div>
+                <div class="product-card__price">${productPriceLabel(p)}</div>
+              </div>
+              <div class="product-card__dots">${dotsHtml}</div>
+            </div>
+          </div>`;
+      }).join('');
+
+      // Re-bind click + hover
+      grid.querySelectorAll('.product-card').forEach(card => {
+        const isMobile = window.innerWidth <= 768;
+        const goToProduct = () => {
+          if (isMobile) {
+            window.location.href = `producto.html?id=${card.dataset.id}`;
+          } else {
+            window.open(`producto.html?id=${card.dataset.id}`, '_blank');
+          }
+        };
+        card.querySelector('.product-card__image').addEventListener('click', goToProduct);
+        card.querySelector('.product-card__text').addEventListener('click', goToProduct);
+        const hoverSrc = card.dataset.hoverImg;
+        if (hoverSrc) {
+          const preload = new Image(); preload.src = hoverSrc;
+          const imgWrap = card.querySelector('.product-card__image');
+          imgWrap.addEventListener('mouseenter', () => {
+            const img = imgWrap.querySelector('img');
+            card._baseSrc = img.src;
+            img.src = hoverSrc;
+          });
+          imgWrap.addEventListener('mouseleave', () => {
+            const img = imgWrap.querySelector('img');
+            if (card._baseSrc) img.src = card._baseSrc;
+          });
+        }
+      });
+
+      // Animate in
+      grid.querySelectorAll('.product-card').forEach((el, i) => {
+        el.style.opacity = '0'; el.style.transform = 'translateY(1.333rem)';
+        setTimeout(() => requestAnimationFrame(() => {
+          el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }), i * 60);
+      });
+    }
+
+    /* ---- CATEGORY FILTERS ---- */
+    document.getElementById('filters').addEventListener('click', e => {
+      const link = e.target.closest('[data-filter]');
+      if (!link) return;
+      e.preventDefault();
+      document.querySelectorAll('#filters a[data-filter]').forEach(a => a.classList.remove('active'));
+      link.classList.add('active');
+      currentCatFilter = link.dataset.filter;
+      applyFilters();
+    });
+
+    /* ---- SORT BY PRICE (toggle) ---- */
+    document.getElementById('priceSortToggle').addEventListener('click', e => {
+      e.preventDefault();
+      const btn = e.currentTarget;
+      if (btn.classList.contains('active')) {
+        // Toggle direction
+        const wasAsc = btn.dataset.dir === 'asc';
+        btn.dataset.dir = wasAsc ? 'desc' : 'asc';
+        btn.classList.toggle('flipped', wasAsc);
+        currentSort = wasAsc ? 'price-desc' : 'price-asc';
+      } else {
+        btn.classList.add('active');
+        btn.dataset.dir = 'asc';
+        btn.classList.remove('flipped');
+        currentSort = 'price-asc';
+      }
+      applyFilters();
+    });
+
+    /* ---- CART / WISHLIST ---- */
+    if (typeof cart !== 'undefined' && Array.isArray(cart)) {
+      cart = cart.filter(item => products.some(p => p.id === item.id));
+      try { localStorage.setItem('ct_cart', JSON.stringify(cart)); } catch(e) {}
+    }
+
+    let wishlist = [];
+    try { wishlist = JSON.parse(localStorage.getItem('ct_wishlist') || '[]'); } catch(e) {}
+    wishlist.forEach(w => { if (w.img) w.img = w.img.replace(/^\.\.\//g, ''); });
+    wishlist = wishlist.filter(w => products.some(p => p.id === w.id));
+    try { localStorage.setItem('ct_wishlist', JSON.stringify(wishlist)); } catch(e) {}
+
+    function syncWishlistToStorage() {
+      try { localStorage.setItem('ct_wishlist', JSON.stringify(wishlist)); } catch(e) {}
+    }
+
+    function toggleWish(btn) {
+      const card = btn.closest('.product-card');
+      const id = parseInt(card.dataset.id);
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+
+      // If already liked, unlike & remove all entries for this product
+      if (btn.classList.contains('liked')) {
+        btn.classList.remove('liked');
+        btn.querySelector('svg').setAttribute('fill', 'none');
+        wishlist = wishlist.filter(w => w.id !== id);
+        syncWishlistToStorage();
+        closeWishSelector();
+        updateWishBadge();
+        return;
+      }
+
+      // Show selector popup
+      closeWishSelector(); // close any existing
+      const imgContainer = card.querySelector('.product-card__image');
+
+      const sizes = ['XS','S','M','L','XL'];
+      const colorsHtml = p.colors.map((c, i) =>
+        `<span class="wdot ${i===0?'active':''}" style="background:${c}" data-color="${c}"></span>`
+      ).join('');
+      const sizesHtml = sizes.map((s, i) =>
+        `<button class="${i===2?'active':''}" data-size="${s}">${s}</button>`
+      ).join('');
+
+      const sel = document.createElement('div');
+      sel.className = 'wish-selector';
+      sel.setAttribute('data-product-id', id);
+      sel.innerHTML = `
+        <button class="wish-selector__close" onclick="event.stopPropagation(); closeWishSelector()">&times;</button>
+        <div class="wish-selector__label">Color</div>
+        <div class="wish-selector__colors">${colorsHtml}</div>
+        <div class="wish-selector__label">Talla</div>
+        <div class="wish-selector__sizes">${sizesHtml}</div>
+        <button class="wish-selector__add" onclick="event.stopPropagation(); confirmWish(${id})">Agregar</button>
+      `;
+      sel.addEventListener('click', e => e.stopPropagation());
+
+      // Color dot clicks
+      sel.querySelectorAll('.wdot').forEach(d => {
+        d.addEventListener('click', () => {
+          sel.querySelectorAll('.wdot').forEach(x => x.classList.remove('active'));
+          d.classList.add('active');
+        });
+      });
+      // Size clicks
+      sel.querySelectorAll('.wish-selector__sizes button').forEach(b => {
+        b.addEventListener('click', () => {
+          sel.querySelectorAll('.wish-selector__sizes button').forEach(x => x.classList.remove('active'));
+          b.classList.add('active');
+        });
+      });
+
+      imgContainer.appendChild(sel);
+    }
+
+    function closeWishSelector() {
+      document.querySelectorAll('.wish-selector').forEach(s => s.remove());
+    }
+
+    function confirmWish(id) {
+      const sel = document.querySelector(`.wish-selector[data-product-id="${id}"]`);
+      if (!sel) return;
+      const p = products.find(x => x.id === id);
+      const color = sel.querySelector('.wdot.active')?.dataset.color || p.colors[0];
+      const size = sel.querySelector('.wish-selector__sizes button.active')?.dataset.size || 'M';
+      const img = (p.colorImgs && p.colorImgs[color]) ? p.colorImgs[color] : p.img;
+
+      // Add to wishlist
+      wishlist.push({ id, color, size, img });
+      syncWishlistToStorage();
+
+      // Mark heart as liked
+      const card = document.querySelector(`.product-card[data-id="${id}"]`);
+      if (card) {
+        const btn = card.querySelector('.product-card__wish');
+        btn.classList.add('liked');
+        btn.querySelector('svg').setAttribute('fill', '#111');
+      }
+
+      closeWishSelector();
+      updateWishBadge();
+    }
+
+    function updateWishBadge() {
+      const badge = document.getElementById('wishBadge');
+      badge.style.display = wishlist.length > 0 ? 'block' : 'none';
+    }
+
+    function openWishlistPage() {
+      const page = document.getElementById('wishlistPage');
+      const grid = document.getElementById('wishlistGrid');
+      const empty = document.getElementById('wishlistEmpty');
+      const hint = document.getElementById('wishlistHint');
+      const count = document.getElementById('wishlistCount');
+
+      count.textContent = wishlist.length + ' ITEM' + (wishlist.length !== 1 ? 'S' : '');
+
+      if (wishlist.length === 0) {
+        empty.style.display = 'block';
+        hint.style.display = 'block';
+        grid.style.display = 'none';
+      } else {
+        empty.style.display = 'none';
+        hint.style.display = 'none';
+        grid.style.display = 'grid';
+        grid.innerHTML = wishlist.map((w, idx) => {
+          const p = products.find(x => x.id === w.id);
+          if (!p) return '';
+          const dotsHtml = p.colors.map((c, i) => {
+            const imgPath = p.colorImgs ? (p.colorImgs[c] || p.img) : p.img;
+            return `<span class="dot ${c === w.color ? 'active' : ''}" style="background:${c}" title="${c}" data-img="${imgPath}" data-bg-x="${productBgX(p.id, i)}"></span>`;
+          }).join('');
+          const activeColorIndex = Math.max(0, p.colors.indexOf(w.color));
+          return `
+            <div class="product-card" data-id="${p.id}" data-wish-idx="${idx}">
+              <div class="product-card__image" ${productBgStyle(p.id, activeColorIndex)}>
+                <img src="${w.img}" alt="${p.name}" loading="lazy">
+                <button class="product-card__wish liked" onclick="event.stopPropagation(); removeFromWishlist(${idx})">
+                  <svg viewBox="0 0 24 24" fill="#111" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                </button>
+                <button class="product-card__quick" onclick="event.stopPropagation(); openModal(${p.id})" title="Vista rápida" style="opacity:1;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <div class="product-card__info">
+                <div class="product-card__text" onclick="event.stopPropagation(); closeWishlistPage(); window.open('producto.html?id=${p.id}','_blank');" style="cursor:pointer;">
+                  <div class="product-card__name">${p.name}</div>
+                  <div class="product-card__price">${productPriceLabel(p)}</div>
+                  <div style="font-size:0.85rem;color:var(--text-light);margin-top:0.2rem;">
+                    <span style="display:inline-block;width:0.667rem;height:0.667rem;border-radius:50%;background:${w.color};vertical-align:middle;margin-right:0.267rem;"></span>
+                    Talla ${w.size}
+                  </div>
+                </div>
+                <div class="product-card__dots">${dotsHtml}</div>
+              </div>
+              <button class="wishlist-card__cart-btn" onclick="event.stopPropagation(); addToCart(${p.id}, '${w.color}', '${w.size}', '${w.img}', '${p.name.replace(/'/g, "\\'")}', ${p.price});">Añadir al carrito</button>
+            </div>`;
+        }).join('');
+
+        // Bind image clicks to open product page
+        grid.querySelectorAll('.product-card').forEach(card => {
+          const pid = card.dataset.id;
+          const isMobile = window.innerWidth <= 768;
+          card.querySelector('.product-card__image').addEventListener('click', () => {
+            closeWishlistPage();
+            if (isMobile) {
+              window.location.href = 'producto.html?id=' + pid;
+            } else {
+              window.open('producto.html?id=' + pid, '_blank');
+            }
+          });
+        });
+      }
+
+      // Render Looks Guardados
+      renderWishlistLooks();
+
+      page.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function renderWishlistLooks() {
+      const emptyEl = document.getElementById('wishlistLooksEmpty');
+      const gridEl = document.getElementById('wishlistLooksGrid');
+      // Looks are stored in localStorage by the Vestidor (cross-page)
+      let savedLooks = [];
+      try { savedLooks = JSON.parse(localStorage.getItem('ct_saved_looks') || '[]'); } catch(e) {}
+
+      if (savedLooks.length === 0) {
+        emptyEl.style.display = 'block';
+        gridEl.style.display = 'none';
+      } else {
+        emptyEl.style.display = 'none';
+        gridEl.style.display = 'grid';
+        gridEl.innerHTML = savedLooks.map(look => {
+          const layerImgs = (look.visualLayers || []).map(vl =>
+            `<img src="${vl.img}" alt="" style="position:absolute;left:${vl.left}%;top:${vl.top}%;width:${vl.width}%;height:${vl.height}%;object-fit:contain;z-index:${vl.zIndex};">`
+          ).join('');
+          return `
+            <div class="wishlist-card" style="cursor:pointer;" onclick="closeWishlistPage(); window.location.href='vestidor.html?look=${look.id}';">
+              <div class="wishlist-card__image" style="position:relative;">
+                ${layerImgs}
+              </div>
+              <div class="wishlist-card__info">
+                <div class="wishlist-card__name">${look.name}</div>
+                <div class="wishlist-card__price">$ ${(look.total || 0).toLocaleString()}</div>
+              </div>
+            </div>`;
+        }).join('');
+      }
+    }
+
+    function closeWishlistPage() {
+      document.getElementById('wishlistPage').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function removeFromWishlist(idx) {
+      const removed = wishlist[idx];
+      wishlist.splice(idx, 1);
+      syncWishlistToStorage();
+      // If no more entries for this product, un-like the heart
+      if (removed && !wishlist.some(w => w.id === removed.id)) {
+        const card = document.querySelector(`.product-card[data-id="${removed.id}"]`);
+        if (card) {
+          const btn = card.querySelector('.product-card__wish');
+          btn.classList.remove('liked');
+          btn.querySelector('svg').setAttribute('fill', 'none');
+        }
+      }
+      updateWishBadge();
+      openWishlistPage(); // Re-render
+    }
+
+    /* ---- CART helpers ---- */
+
+    function addToCartFromModal() {
+      if (!currentModalProduct) return;
+      const p = currentModalProduct;
+      const sizeBtn = document.querySelector('.modal .size-btn.active');
+      const size = sizeBtn ? sizeBtn.textContent : 'M';
+      const color = p.colors[0];
+      const img = p.img;
+      addToCart(p.id, color, size, img, p.name, p.price);
+    }
+
+    /* ---- SWAP COLOR ---- */
+    function swapColor(dot) {
+      const card = dot.closest('.product-card');
+      const img = card.querySelector('.product-card__image img');
+      const newSrc = dot.dataset.img;
+      if (newSrc && img && img.src !== newSrc) {
+        img.src = newSrc;
+      }
+      if (dot.dataset.bgX) {
+        card.querySelector('.product-card__image')?.style.setProperty('--product-bg-x', dot.dataset.bgX);
+      }
+      // Update active dot + base image for hover
+      card.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+      dot.classList.add('active');
+      if (newSrc) card._baseSrc = newSrc;
+    }
+
+    /* ---- TOAST ---- */
+    function toast(msg) {
+      const el = document.getElementById('toastEl');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.remove('show'), 2200);
+    }
+
+    /* ---- MODAL ---- */
+    let currentModalProduct = null;
+    function openModal(id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      currentModalProduct = p;
+      document.getElementById('modalImg').src = p.imgLg;
+      document.querySelector('.modal__gallery')?.style.setProperty('--product-bg-x', productBgX(p.id));
+      document.getElementById('modalCat').textContent = p.cat.toUpperCase();
+      document.getElementById('modalName').textContent = p.name;
+      document.getElementById('modalPrice').textContent = productPriceLabel(p);
+      document.getElementById('modalDesc').textContent = p.desc;
+      document.getElementById('modalProductLink').href = `producto.html?id=${p.id}`;
+      // Set heart state: filled if already in wishlist
+      const inWish = wishlist.some(w => w.id === p.id);
+      const mhSvg = document.querySelector('#modalWishBtn svg');
+      if (mhSvg) mhSvg.setAttribute('fill', inWish ? '#111' : 'none');
+      document.getElementById('productModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      document.getElementById('productModal').classList.remove('open');
+      // Keep overflow hidden if wishlist is still open
+      if (!document.getElementById('wishlistPage').classList.contains('open')) {
+        document.body.style.overflow = '';
+      }
+    }
+    document.getElementById('productModal').addEventListener('click', e => {
+      if (e.target === e.currentTarget) closeModal();
+    });
+    function pickSize(btn) {
+      btn.parentElement.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function addToWishlistFromModal() {
+      if (!currentModalProduct) return;
+      const p = currentModalProduct;
+      const mhSvg = document.querySelector('#modalWishBtn svg');
+      const card = document.querySelector(`.product-card[data-id="${p.id}"]`);
+      const idx = wishlist.findIndex(w => w.id === p.id);
+      if (idx !== -1) {
+        // Remove from wishlist
+        wishlist.splice(idx, 1);
+        syncWishlistToStorage();
+        updateWishBadge();
+        if (mhSvg) mhSvg.setAttribute('fill', 'none');
+        if (card) {
+          const heartBtn = card.querySelector('.product-card__wish');
+          if (heartBtn) { heartBtn.classList.remove('liked'); heartBtn.querySelector('svg').setAttribute('fill', 'none'); }
+        }
+        toast('Eliminado de favoritos');
+      } else {
+        // Add to wishlist
+        const sizeBtn = document.querySelector('.modal .size-btn.active');
+        const size = sizeBtn ? sizeBtn.textContent : 'M';
+        const color = p.colors[0];
+        wishlist.push({ id: p.id, color, size, img: p.imgLg });
+        syncWishlistToStorage();
+        updateWishBadge();
+        if (mhSvg) mhSvg.setAttribute('fill', '#111');
+        if (card) {
+          const heartBtn = card.querySelector('.product-card__wish');
+          if (heartBtn) { heartBtn.classList.add('liked'); heartBtn.querySelector('svg').setAttribute('fill', 'currentColor'); }
+        }
+        toast('Añadido a favoritos ♥');
+      }
+    }
+
+    /* ---- NAV SCROLL ---- */
+    let lastY = window.scrollY;
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      const nav = document.querySelector('.nav');
+      nav.style.boxShadow = y > 40 ? '0 0.067rem 0.667rem rgba(0,0,0,0.05)' : 'none';
+      if (Math.abs(y - lastY) > 5) {
+        if (y > lastY && y > 140) nav.style.transform = 'translateY(-100%)';
+        else nav.style.transform = 'translateY(0)';
+        lastY = y;
+      }
+      nav.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
+    });
+
+    /* ---- Close wish selector on outside click ---- */
+    document.addEventListener('click', () => closeWishSelector());
+
+    /* ---- SEARCH ---- */
+    function openSearch() {
+      document.getElementById('searchOverlay').classList.add('open');
+      const inp = document.getElementById('searchInput');
+      inp.value = '';
+      inp.focus();
+      renderSearchResults('');
+    }
+    function closeSearch() {
+      document.getElementById('searchOverlay').classList.remove('open');
+    }
+    if (new URLSearchParams(window.location.search).has('search')) {
+      /* Safari needs a small delay after navigation for focus() to work */
+      setTimeout(() => openSearch(), 300);
+    }
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeSearch();
+      // Ctrl+K or Cmd+K to open search
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        openSearch();
+      }
+    });
+    document.getElementById('searchInput').addEventListener('input', e => {
+      renderSearchResults(e.target.value);
+    });
+    document.getElementById('searchInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const first = document.querySelector('.search-result');
+        if (first) first.click();
+      }
+    });
+    function renderSearchResults(query) {
+      const container = document.getElementById('searchResults');
+      const q = query.trim().toLowerCase();
+      if (!q) {
+        container.innerHTML = '<div class="search-modal__empty">Escribe para buscar en la colección</div>';
+        return;
+      }
+      const results = products.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        p.cat.toLowerCase().includes(q) ||
+        p.desc.toLowerCase().includes(q)
+      );
+      if (results.length === 0) {
+        container.innerHTML = `<div class="search-modal__empty">No se encontraron resultados para "${query}"</div>`;
+        return;
+      }
+      container.innerHTML = results.map(p => `
+        <div class="search-result" onclick="closeSearch(); scrollToProduct(${p.id});">
+          <div class="search-result__img" ${productBgStyle(p.id)}><img src="${p.img}" alt="${p.name}"></div>
+          <div class="search-result__info">
+            <span class="search-result__cat">${p.cat}</span>
+            <span class="search-result__name">${p.name}</span>
+          </div>
+          <span class="search-result__price">${productPriceLabel(p)}</span>
+        </div>
+      `).join('');
+    }
+    function scrollToProduct(id) {
+      // Set filter to "all" so the product is visible
+      currentCatFilter = 'all';
+      currentSort = null;
+      document.querySelectorAll('#filters a').forEach(a => a.classList.remove('active'));
+      document.querySelector('#filters a[data-filter="all"]').classList.add('active');
+      document.getElementById('priceSortToggle').classList.remove('active', 'flipped');
+      applyFilters();
+      // Wait for DOM to update, then scroll to the product card and open modal
+      setTimeout(() => {
+        const card = document.querySelector(`.product-card[data-id="${id}"]`);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setTimeout(() => openModal(id), 400);
+        } else {
+          openModal(id);
+        }
+      }, 100);
+    }
+
+    /* ============================================
+       QUICK LOOK
+       ============================================ */
+    /* ---- INIT ---- */
+    applyFilters();
+
+    // Restore liked hearts from persisted wishlist
+    wishlist.forEach(w => {
+      const card = document.querySelector(`.product-card[data-id="${w.id}"]`);
+      if (card) {
+        const btn = card.querySelector('.product-card__wish');
+        if (btn) { btn.classList.add('liked'); btn.querySelector('svg').setAttribute('fill', '#111'); }
+      }
+    });
+    updateWishBadge();
+    updateCartBadge();
+    renderCart();
+
+    if (window.location.hash === '#favoritos') openWishlistPage();
+
+    // Open cart if coming from vestidor outfit popup
+    if (new URLSearchParams(window.location.search).get('opencart') === '1') {
+      setTimeout(() => openCart(), 300);
+    }
+  </script>
+
+  <!-- Quick Look mini overlay -->
+</body>
+</html>

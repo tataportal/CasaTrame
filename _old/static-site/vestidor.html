@@ -1,0 +1,2848 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vestidor™ — Casa Tramé</title>
+  <link rel="preload" href="fonts/GoiaDisplay-ExtraLightItalic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/GoiaDisplay-Bold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/GoiaDisplay-Light.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    /* ===========================================
+       VESTIDOR 3-COLUMN LAYOUT
+       =========================================== */
+    .vestidor {
+      margin-top: var(--nav-h);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      height: calc(100vh - var(--nav-h));
+      overflow: hidden;
+    }
+
+    /* --- LEFT PANEL: Item picker --- */
+    .panel {
+      border-right: 1px solid var(--border);
+      padding: 2.133rem 0;
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+      max-height: calc(100vh - var(--nav-h));
+      position: sticky; top: var(--nav-h);
+    }
+    .panel--right {
+      border-right: none;
+      border-left: 1px solid var(--border);
+      overflow-y: auto;
+      height: calc(100vh - var(--nav-h));
+    }
+    .panel__title {
+      font-size: var(--fs-ui); letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--text-light); padding: 0 1.6rem; margin-bottom: 1.067rem;
+    }
+    .panel__section { margin-bottom: 1.6rem; }
+    .panel__section-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 1.6rem; margin-bottom: 0.667rem; cursor: pointer;
+      user-select: none;
+    }
+    .panel__section-header:hover .panel__section-title { opacity: 0.7; }
+    .panel__section-title {
+      font-size: var(--fs-body); letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 700; color: var(--text); transition: 0.15s;
+    }
+    .panel__section-toggle {
+      font-size: var(--fs-ui); color: var(--text-light); transition: transform 0.25s ease;
+    }
+    .panel__section.collapsed .panel__section-toggle { transform: rotate(-90deg); }
+    .panel__section-count {
+      font-size: var(--fs-btn); color: var(--text-light); font-weight: 300;
+      margin-left: 0.4rem;
+    }
+    .panel__items {
+      display: flex; gap: 0.533rem; padding: 0 1.6rem;
+      overflow-x: auto; scrollbar-width: none;
+      max-height: 20rem; transition: max-height 0.3s ease, opacity 0.2s ease, padding 0.3s ease;
+      opacity: 1;
+    }
+    .panel__section.collapsed .panel__items {
+      max-height: 0; opacity: 0; overflow: hidden; padding-top: 0; padding-bottom: 0;
+      margin: 0;
+    }
+    .panel__items::-webkit-scrollbar { display: none; }
+
+    .panel__item {
+      flex-shrink: 0; width: 9.333rem; cursor: grab;
+      position: relative; transition: 0.2s;
+      border: 2px solid transparent;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    .panel__item:active { cursor: grabbing; }
+    .panel__item:hover { border-color: var(--text); }
+    .panel__item.selected { border-color: var(--text); }
+    .panel__item__check {
+      display: none; position: absolute; top: 0.267rem; right: 0.267rem;
+      width: 1.2rem; height: 1.2rem; border-radius: 50%;
+      background: var(--text); color: #fff;
+      font-size: 0.7rem; z-index: 3;
+      align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+    .panel__item.selected .panel__item__check { display: flex; }
+    .panel__item img { width: 100%; height: 11.667rem; object-fit: contain; background: #f5f5f5; }
+    .panel__item__eye {
+      display: none; position: absolute; bottom: 0.267rem; right: 0.267rem;
+      width: 1.467rem; height: 1.467rem; border-radius: 50%;
+      background: rgba(255,255,255,0.85); color: var(--text-mid);
+      align-items: center; justify-content: center;
+      border: none; cursor: pointer; z-index: 3;
+      transition: 0.15s;
+    }
+    .panel__item__eye svg { width: 0.933rem; height: 0.933rem; }
+    .panel__item:hover .panel__item__eye { display: flex; }
+    .panel__item__eye:hover { background: var(--text); color: #fff; }
+    /* Toggle o/c button on panel items with states */
+    .panel__item__toggle {
+      position: absolute; bottom: 0.267rem; left: 0.267rem;
+      padding: 0.133rem 0.4rem; border-radius: 0.667rem;
+      background: rgba(255,255,255,0.9); color: var(--text-mid);
+      font-size: 0.65rem; font-family: var(--f-body);
+      border: 1px solid var(--text-muted); cursor: pointer; z-index: 3;
+      text-transform: uppercase; letter-spacing: 0.03em;
+      transition: 0.15s;
+    }
+    .panel__item__toggle:hover { background: var(--text); color: #fff; border-color: var(--text); }
+
+    /* ===========================================
+       CENTER: Canvas / Mannequin
+       =========================================== */
+    .center {
+      display: flex; flex-direction: column;
+      padding: 0; position: relative;
+      overflow: hidden;
+      height: calc(100vh - var(--nav-h));
+    }
+
+    /* --- Canvas area: stacked layers --- */
+    .canvas {
+      position: relative;
+      width: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
+      background: #f7f7f7;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .canvas__silhouette {
+      position: absolute; inset: 0; z-index: 0;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none; opacity: 0.07;
+    }
+    .canvas__empty {
+      position: absolute; inset: 0; z-index: 1;
+      display: flex; align-items: center; justify-content: center;
+      font-size: var(--fs-body); color: var(--text-light); text-align: center;
+      padding: 2.667rem; line-height: 1.6;
+      pointer-events: none;
+    }
+    .canvas__empty.hidden { display: none; }
+    .mobile-only { display: none; }
+    .desktop-only { display: inline; }
+
+    /* Each layer in the canvas */
+    .canvas__layer {
+      position: absolute; z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .canvas__layer img {
+      max-width: 100%; max-height: 100%; object-fit: contain;
+      pointer-events: none;
+    }
+    /* All layers same position — composition handled in post-production images */
+    .canvas__layer {
+      top: 0; left: 0; width: 100%; height: calc(100% - 6rem);
+    }
+    /* Drop zone overlay when dragging */
+    .canvas__dropzone {
+      position: absolute; inset: 0; z-index: 50;
+      border: 0.2rem dashed transparent;
+      transition: 0.2s;
+      pointer-events: none;
+    }
+    .canvas__dropzone.active {
+      pointer-events: all;
+      border-color: var(--text);
+      background: rgba(0,0,0,0.04);
+    }
+
+    /* --- LAYER STACK (inside column 2, always at bottom) --- */
+    .layer-stack {
+      flex-shrink: 0;
+      display: flex; flex-direction: column; gap: 0.2rem;
+      padding: 0.533rem 0.4rem 0.8rem;
+      border-top: 1px solid var(--border);
+      background: #fafafa;
+      height: 18.667rem;
+      overflow-y: auto;
+      overflow-x: hidden;
+      align-items: center; justify-content: center;
+    }
+    .layer-stack__title {
+      font-size: 1.35rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-light); text-align: center;
+    }
+    .layer-stack.has-layers .layer-stack__title { display: none; }
+    .layer-stack.has-layers { align-items: stretch; justify-content: flex-start; }
+    .layer-chip {
+      display: grid; width: 100%;
+      grid-template-columns: 1.333rem 3.333rem 1fr auto;
+      align-items: center; gap: 0.933rem;
+      padding: 0.667rem 0.933rem; background: #f8f8f8;
+      border: 1px solid #eee; cursor: grab;
+      transition: 0.15s;
+    }
+    .layer-chip:active { cursor: grabbing; }
+    .layer-chip.drag-over { border-color: var(--text); background: #f0f0f0; }
+    .layer-chip__grip {
+      display: flex; flex-direction: column; gap: 0.267rem;
+      color: var(--text-light); font-size: 1.2rem; cursor: grab;
+    }
+    .layer-chip__grip span { display: block; width: 0.933rem; height: 0.167rem; background: var(--text-light); }
+    .layer-chip__thumb {
+      width: 3.333rem; height: 4.133rem; object-fit: cover; flex-shrink: 0;
+    }
+    .layer-chip__name {
+      font-size: 1.5rem; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .layer-chip__type {
+      font-size: 1.2rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    .layer-chip__actions { display: flex; gap: 0.133rem; justify-content: flex-end; flex-shrink: 0; }
+    .layer-chip__btn {
+      width: 2.667rem; height: 2.667rem; border: none;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; color: var(--text-mid); background: transparent;
+      border-radius: 0.4rem; transition: 0.15s; cursor: pointer;
+    }
+    .layer-chip__btn:hover { background: #eee; color: var(--text); }
+    .layer-chip__btn svg { width: 1.467rem; height: 1.467rem; }
+    .layer-chip__btn--eye-off { color: var(--text-light); opacity: 0.5; }
+    .layer-chip.layer-hidden { opacity: 0.45; }
+
+    /* --- TOOLBAR OVERLAY (on top of canvas) --- */
+    .center-toolbar {
+      position: absolute; bottom: 0.667rem; left: 0.667rem; right: 0.667rem;
+      display: flex; justify-content: space-between; align-items: flex-end;
+      z-index: 10; pointer-events: none;
+    }
+    .center-toolbar > * { pointer-events: auto; }
+    .center-toolbar__group { display: flex; gap: 0.4rem; align-items: center; }
+    .btn-v {
+      display: inline-flex; align-items: center; gap: 0.533rem;
+      padding: 1.2rem 2.4rem; font-size: var(--fs-ui);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      font-weight: 500; font-family: var(--body);
+      transition: 0.2s; cursor: pointer;
+    }
+    /* .btn-v--primary reserved for future Shopify "Add to Cart" style CTAs */
+    .btn-v--outline { background: rgba(255,255,255,0.9); color: var(--text); border: 1px solid var(--border); }
+    .btn-v--outline:hover { border-color: var(--text); }
+    .btn-v svg { width: 1.2rem; height: 1.2rem; }
+    .btn-v--help {
+      width: 2.8rem; height: 2.8rem; min-width: 2.8rem; padding: 0;
+      border-radius: 50%; border: 1px solid var(--border);
+      background: rgba(255,255,255,0.9); color: var(--text);
+      font-size: var(--fs-ui); font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: 0.2s; font-family: var(--body);
+    }
+    .btn-v--help:hover { border-color: var(--text); background: var(--text); color: #fff; }
+
+    /* Favoritos section styling */
+    .panel__section--favs {
+      margin-bottom: 0.4rem; padding-bottom: 0.267rem;
+    }
+    .panel__section--favs .panel__section-title { font-weight: 600; }
+    .panel__favs-empty {
+      font-size: 1.15rem; color: var(--text-light);
+      padding: 0.533rem 1.333rem 0.8rem; letter-spacing: 0.02em;
+    }
+
+    /* ===========================================
+       RIGHT PANEL: Outfit summary
+       =========================================== */
+    .summary { padding: 0 1.6rem 1.867rem; }
+    .summary__title {
+      font-size: var(--fs-body); letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text); font-weight: 700; margin-bottom: 0.667rem;
+    }
+    .summary__list { display: flex; flex-direction: column; min-height: 22rem; }
+    .summary__item {
+      display: flex; gap: 0.933rem; padding: 0.933rem 0;
+      border-bottom: 1px solid #f0f0f0; align-items: center;
+    }
+    .summary__item-img { width: 4rem; height: 5.067rem; object-fit: cover; flex-shrink: 0; }
+    .summary__item-info { flex: 1; }
+    .summary__item-cat {
+      font-size: var(--fs-label); letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-light);
+    }
+    .summary__item-name { font-size: var(--fs-ui); color: var(--text); line-height: 1.3; }
+    .summary__item-price { font-size: var(--fs-ui); color: var(--text); font-weight: 500; }
+    .summary__item-remove {
+      width: 2.667rem; height: 2.667rem; border: none;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-mid); background: transparent;
+      border-radius: 0.4rem; transition: 0.15s; cursor: pointer; flex-shrink: 0;
+    }
+    .summary__item-remove:hover { background: #eee; color: var(--text); }
+    .summary__item-remove svg { width: 1.467rem; height: 1.467rem; }
+    .summary__empty {
+      color: var(--text-light); font-size: var(--fs-ui);
+      font-style: italic; padding: 1.333rem 0;
+      text-align: center;
+    }
+
+    .summary__total {
+      display: flex; justify-content: space-between;
+      padding: 1.067rem 0; margin-top: 0.4rem; border-top: 1px solid var(--border);
+    }
+    .summary__total-label {
+      font-size: var(--fs-ui); letter-spacing: 0.08em;
+      text-transform: uppercase; font-weight: 600;
+    }
+    .summary__total-value { font-size: 1.4rem; font-weight: 700; }
+    .summary__checkout {
+      display: block; width: 100%; padding: 1.067rem 0; margin-top: 0.667rem;
+      text-align: center; background: var(--text); color: #fff;
+      border: none; font-size: var(--fs-ui); text-transform: uppercase;
+      letter-spacing: 0.12em; cursor: pointer; font-family: var(--body);
+      font-weight: 500; transition: 0.2s;
+    }
+    .summary__checkout:hover { background: #333; }
+    .summary__checkout:disabled { background: var(--border); color: var(--text-light); cursor: default; }
+
+    /* ── Outfit Size Popup ── */
+    .outfit-popup-overlay {
+      display: none; position: fixed; inset: 0; z-index: 3000;
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(0.4rem);
+      align-items: center; justify-content: center;
+    }
+    .outfit-popup-overlay.open { display: flex; }
+    .outfit-popup {
+      background: #fff; width: 52rem; max-width: 94vw;
+      max-height: 90vh; overflow-y: auto;
+      padding: 3rem 3.2rem; position: relative;
+      color: var(--text);
+    }
+    .outfit-popup a, .outfit-popup button { color: var(--text); }
+    .outfit-popup__close {
+      position: absolute; top: 1.2rem; right: 1.4rem;
+      font-size: 2rem; cursor: pointer; color: var(--text);
+      background: none; border: none; font-family: var(--body);
+      line-height: 1; width: 2.4rem; height: 2.4rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: 0.15s;
+    }
+    .outfit-popup__close:hover { opacity: 0.5; }
+    .outfit-popup__title {
+      font-family: var(--heading); font-size: 1.6rem; font-weight: 200;
+      font-style: italic; letter-spacing: 0.04em; margin-bottom: 2rem;
+    }
+    .outfit-popup__items {
+      display: flex; flex-direction: column; gap: 1.6rem;
+    }
+    .outfit-popup__item {
+      display: grid; grid-template-columns: 8rem 1fr; gap: 1.6rem;
+      align-items: start; padding-bottom: 1.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .outfit-popup__item:last-child { border-bottom: none; padding-bottom: 0; }
+    .outfit-popup__item img {
+      width: 100%; aspect-ratio: 2/3; object-fit: cover;
+    }
+    .outfit-popup__item-info {
+      display: flex; flex-direction: column; gap: 0.4rem; padding-top: 0.2rem;
+    }
+    .outfit-popup__item-name {
+      font-size: var(--fs-body); font-weight: 500; letter-spacing: 0.02em;
+    }
+    .outfit-popup__item-price {
+      font-size: var(--fs-body); color: var(--text-mid); margin-bottom: 0.6rem;
+    }
+    .outfit-popup__sizes-label {
+      font-size: var(--fs-label); color: var(--text-mid); text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 0.3rem;
+    }
+    .outfit-popup__sizes { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .outfit-popup__sizes button {
+      min-width: 3rem; height: 2.6rem; padding: 0 0.8rem;
+      border: 1px solid var(--border); color: var(--text);
+      background: none; font-size: var(--fs-label); cursor: pointer;
+      font-family: var(--body); transition: 0.15s; letter-spacing: 0.04em;
+    }
+    .outfit-popup__sizes button.active {
+      background: var(--text); color: #fff; border-color: var(--text);
+    }
+    .outfit-popup__sizes button:hover:not(.active) {
+      border-color: var(--text);
+    }
+    .outfit-popup__size-guide-btn {
+      display: block; background: none; border: none; font-family: var(--body);
+      font-size: var(--fs-micro); color: var(--text-mid); cursor: pointer;
+      text-decoration: underline; margin-top: 0.4rem; padding: 0;
+      transition: 0.15s; text-align: left;
+    }
+    .outfit-popup__size-guide-btn:hover { color: var(--text); }
+    .outfit-popup__size-guide {
+      margin-top: 0.6rem; padding: 0.8rem;
+      background: #fafafa; border: 1px solid var(--border);
+    }
+    .outfit-popup__size-guide table {
+      width: 100%; border-collapse: collapse;
+      font-size: var(--fs-micro); text-align: center;
+    }
+    .outfit-popup__size-guide th {
+      font-weight: 500; padding: 0.3rem 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .outfit-popup__size-guide td {
+      padding: 0.3rem 0.4rem; border-bottom: 1px solid #f0f0f0;
+    }
+    .outfit-popup__size-guide td:first-child {
+      text-align: left; font-weight: 400; color: var(--text-mid);
+    }
+    .outfit-popup__size-guide-note {
+      font-size: var(--fs-micro); color: var(--text-light);
+      margin-top: 0.4rem; font-style: italic;
+    }
+    .outfit-popup__submit {
+      display: block; width: 100%; padding: 1.2rem 0; margin-top: 2rem;
+      text-align: center; background: var(--text); color: #fff;
+      border: none; font-size: var(--fs-body); text-transform: uppercase;
+      letter-spacing: 0.12em; cursor: pointer; font-family: var(--body);
+      font-weight: 500; transition: 0.2s;
+    }
+    .outfit-popup__submit:hover { background: #333; }
+
+    .summary__tip {
+      margin-top: 1.333rem; padding: 0.933rem; background: #fafafa;
+      font-size: var(--fs-btn); color: var(--text-mid); line-height: 1.5;
+    }
+    .summary__tip strong { font-weight: 700; }
+
+    /* --- SAVED LOOKS --- */
+    .saved-looks {
+      margin-top: 1.6rem; padding-top: 1.067rem;
+      border-top: 1px solid var(--border);
+    }
+    .saved-looks__title {
+      font-size: 1.2rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--text-light); margin-bottom: 0.933rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .saved-looks__clear {
+      font-size: 0.75rem; cursor: pointer; color: var(--text-light);
+      opacity: 0.5; transition: opacity 0.2s;
+    }
+    .saved-looks__clear:hover { opacity: 1; }
+    .saved-looks__grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.667rem;
+      max-height: 50vh; overflow-y: auto;
+    }
+    .saved-look {
+      position: relative; overflow: hidden;
+      background: #f7f7f7; border: 1px solid #eee;
+      cursor: pointer; transition: 0.15s;
+    }
+    .saved-look:hover { border-color: var(--text); }
+    .saved-look:hover .saved-look__overlay { opacity: 1; }
+    .saved-look__canvas {
+      position: relative; width: 100%; aspect-ratio: 3/4;
+      overflow: hidden;
+    }
+    /* Full overlay on hover — covers entire card */
+    .saved-look__overlay {
+      position: absolute; inset: 0; z-index: 10;
+      background: rgba(255,255,255,0.88);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.8rem;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .saved-look__name {
+      font-size: 1.3rem; font-weight: 700; color: var(--text);
+      text-align: center; padding: 0 0.533rem;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .saved-look__actions {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;
+    }
+    .saved-look__btn {
+      width: 2.8rem; height: 2.8rem; border: 1.5px solid var(--text);
+      background: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text); cursor: pointer; transition: 0.15s;
+    }
+    .saved-look__btn:hover { background: var(--text); color: #fff; }
+    .saved-look__btn svg { width: 1.2rem; height: 1.2rem; }
+    .saved-look__btn--share {
+      background: var(--text); border-color: var(--text); color: #fff;
+    }
+    .saved-look__btn--share:hover { opacity: 0.85; }
+
+    .saved-looks__empty {
+      text-align: center; padding: 1.333rem 0.667rem;
+      color: var(--text-light); font-size: 1.05rem; line-height: 1.6;
+    }
+    .saved-looks__empty strong { font-weight: 600; color: var(--text-mid); }
+    .saved-looks__empty.hidden { display: none; }
+    .saved-looks__cta {
+      display: inline-block; margin-top: 0.8rem;
+      padding: 0.8rem 1.733rem; font-size: 1rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      font-weight: 500; border: 1px solid var(--border);
+      color: var(--text); transition: 0.2s;
+    }
+    .saved-looks__cta:hover { border-color: var(--text); }
+
+    /* --- TOAST --- */
+    .toast {
+      position: fixed; bottom: 1.6rem; left: 50%;
+      transform: translateX(-50%) translateY(1.333rem);
+      background: var(--text); color: #fff; padding: 0.933rem 2.4rem;
+      font-size: var(--fs-ui); z-index: 9999; opacity: 0;
+      transition: all 0.3s ease; pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ===========================================
+       CATEGORY FILTER (mobile only)
+       =========================================== */
+    .cat-filter { display: none; }
+
+    /* ===========================================
+       ONBOARDING WALKTHROUGH
+       =========================================== */
+    #onboardingOverlay {
+      position: fixed; inset: 0; z-index: 10000;
+      pointer-events: auto;
+    }
+    .ob-map {
+      position: absolute; inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      background: rgba(12,12,12,0.42);
+      color: var(--text);
+      backdrop-filter: blur(3px);
+    }
+    .ob-map__panel {
+      width: min(1080px, calc(100vw - 44px));
+      background: rgba(255,255,255,0.98);
+      border: 1px solid rgba(0,0,0,0.12);
+      box-shadow: 0 26px 80px rgba(0,0,0,0.26);
+      padding: 57px 63px 51px;
+    }
+    .ob-map__eyebrow {
+      font-size: 0.8rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 10px;
+    }
+    .ob-map__title {
+      font-size: clamp(1.85rem, 3vw, 2.55rem);
+      line-height: 1.08;
+      letter-spacing: 0.04em;
+      font-weight: 300;
+      margin-bottom: 12px;
+    }
+    .ob-map__intro {
+      max-width: 780px;
+      font-size: 1.62rem;
+      line-height: 1.55;
+      color: var(--text-mid);
+      margin-bottom: 28px;
+    }
+    .ob-map__list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 30px 42px;
+      margin-bottom: 45px;
+    }
+    .ob-map__item {
+      border-top: 1px solid var(--border);
+      padding-top: 21px;
+    }
+    .ob-map__item-title {
+      font-size: 1.29rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+    .ob-map__item-text {
+      font-size: 1.53rem;
+      line-height: 1.42;
+      color: var(--text-mid);
+    }
+    .ob-map__controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 30px;
+    }
+    .ob-map__control {
+      border: 1px solid var(--border);
+      background: #fafafa;
+      padding: 14px 18px;
+      font-size: 1.29rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+    }
+    .ob-map__control strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+    .ob-map__actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .ob-map__done,
+    .ob-map__tour {
+      width: 100%;
+      padding: 24px 0;
+      font-size: 1.41rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .ob-map__done {
+      background: var(--text);
+      color: #fff;
+    }
+    .ob-map__done:hover { background: #333; }
+    .ob-map__tour {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--text);
+    }
+    .ob-map__tour:hover { background: #f3f3f3; }
+    .ob-mask {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+    }
+    .ob-highlight {
+      position: absolute; border: 2px solid rgba(255,255,255,0.6);
+      border-radius: 0.8rem; pointer-events: none;
+      box-shadow: 0 0 0 0.267rem rgba(255,255,255,0.15);
+    }
+    .ob-tooltip {
+      position: fixed; background: #fff; color: var(--text);
+      padding: 2.4rem 2.667rem; border-radius: 0.933rem;
+      max-width: 29.333rem; box-shadow: 0 0.8rem 2.667rem rgba(0,0,0,0.25);
+      opacity: 0; transition: opacity 0.3s ease;
+      z-index: 10001;
+    }
+    .ob-tooltip__step {
+      font-size: 1.1rem; text-transform: uppercase;
+      letter-spacing: 0.1em; color: #999; margin-bottom: 0.667rem;
+    }
+    .ob-tooltip__title {
+      font-size: 1.8rem; font-weight: 700; margin-bottom: 0.8rem;
+      letter-spacing: 0.02em;
+    }
+    .ob-tooltip__text {
+      font-size: 1.4rem; line-height: 1.55; color: #555; margin-bottom: 1.6rem;
+    }
+    .ob-tooltip__actions {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .ob-tooltip__skip {
+      background: none; border: none; color: #999;
+      font-size: 1.2rem; cursor: pointer; padding: 0.533rem 0;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .ob-tooltip__skip:hover { color: var(--text); }
+    .ob-tooltip__next {
+      background: var(--text); color: #fff; border: none;
+      padding: 1.067rem 2.4rem; font-size: 1.3rem; cursor: pointer;
+      letter-spacing: 0.04em; transition: 0.15s;
+    }
+    .ob-tooltip__next:hover { opacity: 0.85; }
+
+    /* ===========================================
+       RESPONSIVE
+       =========================================== */
+    /* ── Tablet (≤73.333rem) ── */
+    @media (max-width: 1100px) {
+      .vestidor { grid-template-columns: 1fr; }
+      .panel {
+        position: relative; top: 0; max-height: none;
+        border-right: none; border-bottom: 1px solid var(--border);
+        padding: 1.067rem 0;
+      }
+      .panel--right { border-left: none; border-top: 1px solid var(--border); }
+      /* Items scroll horizontally on tablet */
+      .panel__items { flex-wrap: nowrap; }
+      .canvas { max-width: 100%; }
+      .layer-stack { max-width: 100%; }
+    }
+
+    /* ===========================================
+       RESPONSIVE — MOBILE (≤51.2rem)
+       =========================================== */
+    @media (max-width: 768px) {
+      /* ── MOBILE LAYOUT: scrollable — canvas | prendas | propiedades ── */
+      html, body { overflow: auto; height: auto; }
+      .vestidor {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+        height: auto;
+        min-height: calc(100vh - var(--nav-h));
+        overflow: visible;
+      }
+
+      /* ── CANVAS ── */
+      .center {
+        order: 1;
+        height: 55vh;
+        padding: 0;
+        overflow: visible;
+        position: relative;
+      }
+      .canvas {
+        width: 100%; height: 100%;
+        background: #ffffff;
+        border: none; border-bottom: 1px solid var(--border);
+      }
+      .layer-stack { display: none; }
+      .canvas__empty { font-size: 3.6vw; padding: 4vw; }
+      .desktop-only { display: none; }
+      .mobile-only { display: inline; }
+
+      /* ── TOOLBAR: single row, small pill buttons ── */
+      .center-toolbar {
+        flex-wrap: nowrap; gap: 1.5vw;
+        bottom: 2vw; left: 2vw; right: 2vw;
+        justify-content: center;
+      }
+      .center-toolbar__group { gap: 1.5vw; }
+      .btn-v { padding: 1.5vw 3vw; font-size: 2.8vw; letter-spacing: 0.03em; }
+      .btn-v svg { width: 3vw; height: 3vw; }
+      .btn-v--help { width: 7vw; height: 7vw; min-width: 7vw; font-size: 3vw; }
+
+      /* ── FAVORITO HEART (top-right over canvas) ── */
+      .btn-v--fav-canvas {
+        display: flex !important;
+        position: absolute; top: 3vw; right: 3vw; z-index: 20;
+        background: none; border: none; cursor: pointer;
+        color: var(--text); padding: 0;
+      }
+      .btn-v--fav-canvas svg { width: 6vw; height: 6vw; transition: 0.2s; }
+      .btn-v--fav-canvas:disabled { opacity: 0.3; pointer-events: none; }
+      .btn-v--fav-canvas.saved svg { fill: var(--text); }
+
+      /* ── COMPARTIR in toolbar (mobile) ── */
+      .btn-v--share-toolbar { display: inline-flex !important; }
+
+      /* ── Hide GUARDAR on mobile (heart replaces it) ── */
+      #saveLookBtn { display: none !important; }
+
+      /* ── CATEGORY FILTER ── */
+      .cat-filter {
+        display: block; order: 2; position: relative; z-index: 100;
+        padding: 2vw 3vw; border-bottom: 1px solid var(--border); background: #fff;
+      }
+      .cat-filter__btn {
+        display: inline-flex; align-items: center; gap: 1.5vw;
+        background: none; border: 1px solid var(--border);
+        border-radius: 50px; padding: 2vw 4vw;
+        font-family: var(--body); font-size: 3.8vw;
+        letter-spacing: 0.04em; color: var(--text);
+        cursor: pointer; transition: 0.15s;
+      }
+      .cat-filter__btn.open { border-color: var(--text); }
+      .cat-filter__btn.open svg { transform: rotate(180deg); }
+      .cat-filter__btn svg { transition: transform 0.2s; width: 3.5vw; height: 3.5vw; }
+      .cat-filter__menu {
+        display: none; position: absolute; top: 100%; left: 3vw; right: 3vw;
+        background: #fff; border: 1px solid var(--border);
+        border-radius: 2vw; margin-top: 1vw; padding: 1vw 0;
+        box-shadow: 0 2vw 6vw rgba(0,0,0,0.1); max-height: 60vh; overflow-y: auto;
+      }
+      .cat-filter__menu.open { display: block; }
+      .cat-filter__option {
+        display: flex; align-items: center; width: 100%;
+        padding: 2.5vw 4vw; background: none; border: none;
+        font-family: var(--body); font-size: 4vw;
+        color: var(--text); cursor: pointer; text-align: left;
+        letter-spacing: 0.02em; transition: background 0.1s;
+      }
+      .cat-filter__option:active { background: #f5f5f5; }
+      .cat-filter__option--active { font-weight: 600; }
+
+      /* ── GARMENT ROW ── */
+      .panel {
+        order: 3; height: auto; padding: 1vw 0;
+        border-right: none; border-bottom: 1px solid var(--border);
+        max-height: none; position: relative; top: 0;
+        display: flex; flex-direction: row;
+        overflow-x: auto; overflow-y: hidden;
+        -webkit-overflow-scrolling: touch; gap: 0; align-items: center;
+      }
+      .panel__title { display: none; }
+      .panel__section-header { display: none; }
+      .panel__section {
+        margin-bottom: 0; flex-shrink: 0;
+        display: flex; flex-direction: row;
+      }
+      .panel__section.collapsed .panel__items {
+        max-height: none !important; opacity: 1 !important;
+        overflow: visible !important; display: flex !important;
+      }
+      .panel__items {
+        padding: 0 1vw; gap: 1vw; max-height: none;
+        flex-wrap: nowrap; display: flex; scrollbar-width: none;
+      }
+      .panel__items::-webkit-scrollbar { display: none; }
+      /* ── GARMENT THUMBNAILS: 30vw = ~117px on iPhone ── */
+      .panel__item { width: 30vw; flex-shrink: 0; border-width: 1.5px; }
+      .panel__item img { width: 100%; height: auto; object-fit: contain; background: #f5f5f5; }
+      .panel__item__check { width: 5vw; height: 5vw; font-size: 2.5vw; top: 1vw; right: 1vw; }
+      .panel__item__toggle { display: none; }
+      .panel__item__eye { display: none !important; }
+      .panel__section--favs { display: none; }
+
+      /* ── TU OUTFIT PANEL (full-width, edge to edge, left-aligned) ── */
+      .panel--right {
+        order: 4; border-left: none; border-right: none;
+        border-top: 1px solid var(--border); border-bottom: none;
+        overflow-y: auto; overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        height: auto; min-height: auto; padding: 0; width: 100%;
+        display: flex; flex-direction: column; max-height: none;
+        align-items: stretch;
+      }
+      .summary { padding: 0; width: 100%; }
+      .summary__title {
+        font-size: 3.8vw; margin-bottom: 0;
+        padding: 3.5vw 4vw 2vw; letter-spacing: 0.12em;
+        text-align: left;
+      }
+      .summary__list { min-height: auto; padding: 0; width: 100%; }
+      .summary__empty { padding: 4vw; font-size: 3.8vw; text-align: left; }
+      .summary__item {
+        padding: 3vw 4vw; gap: 3vw;
+        border-bottom: 1px solid #f0f0f0;
+        width: 100%;
+      }
+      .summary__item-img { width: 15vw; height: 19vw; }
+      .summary__item-cat { font-size: 3vw; }
+      .summary__item-name { font-size: 3.8vw; }
+      .summary__item-price { font-size: 3.8vw; }
+      .summary__item-remove { width: 8vw; height: 8vw; }
+      .summary__item-remove svg { width: 4vw; height: 4vw; }
+      .summary__total {
+        padding: 3.5vw 4vw; margin-top: 0;
+        border-top: 1px solid var(--border); width: 100%;
+      }
+      .summary__total-label { font-size: 3.8vw; }
+      .summary__total-value { font-size: 4.5vw; }
+      .summary__checkout {
+        padding: 3.5vw 0; font-size: 3.8vw;
+        margin: 0; border-radius: 0; letter-spacing: 0.1em; width: 100%;
+      }
+      .saved-looks { display: none; }
+      .summary__tip { display: none; }
+
+      /* ── TOAST ── */
+      .toast { font-size: 3.5vw; padding: 2vw 4vw; bottom: 2vw; }
+
+      /* ── ONBOARDING TOOLTIPS ── */
+      .ob-map { align-items: flex-end; padding: 18px; }
+      .ob-map__panel { width: 100%; padding: 26px 22px 22px; }
+      .ob-map__title { font-size: 1.7rem; }
+      .ob-map__intro { font-size: 1rem; margin-bottom: 20px; }
+      .ob-map__list { grid-template-columns: 1fr; gap: 16px; margin-bottom: 22px; }
+      .ob-map__item { padding-top: 12px; }
+      .ob-map__item-title { font-size: 0.86rem; }
+      .ob-map__item-text { font-size: 0.96rem; }
+      .ob-map__controls { margin-bottom: 20px; }
+      .ob-map__control { font-size: 0.78rem; padding: 8px 10px; }
+      .ob-map__actions { grid-template-columns: 1fr; }
+      .ob-map__done,
+      .ob-map__tour { font-size: 0.95rem; padding: 15px 0; }
+      .ob-tooltip {
+        max-width: 90vw; padding: 4vw;
+        left: 5vw !important; right: 5vw !important; width: auto !important;
+      }
+      .ob-tooltip__step { font-size: 3vw; }
+      .ob-tooltip__title { font-size: 4.5vw; margin-bottom: 1.5vw; }
+      .ob-tooltip__text { font-size: 3.5vw; margin-bottom: 3vw; }
+      .ob-tooltip__skip { font-size: 3.2vw; }
+      .ob-tooltip__next { padding: 2.5vw 5vw; font-size: 3.5vw; }
+
+      /* ── OUTFIT SIZE POPUP ── */
+      .outfit-popup { padding: 4vw; max-width: 95vw; width: 100%; }
+      .outfit-popup__title { font-size: 4.5vw; margin-bottom: 3vw; }
+      .outfit-popup__item { grid-template-columns: 18vw 1fr; gap: 3vw; }
+      .outfit-popup__sizes button { min-width: 10vw; height: 9vw; font-size: 3.5vw; }
+      .outfit-popup__submit { padding: 3.5vw 0; font-size: 3.8vw; margin-top: 3vw; }
+    }
+
+    /* Hide mobile-only buttons on desktop */
+    @media (min-width: 769px) {
+
+      .btn-v--fav-canvas { display: none !important; }
+      .btn-v--share-toolbar { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="nav">
+    <div class="nav__inner">
+      <div class="nav__left" id="navLinks">
+        <a href="catalogo.html">Colección</a>
+        <a href="index.html#conocenos">Conócenos</a>
+        <a href="vestidor.html" class="underlined">Vestidor™</a>
+      </div>
+      <button class="nav__hamburger" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="index.html" class="nav__logo">
+        <img src="img/trame_horizontal-black.svg" alt="Casa Tramé">
+      </a>
+      <div class="nav__right">
+        <button title="Buscar" onclick="openSearch()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <a href="#" title="Cuenta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
+        <a href="#" onclick="event.preventDefault(); openWishlistPage();" title="Favoritos" id="navWish" style="position:relative;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          <span id="wishBadge" style="display:none;position:absolute;top:-0.267rem;right:-0.267rem;background:var(--text);width:0.533rem;height:0.533rem;border-radius:50%;"></span>
+        </a>
+        <a href="#" onclick="event.preventDefault(); openCart();" title="Carrito" style="position:relative;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span id="cartBadge" style="display:none;position:absolute;top:-0.267rem;right:-0.267rem;background:var(--text);width:0.533rem;height:0.533rem;border-radius:50%;"></span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="nav__mobile-menu" id="mobileMenu">
+    <a href="catalogo.html">Colección</a>
+    <a href="index.html#conocenos">Conócenos</a>
+    <a href="vestidor.html" class="underlined">Vestidor&trade;</a>
+    <hr>
+    <a href="#" onclick="event.preventDefault(); toggleMobileMenu(); openWishlistPage();">Favoritos</a>
+    <a href="#" onclick="event.preventDefault(); toggleMobileMenu(); openSearch();">Buscar</a>
+    <a href="#" onclick="event.preventDefault(); toggleMobileMenu(); openCart();">Carrito</a>
+  </div>
+
+  <!-- ===== VESTIDOR LAYOUT ===== -->
+  <div class="vestidor">
+
+    <!-- Mobile category filter (hidden on desktop) -->
+    <div class="cat-filter" id="catFilter">
+      <button class="cat-filter__btn" id="catFilterBtn" onclick="toggleCatFilter(event)">
+        <span id="catFilterLabel">Todas las prendas</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="cat-filter__menu" id="catFilterMenu">
+        <button class="cat-filter__option cat-filter__option--active" data-cat="all" onclick="selectCatFilter('all')">Todas las prendas</button>
+        <button class="cat-filter__option" data-cat="favoritos" onclick="selectCatFilter('favoritos')">
+          <svg style="width:0.8rem;height:0.8rem;vertical-align:-0.067rem;margin-right:0.267rem;" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          Mis Favoritos
+        </button>
+        <button class="cat-filter__option" data-cat="abrigos" onclick="selectCatFilter('abrigos')">Abrigos</button>
+        <button class="cat-filter__option" data-cat="camisas" onclick="selectCatFilter('camisas')">Camisas</button>
+        <button class="cat-filter__option" data-cat="denim" onclick="selectCatFilter('denim')">Denim</button>
+        <button class="cat-filter__option" data-cat="faldas" onclick="selectCatFilter('faldas')">Faldas</button>
+        <button class="cat-filter__option" data-cat="pantalones" onclick="selectCatFilter('pantalones')">Pantalones</button>
+        <button class="cat-filter__option" data-cat="poleras" onclick="selectCatFilter('poleras')">Poleras</button>
+        <button class="cat-filter__option" data-cat="polos" onclick="selectCatFilter('polos')">Polos</button>
+      </div>
+    </div>
+
+    <!-- LEFT: Item picker -->
+    <div class="panel" id="leftPanel">
+
+      <!-- Favoritos section -->
+      <div class="panel__section panel__section--favs" id="section-favoritos">
+        <div class="panel__section-header" onclick="toggleSection('favoritos')">
+          <span>
+            <svg style="width:0.933rem;height:0.933rem;vertical-align:-0.133rem;margin-right:0.267rem;" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            <span class="panel__section-title">Favoritos</span><span class="panel__section-count" id="count-favoritos"></span>
+          </span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-favoritos"></div>
+      </div>
+
+      <div class="panel__section" id="section-abrigos">
+        <div class="panel__section-header" onclick="toggleSection('abrigos')">
+          <span><span class="panel__section-title">Abrigos</span><span class="panel__section-count" id="count-abrigos"></span></span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-abrigos"></div>
+      </div>
+      <div class="panel__section" id="section-camisas">
+        <div class="panel__section-header" onclick="toggleSection('camisas')">
+          <span><span class="panel__section-title">Camisas</span><span class="panel__section-count" id="count-camisas"></span></span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-camisas"></div>
+      </div>
+      <div class="panel__section" id="section-denim">
+        <div class="panel__section-header" onclick="toggleSection('denim')">
+          <span><span class="panel__section-title">Denim</span><span class="panel__section-count" id="count-denim"></span></span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-denim"></div>
+      </div>
+      <div class="panel__section" id="section-faldas">
+        <div class="panel__section-header" onclick="toggleSection('faldas')">
+          <span><span class="panel__section-title">Faldas</span><span class="panel__section-count" id="count-faldas"></span></span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-faldas"></div>
+      </div>
+      <div class="panel__section" id="section-pantalones">
+        <div class="panel__section-header" onclick="toggleSection('pantalones')">
+          <span><span class="panel__section-title">Pantalones</span><span class="panel__section-count" id="count-pantalones"></span></span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-pantalones"></div>
+      </div>
+      <div class="panel__section" id="section-poleras">
+        <div class="panel__section-header" onclick="toggleSection('poleras')">
+          <span><span class="panel__section-title">Poleras</span><span class="panel__section-count" id="count-poleras"></span></span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-poleras"></div>
+      </div>
+      <div class="panel__section" id="section-polos">
+        <div class="panel__section-header" onclick="toggleSection('polos')">
+          <span><span class="panel__section-title">Polos</span><span class="panel__section-count" id="count-polos"></span></span>
+          <span class="panel__section-toggle">&#9660;</span>
+        </div>
+        <div class="panel__items" id="items-polos"></div>
+      </div>
+    </div>
+
+    <!-- CENTER: Canvas + layers -->
+    <div class="center">
+
+      <!-- FAVORITO heart (mobile only, top-right over canvas) -->
+      <button class="btn-v--fav-canvas" id="saveLookBtnCanvas" onclick="saveLook()" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+      </button>
+      <div class="canvas" id="canvas">
+        <div class="center-toolbar">
+          <div class="center-toolbar__group">
+            <button class="btn-v btn-v--outline" onclick="randomizeOutfit()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
+                <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
+                <line x1="4" y1="4" x2="9" y2="9"/>
+              </svg>
+              Randomizar
+            </button>
+            <button class="btn-v btn-v--outline" onclick="clearAll()">Limpiar</button>
+            <button class="btn-v btn-v--help" onclick="localStorage.removeItem('ct_vestidor_onboarded'); startOnboarding();" title="Tutorial">?</button>
+          </div>
+          <button class="btn-v btn-v--outline" id="saveLookBtn" onclick="saveLook()" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            Guardar
+          </button>
+          <button class="btn-v btn-v--outline btn-v--share-toolbar" onclick="shareToIGStories()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            Compartir
+          </button>
+        </div>
+        <!-- Silhouette -->
+        <div class="canvas__silhouette">
+          <svg viewBox="0 0 200 400" width="200" height="400" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="100" cy="30" rx="20" ry="26" stroke="#111" stroke-width="1"/>
+            <line x1="100" y1="56" x2="100" y2="72" stroke="#111" stroke-width="1"/>
+            <path d="M58 82 L58 200 Q58 210 68 210 L132 210 Q142 210 142 200 L142 82" stroke="#111" stroke-width="1"/>
+            <line x1="58" y1="82" x2="142" y2="82" stroke="#111" stroke-width="1"/>
+            <path d="M58 82 L32 155" stroke="#111" stroke-width="1"/>
+            <path d="M142 82 L168 155" stroke="#111" stroke-width="1"/>
+            <path d="M78 210 L68 385" stroke="#111" stroke-width="1"/>
+            <path d="M122 210 L132 385" stroke="#111" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="canvas__empty" id="canvasEmpty">
+          <span class="desktop-only">Haz click o arrastra prendas desde el panel izquierdo</span>
+          <span class="mobile-only">Toca una prenda de abajo para agregarla</span>
+        </div>
+        <!-- Layers rendered here by JS -->
+        <div class="canvas__dropzone" id="canvasDropzone"></div>
+      </div>
+
+      <!-- LAYER STACK: reorderable chips at bottom of column 2 -->
+      <div class="layer-stack" id="layerStack">
+        <div class="layer-stack__title">Orden de capas (arrastra para reordenar)</div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Summary -->
+    <div class="panel panel--right">
+      <div class="summary">
+        <div class="summary__title">Tu outfit</div>
+        <div class="summary__list" id="summaryList">
+          <div class="summary__empty">Empieza eligiendo prendas</div>
+        </div>
+        <div class="summary__total">
+          <span class="summary__total-label">Total outfit</span>
+          <span class="summary__total-value" id="summaryTotal">$ 0</span>
+        </div>
+        <button class="summary__checkout" id="btnAddOutfit" disabled onclick="openOutfitSizePopup()">Agregar outfit al carrito</button>
+        <!-- Saved Looks -->
+        <div class="saved-looks" id="savedLooksSection">
+          <div class="saved-looks__title">Looks guardados <span class="saved-looks__clear" id="clearAllLooks" onclick="clearAllLooks()" title="Borrar todos">✕</span></div>
+          <div class="saved-looks__grid" id="savedLooksGrid"></div>
+          <div class="saved-looks__empty" id="savedLooksEmpty">
+            <p>Aún no tienes looks guardados.</p>
+            <p>Guarda combinaciones con el botón <strong>Guardar</strong> y compáralas aquí.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== CART DRAWER ===== -->
+  <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer__header">
+      <span class="cart-drawer__title">Carrito</span>
+      <button class="cart-drawer__close" onclick="closeCart()">&times;</button>
+    </div>
+    <div class="cart-drawer__items" id="cartItems">
+      <div class="cart-drawer__empty" id="cartEmpty">Tu carrito está vacío.</div>
+    </div>
+    <div class="cart-drawer__footer" id="cartFooter" style="display:none;">
+      <div class="cart-drawer__subtotal">
+        <span class="cart-drawer__subtotal-label">Subtotal</span>
+        <span class="cart-drawer__subtotal-value" id="cartSubtotal">$ 0</span>
+      </div>
+      <button class="cart-drawer__checkout" onclick="toast('Checkout con Shopify próximamente')">Finalizar Compra</button>
+      <button class="cart-drawer__continue" onclick="closeCart()">Seguir comprando</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toastEl"></div>
+
+  <script src="cart.js"></script>
+  <!-- ===========================================
+       JAVASCRIPT
+       =========================================== -->
+  <script>
+    /* ---- Mobile Menu Toggle ---- */
+    /* Nav helpers (match catalogo) */
+    function openSearch() { window.location.href = 'catalogo.html'; }
+    function openWishlistPage() { window.location.href = 'catalogo.html#favoritos'; }
+
+    const mobileMenu = document.getElementById('mobileMenu');
+    const hamburger = document.querySelector('.nav__hamburger');
+    let menuOpen = false;
+    function toggleMobileMenu() {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      document.body.style.overflow = menuOpen ? 'hidden' : '';
+      hamburger.classList.toggle('is-open', menuOpen);
+    }
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && menuOpen) {
+        menuOpen = false; mobileMenu.classList.remove('open');
+        document.body.style.overflow = ''; hamburger.classList.remove('is-open');
+      }
+    });
+
+    /* ---- Mobile Category Filter ---- */
+    let catFilterOpen = false;
+    let activeCat = 'all';
+
+    function toggleCatFilter(e) {
+      e.stopPropagation();
+      catFilterOpen = !catFilterOpen;
+      document.getElementById('catFilterBtn').classList.toggle('open', catFilterOpen);
+      document.getElementById('catFilterMenu').classList.toggle('open', catFilterOpen);
+    }
+
+    function selectCatFilter(cat) {
+      activeCat = cat;
+      catFilterOpen = false;
+      document.getElementById('catFilterBtn').classList.remove('open');
+      document.getElementById('catFilterMenu').classList.remove('open');
+
+      // Update label
+      const labels = {
+        all: 'Todas las prendas',
+        favoritos: 'Mis Favoritos',
+        abrigos: 'Abrigos',
+        camisas: 'Camisas',
+        denim: 'Denim',
+        faldas: 'Faldas',
+        pantalones: 'Pantalones',
+        poleras: 'Poleras',
+        polos: 'Polos'
+      };
+      document.getElementById('catFilterLabel').textContent = labels[cat] || cat;
+
+      // Update active state on options
+      document.querySelectorAll('.cat-filter__option').forEach(opt => {
+        opt.classList.toggle('cat-filter__option--active', opt.dataset.cat === cat);
+      });
+
+      // Show/hide sections in garment row
+      const sections = document.querySelectorAll('#leftPanel .panel__section');
+      sections.forEach(sec => {
+        if (cat === 'all') {
+          // Show all except favoritos on mobile (favoritos hidden by default)
+          sec.style.display = '';
+        } else {
+          const sectionId = sec.id.replace('section-', '');
+          sec.style.display = sectionId === cat ? '' : 'none';
+        }
+      });
+
+      // On favoritos: show the favs section, hide others
+      if (cat === 'favoritos') {
+        const favSection = document.getElementById('section-favoritos');
+        if (favSection) favSection.style.display = 'flex';
+        sections.forEach(sec => {
+          if (sec.id !== 'section-favoritos') sec.style.display = 'none';
+        });
+      }
+    }
+
+    // Close filter dropdown when tapping outside
+    document.addEventListener('click', (e) => {
+      if (catFilterOpen && !e.target.closest('.cat-filter')) {
+        catFilterOpen = false;
+        document.getElementById('catFilterBtn').classList.remove('open');
+        document.getElementById('catFilterMenu').classList.remove('open');
+      }
+    });
+
+    /* ============================================
+       PRODUCT DATA — NAMING CONVENTION:
+
+       SHOPIFY: Replace this hardcoded catalog with Liquid loop:
+       {% for product in collections['vestidor'].products %}
+       Then use product.images, product.price, product.handle, etc.
+       Image paths become {{ product.featured_image | img_url: '300x' }}
+
+       Formato: {prenda}_{modelo}_{color}_{estado}_{cara}.png
+
+       Partes (separadas por underscore):
+         {prenda}  → coat, jacket, falda, pantalon, polo, blouse...
+         {modelo}  → 3 dígitos: 001, 002, 003...
+         {color}   → 1 palabra en español: verde, marron, beige, blanco, gris...
+         {estado}  → c = cerrado, o = abierto (omitir si pieza simple)
+         {cara}    → f = front, b = back (solo si hay imágenes separadas)
+
+       Ejemplos v2:
+         coat_001_marron_c_f.png     → Abrigo 001, marrón, cerrado, front
+         coat_001_marron_c_b.png     → Abrigo 001, marrón, cerrado, back
+         coat_001_marron_o_f.png     → Abrigo 001, marrón, abierto, front
+         coat_001_marron_o_b.png     → Abrigo 001, marrón, abierto, back
+         coat_001_marron_o_mini.png  → Miniatura del abrigo (panel)
+         jacket_001_verde_c_f.png    → Jacket 001, verde, cerrada, front
+         jacket_001_verde_c_b.png    → Jacket 001, verde, cerrada, back
+         jacket_001_verde_c_mini.png → Miniatura jacket (panel)
+         falda_001_verde.png         → Falda 001, verde (pieza simple)
+         pantalon_001_beige.png      → Pantalón 001, beige (pieza simple)
+         polo_001_blanco.png         → Polo 001, blanco (pieza simple)
+
+       Catalog fields:
+         img         → imagen principal (cerrada, o abierta con 1 sola foto)
+         imgBack     → _b — imagen de la espalda
+         imgFront    → _f — imagen del frente
+         doubleLayer → true = se divide en capa-espalda + capa-frente
+       ============================================ */
+    const catalogProducts = [
+      { id:201, name:"Abrigo Suede Pampa", cat:"abrigos", slot:"outer", price:238, colors:[["Verde","#5d6b4c","abrigo-suede-pampa-verde.png"]] },
+      { id:202, name:"Blazer Palermo", cat:"abrigos", slot:"outer", price:289, colors:[["Azul","#263a62","blazer-palermo-azul.png"],["Beige","#d8d0bf","blazer-palermo-beige.png"],["Negro","#111111","blazer-palermo-negro.png"]] },
+      { id:203, name:"Tapado Córdoba", cat:"abrigos", slot:"outer", price:329, colors:[["Gris","#898985","tapado-simple-cordoba-gris.png"]] },
+      { id:204, name:"Tapado Mara con Cinturón", cat:"abrigos", slot:"outer", price:359, colors:[["Negro","#111111","tapado-mara-con-cinturon-negro.png"],["Rojo","#9f2b24","tapado-mara-con-cinturon-rojo.png"]] },
+      { id:206, name:"Capa Patagónica", cat:"abrigos", slot:"outer", price:229, colors:[["Camel","#b58a61","capa-patagonica-camel.png"],["Negra","#111111","capa-patagonica-negra.png"]] },
+      { id:207, name:"Camisa Oversize Belgrano", cat:"camisas", slot:"top", price:159, colors:[["Blanco","#f7f7f2","camisa-oversize-belgrano-blanco.png"],["Celeste","#9ebad3","camisa-oversize-belgrano-celeste.png"],["Negro","#111111","camisa-oversize-belgrano-negro.png"]] },
+      { id:208, name:"Camisa Básica Malabia", cat:"camisas", slot:"top", price:149, colors:[["Blanco","#f7f7f2","camisa-basica-malabia-blanco.png"]] },
+      { id:209, name:"Camisa Denim Soho", cat:"denim", slot:"top", price:169, colors:[["Denim","#6f8599","camisa-denim-soho.png"]] },
+      { id:216, name:"Jean Recto Ceibo", cat:"denim", slot:"bottom", price:189, colors:[["Claro","#9aa8b5","jean-recto-ceibo-claro.png"],["Oscuro","#26394f","jean-recto-ceibo-oscuro.png"]] },
+      { id:217, name:"Jean Wide Leg Corrientes", cat:"denim", slot:"bottom", price:199, colors:[["Claro","#9aa8b5","jean-wide-leg-corrientes-claro.png"],["Oscuro","#26394f","jean-wide-leg-corrientes-oscuro.png"]] },
+      { id:213, name:"Falda Suede Pampa", cat:"faldas", slot:"bottom", price:139, colors:[["Verde","#5d6b4c","falda-suede-pampa-verde.png"]] },
+      { id:212, name:"Jogging Cafayate", cat:"pantalones", slot:"bottom", price:169, colors:[["Blanco","#f7f4ed","jogging-cafayate-blanco.png"],["Negro","#111111","jogging-cafayate-negro.png"],["Verde","#556b2f","jogging-cafayate-verde.png"]] },
+      { id:215, name:"Pantalón Ancho Barolo", cat:"pantalones", slot:"bottom", price:209, colors:[["Azul","#314d72","pantalon-ancho-barolo-azul.png"],["Gris","#8d8d88","pantalon-ancho-barolo-gris.png"],["Marrón","#6b4a35","pantalon-ancho-barolo-marron.png"],["Negro","#111111","pantalon-ancho-barolo-negro.png"]] },
+      { id:214, name:"Pantalón Sastrero Jacarandá", cat:"pantalones", slot:"bottom", price:199, colors:[["Azul","#2e4a68","pantalon-sastrero-jacaranda-azul.png"],["Beige","#d8d0bf","pantalon-sastrero-jacaranda-beige.png"],["Gris","#9b9b9b","pantalon-sastrero-jacaranda-gris.png"]] },
+      { id:205, name:"Sweater Cuello Alto Bariloche", cat:"poleras", slot:"top", price:189, colors:[["Blanco","#f2eee7","sweater-cuello-alto-bariloche-blanco.png"],["Gris","#8e8f8b","sweater-cuello-alto-bariloche-gris.png"],["Negro","#111111","sweater-cuello-alto-bariloche-negro.png"]] },
+      { id:210, name:"Polera Cuello Alto Calafate", cat:"poleras", slot:"top", price:139, colors:[["Blanco","#f7f4ed","polera-cuello-alto-calafate-blanco.png"],["Negro","#111111","polera-cuello-alto-calafate-negro.png"],["Verde","#556b2f","polera-cuello-alto-calafate-verde.png"]] },
+      { id:211, name:"Polera con Capucha Aconcagua", cat:"poleras", slot:"top", price:159, colors:[["Blanco","#f7f4ed","polera-con-capucha-aconcagua-blanco.png"],["Negro","#111111","polera-con-capucha-aconcagua-negro.png"]] },
+      { id:219, name:"Polo Básico Trenque Lauquen", cat:"polos", slot:"top", price:119, colors:[["Azul","#314d72","polo-basico-trenque-lauquen-azul.png"],["Blanco","#f7f4ed","polo-basico-trenque-lauquen-blanco.png"],["Marrón","#6b4a35","polo-basico-trenque-lauquen-marron.png"],["Negro","#111111","polo-basico-trenque-lauquen-negro.png"]] },
+      { id:220, name:"Polo Cuello Alto Ushuaia", cat:"polos", slot:"top", price:129, colors:[["Azul","#314d72","polo-cuello-alto-ushuaia-azul.png"],["Blanco","#f7f4ed","polo-cuello-alto-ushuaia-blanco.png"],["Negro","#111111","polo-cuello-alto-ushuaia-negro.png"],["Rojo","#9f2b24","polo-cuello-alto-ushuaia-rojo.png"]] },
+      { id:218, name:"Polo Cuello Cuadrado Ombú", cat:"polos", slot:"top", price:129, colors:[["Azul","#314d72","polo-cuello-cuadrado-ombu-azul.png"],["Blanco","#f7f4ed","polo-cuello-cuadrado-ombu-blanco.png"],["Negro","#111111","polo-cuello-cuadrado-ombu-negro.png"],["Rojo","#9f2b24","polo-cuello-cuadrado-ombu-rojo.png"]] }
+    ];
+
+    const catalog = {
+      abrigos: [],
+      camisas: [],
+      denim: [],
+      faldas: [],
+      pantalones: [],
+      poleras: [],
+      polos: []
+    };
+
+    catalogProducts.forEach(product => {
+      product.colors.forEach(([colorName, colorHex, filename], index) => {
+        const src = `img/productos/${filename}`;
+        catalog[product.cat].push({
+          id: product.id * 10 + index,
+          productId: product.id,
+          name: `${product.name} ${colorName}`,
+          productName: product.name,
+          colorName,
+          colorHex,
+          cat: product.cat,
+          slot: product.slot,
+          price: product.price,
+          sourceImg: src,
+          vestidor:{ src, bg:"#fff", layerType: product.slot === 'outer' ? "single-outer" : "normal" },
+          img: src
+        });
+      });
+    });
+
+    Object.keys(catalog).forEach(cat => {
+      catalog[cat].sort((a, b) => a.name.localeCompare(b.name, 'es', { sensitivity: 'base' }));
+    });
+
+    /* ============================================
+       STATE
+       layers: ordered array, index 0 = back, last = front
+       Each layer: { id, item, isCoatFront? }
+       ============================================ */
+    let layers = []; // [{uid, item, layerType:'normal'|'coat-back'|'coat-front', hidden, state}]
+    let uidCounter = 0;
+
+    /* Resolve images for items with toggle states (o/c) */
+    function resolveImages(item, state) {
+      if (item.states && state && item.states[state]) return item.states[state];
+      return item; // fallback: item's own img/imgFront/imgBack
+    }
+
+    function getItemSourceImage(item, state) {
+      const resolved = resolveImages(item, state || itemStates[item.id]);
+      return item.sourceImg || item.imgDemo || item.imgThumb || resolved.img || item.img;
+    }
+
+    function getItemBackground(item) {
+      return item.vestidor?.bg || '#f5f5f5';
+    }
+
+    const vestidorSlots = {
+      top: { left: 30, top: 12, width: 40, height: 50 },
+      bottom: { left: 29, top: 40, width: 42, height: 52.5 },
+      outer: { left: 22, top: 8, width: 56, height: 70 },
+      coat: { left: 18, top: 6, width: 64, height: 80 }
+    };
+
+    function getSlotFit(itemOrCat) {
+      const slot = typeof itemOrCat === 'string' ? null : itemOrCat.slot;
+      const cat = typeof itemOrCat === 'string' ? itemOrCat : itemOrCat.cat;
+      if (slot === 'bottom' || cat === 'pantalones' || cat === 'faldas') return vestidorSlots.bottom;
+      if (slot === 'top' || cat === 'polos' || cat === 'poleras' || cat === 'camisas') return vestidorSlots.top;
+      if (slot === 'outer') return vestidorSlots.coat;
+      if (cat === 'abrigos') return vestidorSlots.coat;
+      return { left: 0, top: 0, width: 100, height: 100 };
+    }
+
+    function getLayerVisual(layer) {
+      const resolved = resolveImages(layer.item, layer.state);
+      let imgSrc = resolved.img || layer.item.img;
+      if ((layer.layerType === 'coat-back' || layer.layerType === 'mid-back') && resolved.imgBack) imgSrc = resolved.imgBack;
+      if ((layer.layerType === 'coat-front' || layer.layerType === 'mid-front') && resolved.imgFront) imgSrc = resolved.imgFront;
+
+      const vestidor = layer.item.vestidor || {};
+      if (vestidor.src) imgSrc = vestidor.src;
+
+      return {
+        img: imgSrc,
+        fit: getSlotFit(layer.item)
+      };
+    }
+
+    function applyLayerFit(layerEl, visual) {
+      const fit = visual.fit || {};
+      layerEl.style.left = `${fit.left ?? 0}%`;
+      layerEl.style.top = `${fit.top ?? 0}%`;
+      layerEl.style.width = `${fit.width ?? 100}%`;
+      layerEl.style.height = `${fit.height ?? 100}%`;
+    }
+
+    /* Track current state per item id (shared between panel + canvas) */
+    const itemStates = {};
+    function initItemStates() {
+      Object.keys(catalog).forEach(cat => catalog[cat].forEach(item => {
+        if (item.states) itemStates[item.id] = item.defaultState;
+      }));
+    }
+
+    /* Toggle o/c state from panel card */
+    function togglePanelState(itemId, event) {
+      event.stopPropagation();
+      const item = getAllItems().find(i => i.id === itemId);
+      if (!item || !item.states) return;
+      const keys = Object.keys(item.states);
+      const curIdx = keys.indexOf(itemStates[itemId]);
+      itemStates[itemId] = keys[(curIdx + 1) % keys.length];
+      // Update canvas layers if item is on canvas
+      layers.filter(l => l.item.id === itemId).forEach(l => { l.state = itemStates[itemId]; });
+      renderPanels();
+      renderFavoritos();
+      if (layers.some(l => l.item.id === itemId)) {
+        renderCanvas();
+        renderLayerStack();
+      }
+    }
+
+    let dragItemData = null; // for panel→canvas drag
+    let dragChipUid = null;  // for layer reorder drag
+
+    /* Read favoritos from catalog wishlist. Shopify should replace IDs with product handles/metafields. */
+    let favoritos = [];
+    try {
+      const stored = JSON.parse(localStorage.getItem('ct_wishlist') || '[]');
+      favoritos = [...new Set(stored.map(w => w.vid || w.id))]; // catalog product id or vestidor variant id
+    } catch(e) {}
+
+    function getAllItems() {
+      const all = [];
+      Object.keys(catalog).forEach(cat => catalog[cat].forEach(item => all.push(item)));
+      return all;
+    }
+
+    function renderFavoritos() {
+      const container = document.getElementById('items-favoritos');
+      const countEl = document.getElementById('count-favoritos');
+      const items = favoritos.map(id => getAllItems().find(i => i.id === id || i.productId === id)).filter(Boolean);
+      countEl.textContent = items.length > 0 ? ` (${items.length})` : '';
+
+      if (items.length === 0) {
+        container.innerHTML = '<div class="panel__favs-empty">Marca favoritos en el catálogo para verlos aquí.</div>';
+        return;
+      }
+
+      container.innerHTML = items.map(item => {
+        const cat = item.cat;
+        return `
+          <div class="panel__item" draggable="true"
+               data-cat="${cat}" data-id="${item.id}"
+               onclick="toggleItemOnCanvas('${cat}', ${item.id})">
+            <span class="panel__item__check">&#10003;</span>
+            <img src="${getItemSourceImage(item)}" alt="${item.name}" draggable="false" loading="lazy" style="background:${getItemBackground(item)}">
+            <!-- SHOPIFY: Replace with /products/{{ product.handle }} -->
+            <button class="panel__item__eye" title="Ver producto" onclick="event.stopPropagation(); window.open('producto.html?id=${item.productId || item.id}', '_blank')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>`;
+      }).join('');
+
+      // Attach drag handlers
+      container.querySelectorAll('.panel__item').forEach(el => {
+        el.addEventListener('dragstart', onItemDragStart);
+        el.addEventListener('dragend', onItemDragEnd);
+      });
+    }
+
+    /* ============================================
+       RENDER PANELS
+       ============================================ */
+    function renderPanels() {
+      Object.keys(catalog).forEach(cat => {
+        const container = document.getElementById(`items-${cat}`);
+        container.innerHTML = catalog[cat].map(item => {
+          const thumbSrc = getItemSourceImage(item);
+          const toggleBtn = item.states && !item.vestidor?.singleLayer
+            ? `<button class="panel__item__toggle" onclick="togglePanelState(${item.id}, event)">${itemStates[item.id] || ''}</button>`
+            : '';
+          return `
+          <div class="panel__item" draggable="true"
+               data-cat="${cat}" data-id="${item.id}"
+               onclick="toggleItemOnCanvas('${cat}', ${item.id})">
+            <span class="panel__item__check">&#10003;</span>
+            <img src="${thumbSrc}" alt="${item.name}" draggable="false" loading="lazy" style="background:${getItemBackground(item)}">
+            ${toggleBtn}
+            <button class="panel__item__eye" title="Ver producto" onclick="event.stopPropagation(); window.open('producto.html?id=${item.productId || item.id}', '_blank')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>`;
+        }).join('');
+
+        container.querySelectorAll('.panel__item').forEach(el => {
+          el.addEventListener('dragstart', onItemDragStart);
+          el.addEventListener('dragend', onItemDragEnd);
+        });
+      });
+    }
+
+    /* ---- TOGGLE SECTION COLLAPSE ---- */
+    function toggleSection(cat) {
+      document.getElementById(`section-${cat}`).classList.toggle('collapsed');
+    }
+
+    /* ---- UPDATE SELECTED COUNTS ---- */
+    function updateCounts() {
+      Object.keys(catalog).forEach(cat => {
+        const count = new Set(layers.filter(l => l.item.cat === cat).map(l => l.item.id)).size;
+        const el = document.getElementById(`count-${cat}`);
+        el.textContent = count > 0 ? ` (${count})` : '';
+      });
+    }
+
+    /* ============================================
+       PANEL → CANVAS DRAG
+       ============================================ */
+    function onItemDragStart(e) {
+      const cat = e.currentTarget.dataset.cat;
+      const id = parseInt(e.currentTarget.dataset.id);
+      const item = catalog[cat].find(i => i.id === id);
+      dragItemData = { cat, item };
+      e.dataTransfer.effectAllowed = 'copy';
+      e.currentTarget.style.opacity = '0.4';
+      document.getElementById('canvasDropzone').classList.add('active');
+    }
+
+    function onItemDragEnd(e) {
+      e.currentTarget.style.opacity = '1';
+      dragItemData = null;
+      document.getElementById('canvasDropzone').classList.remove('active');
+    }
+
+    // Canvas drop zone
+    const dropzone = document.getElementById('canvasDropzone');
+    dropzone.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (dragItemData) e.dataTransfer.dropEffect = 'copy';
+    });
+    dropzone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropzone.classList.remove('active');
+      if (dragItemData) {
+        toggleItemOnCanvas(dragItemData.cat, dragItemData.item.id);
+        dragItemData = null;
+      }
+    });
+
+    /* ============================================
+       ADD ITEM ON CANVAS (click = add only, remove via layer stack)
+       ============================================ */
+    function toggleItemOnCanvas(cat, id) {
+      const existing = layers.find(l => l.item.id === id);
+      if (existing) {
+        removeLayer(existing.uid);
+        return;
+      }
+      addItemToCanvas(cat, id);
+    }
+
+    /* ============================================
+       ADD ITEM TO CANVAS (stacks, no replace)
+       ============================================ */
+    /* Slot groups: only 1 item per group allowed on canvas */
+    const slotGroups = [
+      ['abrigos'],
+      ['camisas', 'poleras', 'polos'],
+      ['denim', 'faldas', 'pantalones'],
+    ];
+    function getSlotGroup(cat, item) {
+      if (item?.slot === 'outer') return ['abrigos'];
+      if (item?.slot === 'top') return ['camisas', 'poleras', 'polos', 'denim'];
+      if (item?.slot === 'bottom') return ['denim', 'faldas', 'pantalones'];
+      return slotGroups.find(g => g.includes(cat));
+    }
+
+    function addItemToCanvas(cat, id) {
+      const item = catalog[cat].find(i => i.id === id);
+      if (!item) return;
+
+      // Don't add if already present
+      if (layers.some(l => l.item.id === id)) return;
+
+      // Slot group: only 1 allowed per group — remove existing before adding new
+      const group = getSlotGroup(cat, item);
+      if (group) {
+        const existing = layers.filter(l => group.includes(l.item.cat) && (!item.slot || l.item.slot === item.slot));
+        existing.forEach(l => {
+          document.querySelectorAll(`.panel__item[data-id="${l.item.id}"]`).forEach(el => el.classList.remove('selected'));
+        });
+        layers = layers.filter(l => !(group.includes(l.item.cat) && (!item.slot || l.item.slot === item.slot)));
+      }
+
+      const st = itemStates[item.id] || item.defaultState || null;
+
+      /* Layer priority: bottoms=0, tops=1, outerwear=4 */
+      const layerOrder = { pantalones:0, faldas:0, denim:item.slot === 'bottom' ? 0 : 1, polos:1, poleras:1, camisas:1, abrigos:4 };
+      const itemOrder = layerOrder[cat] ?? 2;
+
+      if (item.doubleLayer && !item.vestidor?.singleLayer && cat === 'blusas') {
+        // Mid-layer: back goes after polos, front goes before jackets/abrigos
+        const backLayer = { uid: ++uidCounter, item, layerType: 'mid-back', state: st, _order: itemOrder };
+        const frontLayer = { uid: ++uidCounter, item, layerType: 'mid-front', state: st, _order: itemOrder };
+        // Insert back after last polo/normal with lower order
+        let backIdx = 0;
+        for (let i = 0; i < layers.length; i++) {
+          const lo = layerOrder[layers[i].item.cat] ?? 2;
+          if (lo <= 1) backIdx = i + 1;
+        }
+        layers.splice(backIdx, 0, backLayer);
+        // Insert front just before coat-back/coat-front layers (abrigos/jackets)
+        let frontIdx = layers.length;
+        for (let i = 0; i < layers.length; i++) {
+          if (layers[i].layerType === 'coat-back' || layers[i].layerType === 'coat-front') { frontIdx = i; break; }
+        }
+        layers.splice(frontIdx, 0, frontLayer);
+      } else if (item.doubleLayer && !item.vestidor?.singleLayer) {
+        // Outer layer (abrigos/jackets): back at bottom, front at top
+        layers.unshift({ uid: ++uidCounter, item, layerType: 'coat-back', state: st, _order: itemOrder });
+        layers.push({ uid: ++uidCounter, item, layerType: 'coat-front', state: st, _order: itemOrder });
+      } else {
+        const singleLayerType = item.vestidor?.layerType || 'normal';
+        if (singleLayerType === 'single-outer') {
+          layers.push({ uid: ++uidCounter, item, layerType: singleLayerType, state: st, _order: itemOrder });
+        } else {
+        // Normal items (polos, etc.) go AFTER back layers but BEFORE front layers
+        // Goal: coat-back → mid-back → [normal items here] → mid-front → coat-front
+        let insertIdx = 0;
+        for (let i = 0; i < layers.length; i++) {
+          const lt = layers[i].layerType;
+          if (lt === 'coat-back' || lt === 'mid-back') {
+            insertIdx = i + 1; // go past all back layers
+          } else if (lt === 'normal') {
+            insertIdx = i + 1; // go past other normal items too
+          }
+          // stop before mid-front or coat-front
+        }
+        layers.splice(insertIdx, 0, { uid: ++uidCounter, item, layerType: 'normal', state: st, _order: itemOrder });
+        }
+      }
+
+      // Mark as selected (both in catalog and favoritos)
+      document.querySelectorAll(`.panel__item[data-id="${id}"]`).forEach(el => el.classList.add('selected'));
+
+      renderCanvas();
+      renderLayerStack();
+      renderSummary();
+      updateCounts();
+    }
+
+    /* ============================================
+       RENDER CANVAS LAYERS
+       ============================================ */
+    /* Z-index system:
+       - FIXED slots for back layers + outwear fronts (never move)
+       - REORDERABLE middle zone for polos, pants, faldas, camisa-front (user can swap)
+
+       z=1: abrigos back   (FIXED)
+       z=2: jackets back    (FIXED)
+       z=3: camisa/blusa back (FIXED)
+       z=10..19: middle zone — polos, pants, faldas, mid-front (array order)
+       z=20: jackets front  (FIXED)
+       z=21: abrigos front  (FIXED)
+    */
+    function isMiddleLayer(layer) {
+      const lt = layer.layerType;
+      if (lt === 'normal') return true;       // polos, pants, faldas
+      if (lt === 'mid-front') return true;     // camisa/blusa front
+      return false;
+    }
+
+    function renderCanvas() {
+      document.querySelectorAll('.canvas__layer').forEach(el => el.remove());
+
+      const canvas = document.getElementById('canvas');
+      const emptyMsg = document.getElementById('canvasEmpty');
+      emptyMsg.classList.toggle('hidden', layers.length > 0);
+
+      // Count middle layers for dynamic z assignment
+      let midCounter = 0;
+
+      layers.forEach((l, i) => {
+        if (l.hidden) return; // skip hidden layers
+        const div = document.createElement('div');
+        div.className = 'canvas__layer';
+        div.setAttribute('data-cat', l.item.cat);
+        div.setAttribute('data-uid', l.uid);
+        if (l.layerType === 'coat-back' || l.layerType === 'mid-back') div.classList.add('canvas__layer--coat-back');
+        if (l.layerType === 'coat-front' || l.layerType === 'mid-front') div.classList.add('canvas__layer--coat-front');
+
+        // Z-index: fixed for backs/outwear-fronts, array-order for middle zone
+        let z;
+        const cat = l.item.cat;
+        const lt = l.layerType;
+        if (lt === 'coat-back' && cat === 'abrigos')  z = 1;
+        else if (lt === 'mid-back')                        z = 3;
+        else if (lt === 'single-outer' && cat === 'abrigos') z = 21;
+        else if (lt === 'coat-front' && cat === 'abrigos') z = 21;
+        else { z = 10 + midCounter; midCounter++; } // middle zone: array order
+        div.style.zIndex = z;
+
+        const visual = getLayerVisual(l);
+        applyLayerFit(div, visual);
+
+        div.innerHTML = `<img src="${visual.img}" alt="${l.item.name}" loading="lazy">`;
+        canvas.insertBefore(div, document.getElementById('canvasDropzone'));
+
+
+      });
+    }
+
+    /* ============================================
+       RENDER LAYER STACK (reorderable chips)
+       ============================================ */
+    function renderLayerStack() {
+      const stack = document.getElementById('layerStack');
+      stack.innerHTML = '<div class="layer-stack__title">Orden de capas (arrastra para reordenar)</div>';
+
+      if (layers.length === 0) {
+        stack.classList.remove('has-layers');
+        return;
+      }
+      stack.classList.add('has-layers');
+
+      // Render from top (front) to bottom (back), skip back layers
+      const reversed = [...layers].reverse().filter(l => l.layerType !== 'coat-back' && l.layerType !== 'mid-back');
+      reversed.forEach(l => {
+        const chip = document.createElement('div');
+        chip.className = 'layer-chip' + (l.hidden ? ' layer-hidden' : '');
+        chip.draggable = true;
+        chip.dataset.uid = l.uid;
+
+        const typeLabel = l.layerType === 'coat-front' ? 'Abrigo' :
+                          l.layerType === 'mid-front' ? 'Camisa' :
+                          l.item.cat === 'abrigos' ? 'Abrigo' :
+                          l.item.cat === 'camisas' ? 'Camisa' :
+                          l.item.cat === 'denim' ? 'Denim' :
+                          l.item.cat === 'faldas' ? 'Falda' :
+                          l.item.cat === 'pantalones' ? 'Pantalón' :
+                          l.item.cat === 'poleras' ? 'Polera' :
+                          l.item.cat === 'polos' ? 'Polo' : l.item.cat;
+
+        const eyeIcon = l.hidden
+          ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+          : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+        const thumbSrc = getItemSourceImage(l.item, l.state);
+        const stateLabel = l.state ? ` (${l.state})` : '';
+        const hasToggle = !!l.item.states && !l.item.vestidor?.singleLayer;
+        const toggleBtn = hasToggle
+          ? `<button class="layer-chip__btn layer-chip__btn--toggle" title="Cambiar estado" onclick="toggleItemState(${l.uid})">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
+             </button>` : '';
+
+        chip.innerHTML = `
+          <div class="layer-chip__grip"><span></span><span></span><span></span></div>
+          <img class="layer-chip__thumb" src="${thumbSrc}" alt="" style="background:${getItemBackground(l.item)}">
+          <div>
+            <div class="layer-chip__name">${l.item.name}${stateLabel}</div>
+            <div class="layer-chip__type">${typeLabel}</div>
+          </div>
+
+          <div class="layer-chip__actions">
+            ${toggleBtn}
+            <button class="layer-chip__btn${l.hidden ? ' layer-chip__btn--eye-off' : ''}" title="${l.hidden ? 'Mostrar' : 'Ocultar'}" onclick="toggleLayerVisibility(${l.uid})">
+              ${eyeIcon}
+            </button>
+            <button class="layer-chip__btn" title="Subir capa" onclick="moveLayer(${l.uid}, 1)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+            </button>
+            <button class="layer-chip__btn" title="Bajar capa" onclick="moveLayer(${l.uid}, -1)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <button class="layer-chip__btn" title="Quitar" onclick="removeLayer(${l.uid})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        `;
+
+        // Drag reorder
+        chip.addEventListener('dragstart', e => {
+          dragChipUid = l.uid;
+          e.dataTransfer.effectAllowed = 'move';
+          chip.style.opacity = '0.4';
+        });
+        chip.addEventListener('dragend', () => {
+          chip.style.opacity = '1';
+          dragChipUid = null;
+          document.querySelectorAll('.layer-chip').forEach(c => c.classList.remove('drag-over'));
+        });
+        chip.addEventListener('dragover', e => {
+          e.preventDefault();
+          if (dragChipUid !== null && dragChipUid !== l.uid) {
+            chip.classList.add('drag-over');
+          }
+        });
+        chip.addEventListener('dragleave', () => chip.classList.remove('drag-over'));
+        chip.addEventListener('drop', e => {
+          e.preventDefault();
+          chip.classList.remove('drag-over');
+          if (dragChipUid !== null && dragChipUid !== l.uid) {
+            reorderLayers(dragChipUid, l.uid);
+            dragChipUid = null;
+          }
+        });
+
+        stack.appendChild(chip);
+      });
+    }
+
+    /* ============================================
+       LAYER MANIPULATION
+       ============================================ */
+    function moveLayer(uid, direction) {
+      // With fixed z-indices, array order only affects chip display order.
+      // Visual rendering is always correct because z-index is fixed per garment type.
+      const idx = layers.findIndex(l => l.uid === uid);
+      if (idx < 0) return;
+
+      let newIdx = idx + direction;
+      // Skip back layers in chip navigation
+      while (newIdx >= 0 && newIdx < layers.length &&
+             (layers[newIdx].layerType === 'coat-back' || layers[newIdx].layerType === 'mid-back')) {
+        newIdx += direction;
+      }
+      if (newIdx < 0 || newIdx >= layers.length) return;
+
+      [layers[idx], layers[newIdx]] = [layers[newIdx], layers[idx]];
+      renderCanvas();
+      renderLayerStack();
+    }
+
+    function reorderLayers(fromUid, toUid) {
+      const fromIdx = layers.findIndex(l => l.uid === fromUid);
+      const toIdx = layers.findIndex(l => l.uid === toUid);
+      if (fromIdx < 0 || toIdx < 0) return;
+      const [moved] = layers.splice(fromIdx, 1);
+      layers.splice(toIdx, 0, moved);
+      renderCanvas();
+      renderLayerStack();
+    }
+
+    function removeLayer(uid) {
+      const layer = layers.find(l => l.uid === uid);
+      if (!layer) return;
+      const itemId = layer.item.id;
+
+      if (layer.item.doubleLayer) {
+        layers = layers.filter(l => l.item.id !== itemId);
+      } else {
+        layers = layers.filter(l => l.uid !== uid);
+      }
+
+      // Deselect panel item if no more layers for this specific item
+      if (!layers.some(l => l.item.id === itemId)) {
+        document.querySelectorAll(`.panel__item[data-id="${itemId}"]`).forEach(el => el.classList.remove('selected'));
+      }
+
+      renderCanvas();
+      renderLayerStack();
+      renderSummary();
+      updateCounts();
+    }
+
+    /* ============================================
+       RENDER SUMMARY
+       ============================================ */
+    function renderSummary() {
+      const list = document.getElementById('summaryList');
+      // Get unique items (avoid counting coat twice)
+      const uniqueItems = [];
+      const seen = new Set();
+      layers.forEach(l => {
+        if (!seen.has(l.item.id)) {
+          seen.add(l.item.id);
+          uniqueItems.push(l.item);
+        }
+      });
+
+      if (uniqueItems.length === 0) {
+        list.innerHTML = '<div class="summary__empty">Empieza eligiendo prendas</div>';
+      } else {
+        list.innerHTML = uniqueItems.map(item => `
+          <div class="summary__item" style="cursor:pointer" onclick="window.open('producto.html?id=${item.productId || item.id}','_blank')">
+            <img class="summary__item-img" src="${getItemSourceImage(item)}" alt="${item.name}" loading="lazy" style="background:${getItemBackground(item)}">
+            <div class="summary__item-info">
+              <div class="summary__item-cat">${item.cat}</div>
+              <div class="summary__item-name">${item.name}</div>
+              <div class="summary__item-price">$ ${item.price.toLocaleString()}</div>
+            </div>
+            <button class="summary__item-remove" onclick="event.stopPropagation(); removeItemById(${item.id})" title="Quitar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </div>
+        `).join('');
+      }
+
+      const total = uniqueItems.reduce((s, i) => s + i.price, 0);
+      // SHOPIFY: Use Shopify.formatMoney(total * 100, theme.moneyFormat) instead
+      document.getElementById('summaryTotal').textContent = '$ ' + total.toLocaleString();
+
+      const hasItems = uniqueItems.length > 0;
+      document.getElementById('saveLookBtn').disabled = !hasItems;
+      const canvasHeart = document.getElementById('saveLookBtnCanvas');
+      if (canvasHeart) canvasHeart.disabled = !hasItems;
+      document.getElementById('btnAddOutfit').disabled = !hasItems;
+    }
+
+    /* ── OUTFIT SIZE POPUP + ADD TO CART ── */
+    function getOutfitItems() {
+      const uniqueItems = [];
+      const seen = new Set();
+      layers.forEach(l => {
+        if (!seen.has(l.item.id)) { seen.add(l.item.id); uniqueItems.push(l.item); }
+      });
+      return uniqueItems;
+    }
+
+    function openOutfitSizePopup() {
+      const items = getOutfitItems();
+      if (items.length === 0) return;
+      const sizes = ['XS','S','M','L','XL'];
+      const container = document.getElementById('outfitPopupItems');
+      container.innerHTML = items.map(item => `
+        <div class="outfit-popup__item" data-item-id="${item.id}">
+          <img src="${getItemSourceImage(item)}" alt="${item.name}" loading="lazy" style="background:${getItemBackground(item)}">
+          <div class="outfit-popup__item-info">
+            <div class="outfit-popup__item-name">${item.name}</div>
+            <div class="outfit-popup__item-price">$ ${item.price.toLocaleString()}</div>
+            <div class="outfit-popup__sizes-label">Talla</div>
+            <div class="outfit-popup__sizes">
+              ${sizes.map((s, i) => `<button ${i === 2 ? 'class="active"' : ''} data-size="${s}" onclick="selectOutfitSize(this)">${s}</button>`).join('')}
+            </div>
+            <button class="outfit-popup__size-guide-btn" onclick="toggleSizeGuide(this)">Ver guía de tallas</button>
+            <div class="outfit-popup__size-guide" style="display:none">
+              <table>
+                <thead><tr><th></th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th></tr></thead>
+                <tbody>
+                  <tr><td>Pecho</td><td>82</td><td>86</td><td>90</td><td>94</td><td>98</td></tr>
+                  <tr><td>Cintura</td><td>62</td><td>66</td><td>70</td><td>74</td><td>78</td></tr>
+                  <tr><td>Cadera</td><td>88</td><td>92</td><td>96</td><td>100</td><td>104</td></tr>
+                  <tr><td>Largo</td><td>98</td><td>100</td><td>102</td><td>104</td><td>106</td></tr>
+                </tbody>
+              </table>
+              <p class="outfit-popup__size-guide-note">Medidas en cm. Pueden variar según el modelo.</p>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('outfitPopupOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeOutfitPopup() {
+      document.getElementById('outfitPopupOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function toggleSizeGuide(btn) {
+      const guide = btn.nextElementSibling;
+      if (guide.style.display === 'none') {
+        guide.style.display = 'block';
+        btn.textContent = 'Ocultar guía de tallas';
+      } else {
+        guide.style.display = 'none';
+        btn.textContent = 'Ver guía de tallas';
+      }
+    }
+
+    function selectOutfitSize(btn) {
+      btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function submitOutfitToCart() {
+      const items = getOutfitItems();
+      const rows = document.querySelectorAll('#outfitPopupItems .outfit-popup__item');
+      const cartItems = [];
+      rows.forEach(row => {
+        const id = parseInt(row.dataset.itemId);
+        const item = items.find(i => i.id === id);
+        if (!item) return;
+        const sizeBtn = row.querySelector('.outfit-popup__sizes button.active');
+        const size = sizeBtn ? sizeBtn.dataset.size : 'M';
+        cartItems.push({
+          id: item.id, color: item.colors ? item.colors[0] : '#000',
+          size, img: item.img, name: item.name, price: item.price, qty: 1
+        });
+      });
+
+      // Add each item via shared cart functions
+      cartItems.forEach(newItem => {
+        const existing = cart.find(c => c.id === newItem.id && c.color === newItem.color && c.size === newItem.size);
+        if (existing) { existing.qty++; }
+        else { cart.push(newItem); }
+      });
+      syncCartToStorage();
+      updateCartBadge();
+      renderCart();
+
+      closeOutfitPopup();
+      toast(`${cartItems.length} prendas agregadas al carrito`);
+
+      // Open cart drawer after short delay
+      setTimeout(() => { openCart(); }, 600);
+    }
+
+    function removeItemById(id) {
+      layers = layers.filter(l => l.item.id !== id);
+      document.querySelectorAll(`.panel__item[data-id="${id}"]`).forEach(el => el.classList.remove('selected'));
+      renderCanvas();
+      renderLayerStack();
+      renderSummary();
+      updateCounts();
+    }
+
+    /* ============================================
+       RANDOMIZE
+       ============================================ */
+    function randomizeOutfit() {
+      // Clear first
+      layers = [];
+      document.querySelectorAll('.panel__item').forEach(el => el.classList.remove('selected'));
+
+      const pick = arr => arr.length ? arr[Math.floor(Math.random() * arr.length)] : null;
+
+      // Build outfit: 1 outerwear + 1 top + 1 bottom
+      const picks = [];
+
+      // 1. Outerwear
+      const outerCats = ['abrigos'].filter(c => catalog[c]?.length);
+      if (outerCats.length) {
+        const outerCat = pick(outerCats);
+        const outerItem = pick(catalog[outerCat]);
+        if (outerItem) picks.push({ cat: outerCat, item: outerItem });
+      }
+
+      // 2. Top
+      const topItems = ['camisas', 'denim', 'poleras', 'polos']
+        .flatMap(c => (catalog[c] || []).filter(item => item.slot === 'top').map(item => ({ cat:c, item })));
+      const topPick = pick(topItems);
+      if (topPick) picks.push(topPick);
+
+      // 3. Bottom
+      const bottomItems = ['denim', 'faldas', 'pantalones']
+        .flatMap(c => (catalog[c] || []).filter(item => item.slot === 'bottom').map(item => ({ cat:c, item })));
+      const bottomPick = pick(bottomItems);
+      if (bottomPick) picks.push(bottomPick);
+
+      // Randomize state for items with o/c toggle
+      picks.forEach(p => {
+        if (p.item.states) {
+          const keys = Object.keys(p.item.states);
+          itemStates[p.item.id] = pick(keys);
+        }
+      });
+
+      // Add with staggered animation
+      picks.forEach((p, i) => {
+        setTimeout(() => addItemToCanvas(p.cat, p.item.id), i * 180);
+      });
+      renderPanels();
+
+      toast('¡Outfit aleatorio!');
+    }
+
+    /* ============================================
+       CLEAR ALL
+       ============================================ */
+    function clearAll() {
+      layers = [];
+      document.querySelectorAll('.panel__item').forEach(el => el.classList.remove('selected'));
+      renderCanvas();
+      renderLayerStack();
+      renderSummary();
+      updateCounts();
+      toast('Outfit limpiado');
+    }
+
+    /* ============================================
+       SAVED LOOKS SYSTEM
+       ============================================ */
+    let savedLooks = []; // [{id, name, layers: [{item, layerType, scale, offsetX, offsetY}]}]
+    let savedLookCounter = 0;
+
+    // SHOPIFY: localStorage works fine but consider customer metafields for logged-in users
+    function syncLooksToStorage() {
+      try {
+        const data = savedLooks.map(l => ({
+          id: l.id, name: l.name, total: l.total,
+          visualLayers: l.visualLayers,
+          itemCount: l.items ? l.items.length : 0,
+          // Save layer snapshots so looks can be restored cross-page
+          layers: l.layers ? l.layers.map(snap => ({
+            itemId: snap.item.id,
+            itemCat: snap.item.cat,
+            layerType: snap.layerType,
+            state: snap.state || null
+          })) : []
+        }));
+        localStorage.setItem('ct_saved_looks_v2', JSON.stringify(data));
+      } catch(e) {}
+    }
+
+    function saveLook() {
+      if (layers.length === 0) return;
+
+      // --- Capture visual layout from DOM (no canvas export needed) ---
+      const canvasEl = document.getElementById('canvas');
+      const canvasRect = canvasEl.getBoundingClientRect();
+      const cW = canvasRect.width;
+      const cH = canvasRect.height;
+
+      // Store each layer's visual position as % of canvas size
+      const visualLayers = [];
+      const layerEls = canvasEl.querySelectorAll('.canvas__layer');
+      for (const layerEl of layerEls) {
+        const uid = parseInt(layerEl.getAttribute('data-uid'));
+        const layer = layers.find(l => l.uid === uid);
+        if (!layer || layer.hidden) continue;
+
+        const imgEl = layerEl.querySelector('img');
+        if (!imgEl) continue;
+
+        const r = layerEl.getBoundingClientRect();
+        const visual = getLayerVisual(layer);
+
+        visualLayers.push({
+          img: visual.img,
+          left: ((r.left - canvasRect.left) / cW * 100),
+          top: ((r.top - canvasRect.top) / cH * 100),
+          width: (r.width / cW * 100),
+          height: (r.height / cH * 100),
+          zIndex: layerEl.style.zIndex || 1
+        });
+      }
+
+      // Deep copy layer data
+      const snapshot = layers.map(l => ({
+        item: l.item,
+        layerType: l.layerType,
+        state: l.state || null
+      }));
+
+      // Unique items for display
+      const uniqueItems = [];
+      const seen = new Set();
+      snapshot.forEach(l => {
+        if (!seen.has(l.item.id)) { seen.add(l.item.id); uniqueItems.push(l.item); }
+      });
+
+      const total = uniqueItems.reduce((s, i) => s + i.price, 0);
+      savedLookCounter++;
+      savedLooks.push({
+        id: savedLookCounter,
+        name: `Look ${savedLookCounter}`,
+        layers: snapshot,
+        items: uniqueItems,
+        total,
+        visualLayers: visualLayers
+      });
+
+      renderSavedLooks();
+      syncLooksToStorage();
+      toast(`Look ${savedLookCounter} guardado`);
+
+      // Pulse the canvas heart
+      const canvasHeart = document.getElementById('saveLookBtnCanvas');
+      if (canvasHeart) {
+        canvasHeart.classList.add('saved');
+        setTimeout(() => canvasHeart.classList.remove('saved'), 1200);
+      }
+    }
+
+    function loadLook(lookId) {
+      const look = savedLooks.find(l => l.id === lookId);
+      if (!look) return;
+
+      // Clear current
+      layers = [];
+      document.querySelectorAll('.panel__item').forEach(el => el.classList.remove('selected'));
+
+      // Restore from snapshot
+      look.layers.forEach(snap => {
+        uidCounter++;
+        layers.push({
+          uid: uidCounter,
+          item: snap.item,
+          layerType: snap.layerType,
+          state: snap.state || null,
+          hidden: false
+        });
+        document.querySelectorAll(`.panel__item[data-id="${snap.item.id}"]`).forEach(el => el.classList.add('selected'));
+      });
+
+      renderCanvas();
+      renderLayerStack();
+      renderSummary();
+      updateCounts();
+      renderSavedLooks();
+      toast(`Cargado: ${look.name}`);
+    }
+
+    function deleteLook(lookId) {
+      savedLooks = savedLooks.filter(l => l.id !== lookId);
+      renderSavedLooks();
+      syncLooksToStorage();
+      toast('Look eliminado');
+    }
+
+    function clearAllLooks() {
+      if (savedLooks.length === 0) { toast('No hay looks guardados'); return; }
+      savedLooks = [];
+      syncLooksToStorage();
+      renderSavedLooks();
+      toast('Looks eliminados');
+    }
+
+    function renderSavedLooks() {
+      const grid = document.getElementById('savedLooksGrid');
+      const emptyEl = document.getElementById('savedLooksEmpty');
+
+      if (savedLooks.length === 0) {
+        grid.innerHTML = '';
+        emptyEl.classList.remove('hidden');
+        return;
+      }
+
+      emptyEl.classList.add('hidden');
+      grid.innerHTML = savedLooks.map(look => {
+        // Build DOM-based outfit miniature from stored visual positions
+        const layerImgs = (look.visualLayers || []).map(vl =>
+          `<img src="${vl.img}" alt="" style="position:absolute;left:${vl.left}%;top:${vl.top}%;width:${vl.width}%;height:${vl.height}%;object-fit:contain;z-index:${vl.zIndex};">`
+        ).join('');
+
+        return `
+        <div class="saved-look" onclick="loadLook(${look.id})">
+          <div class="saved-look__canvas">
+            ${layerImgs}
+          </div>
+          <div class="saved-look__overlay">
+            <div class="saved-look__name">${look.name}</div>
+            <div class="saved-look__actions">
+              <button class="saved-look__btn" title="Editar" onclick="event.stopPropagation(); loadLook(${look.id})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <button class="saved-look__btn" title="Descargar" onclick="event.stopPropagation(); downloadLook(${look.id})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </button>
+              <button class="saved-look__btn saved-look__btn--share" title="Compartir" onclick="event.stopPropagation(); shareLookIG(${look.id})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+              </button>
+              <button class="saved-look__btn" title="Borrar" onclick="event.stopPropagation(); deleteLook(${look.id})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function loadImg(src) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+    }
+
+    /* Build IG Story canvas (1080x1920) with look layers */
+    function buildStoryCanvas(look) {
+      return new Promise((resolve) => {
+        const sorted = [...look.visualLayers].sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
+        if (sorted.length === 0) { resolve(null); return; }
+
+        const W = 1080, H = 1920;
+        const cvs = document.createElement('canvas');
+        cvs.width = W; cvs.height = H;
+        const ctx = cvs.getContext('2d');
+
+        // Background
+        ctx.fillStyle = '#f7f7f7';
+        ctx.fillRect(0, 0, W, H);
+
+        // Top: CASA TRAMÉ
+        ctx.fillStyle = '#1e1e1e';
+        ctx.font = '700 40px "Goia Display", serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('CASA TRAMÉ', W / 2, 155);
+
+        // Title: Colección Otoño – Invierno
+        ctx.font = '200 italic 82px "Goia Display", serif';
+        ctx.fillText('Colección', W / 2, 280);
+        ctx.fillText('Otoño \u2013 Invierno', W / 2, 375);
+
+        // Bottom: casatrame.com
+        ctx.fillStyle = '#8c8c8c';
+        ctx.font = '300 48px "Goia Display", serif';
+        ctx.fillText('casatrame.com', W / 2, H - 80);
+
+        // Draw look layers centered in middle area
+        const lookTop = 420;
+        const lookBot = H - 160;
+        const availH = lookBot - lookTop;
+        const availW = W * 0.85;
+
+        Promise.all(sorted.map(vl => loadImg(vl.img))).then(images => {
+          // Get natural dimensions from first loaded image to calc scale
+          const natW = 1000, natH = 1500; // all vestidor images are 1000x1500
+          const scale = Math.min(availW / natW, availH / natH);
+          const drawW = natW * scale;
+          const drawH = natH * scale;
+          const offX = (W - drawW) / 2;
+          const offY = lookTop + (availH - drawH) / 2;
+
+          sorted.forEach((vl, i) => {
+            if (!images[i]) return;
+            ctx.drawImage(images[i], offX, offY, drawW, drawH);
+          });
+
+          resolve(cvs);
+        });
+      });
+    }
+
+    function downloadLook(lookId) {
+      const look = savedLooks.find(l => l.id === lookId);
+      if (!look || !look.visualLayers || look.visualLayers.length === 0) {
+        toast('No hay capas para descargar');
+        return;
+      }
+      buildStoryCanvas(look).then(cvs => {
+        if (!cvs) return;
+        try {
+          const link = document.createElement('a');
+          link.download = (look.name || 'look') + '_story.png';
+          link.href = cvs.toDataURL('image/png');
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          toast('Story descargada');
+        } catch(e) {
+          toast('Error al descargar: ' + e.message);
+        }
+      });
+    }
+
+    function shareLookIG(lookId) {
+      const look = savedLooks.find(l => l.id === lookId);
+      if (!look || !look.visualLayers || look.visualLayers.length === 0) {
+        toast('No hay capas para compartir');
+        return;
+      }
+      buildStoryCanvas(look).then(async (cvs) => {
+        if (!cvs) return;
+        try {
+          // Convert canvas to blob
+          const blob = await new Promise(r => cvs.toBlob(r, 'image/png'));
+          const file = new File([blob], (look.name || 'look') + '_story.png', { type: 'image/png' });
+
+          // Use Web Share API if available (mobile)
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: 'Mi look Casa Tramé',
+              text: 'Colección Otoño – Invierno | casatrame.com'
+            });
+            toast('Compartido');
+          } else {
+            // Fallback: download the file
+            const link = document.createElement('a');
+            link.download = file.name;
+            link.href = URL.createObjectURL(blob);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+            toast('Imagen guardada — compártela desde tu galería');
+          }
+        } catch(e) {
+          if (e.name !== 'AbortError') toast('Error: ' + e.message);
+        }
+      });
+    }
+
+    /* ============================================
+       TOAST
+       ============================================ */
+    function toast(msg) {
+      const el = document.getElementById('toastEl');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.remove('show'), 2200);
+    }
+
+
+    /* ---- Toggle layer visibility (eye button) ---- */
+    function toggleLayerVisibility(uid) {
+      const layer = layers.find(l => l.uid === uid);
+      if (!layer) return;
+      const newHidden = !layer.hidden;
+      // Toggle this layer + paired coat layers
+      if (layer.item.doubleLayer) {
+        layers.filter(l => l.item.id === layer.item.id).forEach(l => { l.hidden = newHidden; });
+      } else {
+        layer.hidden = newHidden;
+      }
+      renderCanvas();
+      renderLayerStack();
+    }
+
+    /* Toggle open/closed state for items with states (e.g. coat abierto/cerrado) */
+    function toggleItemState(uid) {
+      const layer = layers.find(l => l.uid === uid);
+      if (!layer || !layer.item.states) return;
+      const stateKeys = Object.keys(layer.item.states);
+      const curIdx = stateKeys.indexOf(layer.state);
+      const nextState = stateKeys[(curIdx + 1) % stateKeys.length];
+      // Sync everywhere: layers + itemStates + panel
+      itemStates[layer.item.id] = nextState;
+      layers.filter(l => l.item.id === layer.item.id).forEach(l => { l.state = nextState; });
+      renderCanvas();
+      renderLayerStack();
+      renderPanels();
+      renderSummary();
+    }
+
+
+    /* ============================================
+       ONBOARDING WALKTHROUGH
+       ============================================ */
+    const isMobileOnboarding = () => window.innerWidth <= 768;
+
+    function getOnboardingSteps() {
+      if (isMobileOnboarding()) {
+        return [
+          {
+            target: '#canvas',
+            title: 'Tu Canvas',
+            text: 'Aquí aparecerán las prendas que elijas, superpuestas sobre la silueta.',
+            position: 'bottom'
+          },
+          {
+            target: '.center-toolbar',
+            title: 'Herramientas',
+            text: 'Randomiza outfits, limpia el canvas, guarda looks, descarga o comparte en IG Stories.',
+            position: 'bottom'
+          },
+          {
+            target: '#leftPanel',
+            title: 'Tu Armario',
+            text: 'Desliza para explorar las categorías. Toca cualquier prenda para agregarla al canvas.',
+            position: 'top'
+          },
+          {
+            target: '.panel--right',
+            title: 'Tu Outfit',
+            text: 'El resumen de tu look: prendas, precio total y tus looks guardados. Agrega todo al carrito desde aquí.',
+            position: 'top'
+          }
+        ];
+      }
+      return [
+        {
+          target: '#section-favoritos',
+          title: 'Tus Favoritos',
+          text: 'Las prendas que marcaste como favoritas en el catálogo aparecen aquí para acceso rápido.',
+          position: 'right'
+        },
+        {
+          target: '#leftPanel',
+          title: 'Tu Armario',
+          text: 'Todas las prendas organizadas por categoría. Haz click o arrastra cualquier prenda hacia el canvas.',
+          position: 'right'
+        },
+        {
+          target: '#canvas',
+          title: 'El Canvas',
+          text: 'Este es tu espacio de trabajo. Las prendas que selecciones aparecerán aquí superpuestas automáticamente.',
+          position: 'bottom'
+        },
+        {
+          target: '.center-toolbar',
+          title: 'Herramientas',
+          text: 'Genera outfits aleatorios, limpia el canvas o guarda tus looks favoritos.',
+          position: 'bottom'
+        },
+        {
+          target: '#layerStack',
+          title: 'Orden de Capas',
+          text: 'Controla qué prenda va delante o detrás. Arrastra para reordenar las capas de tu outfit.',
+          position: 'top'
+        },
+        {
+          target: '.panel--right',
+          title: 'Tu Outfit',
+          text: 'Aquí ves el resumen: prendas seleccionadas, precio total y tus looks guardados.',
+          position: 'left'
+        }
+      ];
+    }
+
+    let onboardingIdx = 0;
+    let currentSteps = [];
+
+    function startOnboarding() {
+      onboardingIdx = 0;
+      showOnboardingMap();
+    }
+
+    function showOnboardingMap() {
+      const prev = document.getElementById('onboardingOverlay');
+      if (prev) prev.remove();
+
+      const overlay = document.createElement('div');
+      overlay.id = 'onboardingOverlay';
+      overlay.innerHTML = `
+        <div class="ob-map">
+          <div class="ob-map__panel">
+            <div class="ob-map__eyebrow">Vestidor&trade;</div>
+            <div class="ob-map__title">Arma tu look por capas.</div>
+            <div class="ob-map__intro">Elige prendas del panel izquierdo y combínalas en el vestidor. Los controles sirven para ajustar estado, orden y visibilidad sin perder el look.</div>
+            <div class="ob-map__list">
+              <div class="ob-map__item">
+                <div class="ob-map__item-title">Prendas</div>
+                <div class="ob-map__item-text">Click o arrastra una prenda para probarla.</div>
+              </div>
+              <div class="ob-map__item">
+                <div class="ob-map__item-title">Ojo</div>
+                <div class="ob-map__item-text">El ojo de la prenda abre su página de producto. En capas, el ojo oculta o muestra.</div>
+              </div>
+              <div class="ob-map__item">
+                <div class="ob-map__item-title">Adelante / atrás</div>
+                <div class="ob-map__item-text">Las flechas mandan una prenda adelante o atrás dentro del look.</div>
+              </div>
+              <div class="ob-map__item">
+                <div class="ob-map__item-title">Finalizar</div>
+                <div class="ob-map__item-text">Guarda el look o agrégalo al carrito desde el resumen.</div>
+              </div>
+            </div>
+            <div class="ob-map__controls" aria-label="Resumen de controles">
+              <span class="ob-map__control"><strong>ojo</strong> ver producto / ocultar</span>
+              <span class="ob-map__control"><strong>flechas</strong> adelante / atrás</span>
+              <span class="ob-map__control"><strong>guardar</strong> conserva el look</span>
+            </div>
+            <div class="ob-map__actions">
+              <button class="ob-map__tour" onclick="startFullOnboardingTour()">Ver tour completo</button>
+              <button class="ob-map__done" onclick="endOnboarding()">Entendido</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+    }
+
+    function startFullOnboardingTour() {
+      const prev = document.getElementById('onboardingOverlay');
+      if (prev) prev.remove();
+      onboardingIdx = 0;
+      currentSteps = getOnboardingSteps();
+      // On mobile, scroll to top so canvas is visible for step 1
+      if (isMobileOnboarding()) window.scrollTo({ top: 0, behavior: 'instant' });
+      showOnboardingStep();
+    }
+
+    function showOnboardingStep() {
+      // Remove previous overlay
+      const prev = document.getElementById('onboardingOverlay');
+      if (prev) prev.remove();
+
+      if (onboardingIdx >= currentSteps.length) {
+        localStorage.setItem('ct_vestidor_onboarded', '1');
+        return;
+      }
+
+      const step = currentSteps[onboardingIdx];
+      const targetEl = document.querySelector(step.target);
+      if (!targetEl) { onboardingIdx++; showOnboardingStep(); return; }
+
+      // On mobile, scroll target into view before measuring
+      if (isMobileOnboarding()) {
+        targetEl.scrollIntoView({ behavior: 'instant', block: 'center' });
+      }
+
+      // Small delay to let scroll settle, then measure and render
+      setTimeout(() => {
+        const rect = targetEl.getBoundingClientRect();
+        const pad = 8;
+
+        // Create overlay
+        const overlay = document.createElement('div');
+        overlay.id = 'onboardingOverlay';
+        overlay.innerHTML = `
+          <svg class="ob-mask" width="100%" height="100%">
+            <defs>
+              <mask id="obMask">
+                <rect width="100%" height="100%" fill="white"/>
+                <rect x="${rect.left - pad}" y="${rect.top - pad}"
+                      width="${rect.width + pad*2}" height="${rect.height + pad*2}"
+                      rx="12" fill="black"/>
+              </mask>
+            </defs>
+            <rect width="100%" height="100%" fill="rgba(0,0,0,0.65)" mask="url(#obMask)"/>
+          </svg>
+          <div class="ob-highlight" style="
+            left:${rect.left - pad}px; top:${rect.top - pad}px;
+            width:${rect.width + pad*2}px; height:${rect.height + pad*2}px;
+          "></div>
+          <div class="ob-tooltip ob-tooltip--${step.position}" id="obTooltip">
+            <div class="ob-tooltip__step">${onboardingIdx + 1} / ${currentSteps.length}</div>
+            <div class="ob-tooltip__title">${step.title}</div>
+            <div class="ob-tooltip__text">${step.text}</div>
+            <div class="ob-tooltip__actions">
+              <button class="ob-tooltip__skip" onclick="endOnboarding()">Saltar</button>
+              <button class="ob-tooltip__next" onclick="nextOnboardingStep()">
+                ${onboardingIdx === currentSteps.length - 1 ? 'Empezar' : 'Siguiente →'}
+              </button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+
+        // Position tooltip
+        requestAnimationFrame(() => {
+          const tip = document.getElementById('obTooltip');
+          if (!tip) return;
+          const tipRect = tip.getBoundingClientRect();
+          let tx, ty;
+          const mobile = isMobileOnboarding();
+
+          if (mobile) {
+            // Mobile: center horizontally, place above or below target
+            tx = (window.innerWidth - tipRect.width) / 2;
+            if (step.position === 'top') {
+              ty = rect.top - pad - 12 - tipRect.height;
+            } else {
+              ty = rect.bottom + pad + 12;
+            }
+          } else {
+            // Desktop: original positioning logic
+            if (step.position === 'right') {
+              tx = rect.right + pad + 16;
+              ty = rect.top + rect.height / 2 - tipRect.height / 2;
+            } else if (step.position === 'left') {
+              tx = rect.left - pad - 16 - tipRect.width;
+              ty = rect.top + rect.height / 2 - tipRect.height / 2;
+            } else if (step.position === 'bottom') {
+              tx = rect.left + rect.width / 2 - tipRect.width / 2;
+              ty = rect.bottom + pad + 16;
+            } else {
+              tx = rect.left + rect.width / 2 - tipRect.width / 2;
+              ty = rect.top - pad - 16 - tipRect.height;
+            }
+          }
+
+          // Clamp to viewport
+          tx = Math.max(8, Math.min(tx, window.innerWidth - tipRect.width - 8));
+          ty = Math.max(8, Math.min(ty, window.innerHeight - tipRect.height - 8));
+
+          tip.style.left = tx + 'px';
+          tip.style.top = ty + 'px';
+          tip.style.opacity = '1';
+        });
+      }, isMobileOnboarding() ? 120 : 0);
+    }
+
+    function nextOnboardingStep() {
+      onboardingIdx++;
+      showOnboardingStep();
+    }
+
+    function endOnboarding() {
+      const ov = document.getElementById('onboardingOverlay');
+      if (ov) ov.remove();
+      localStorage.setItem('ct_vestidor_onboarded', '1');
+    }
+
+    /* ============================================
+       SHARE TO IG STORIES — uses Web Share API
+       On iOS/Android, this opens the native share sheet
+       where the user picks Instagram Stories.
+       Falls back to download if Web Share not supported.
+       ============================================ */
+    function shareToIGStories() {
+      if (layers.length === 0) { toast('Agrega prendas primero'); return; }
+
+      // Build a temporary "look" object from the current canvas state
+      const canvasEl = document.getElementById('canvas');
+      const canvasRect = canvasEl.getBoundingClientRect();
+      const cW = canvasRect.width, cH = canvasRect.height;
+
+      const visualLayers = [];
+      const layerEls = canvasEl.querySelectorAll('.canvas__layer');
+      for (const layerEl of layerEls) {
+        const uid = parseInt(layerEl.getAttribute('data-uid'));
+        const layer = layers.find(l => l.uid === uid);
+        if (!layer || layer.hidden) continue;
+        const imgEl = layerEl.querySelector('img');
+        if (!imgEl) continue;
+
+        const visual = getLayerVisual(layer);
+
+        const r = layerEl.getBoundingClientRect();
+        visualLayers.push({
+          img: visual.img,
+          left: ((r.left - canvasRect.left) / cW * 100),
+          top: ((r.top - canvasRect.top) / cH * 100),
+          width: (r.width / cW * 100),
+          height: (r.height / cH * 100),
+          zIndex: layerEl.style.zIndex || 1
+        });
+      }
+
+      if (visualLayers.length === 0) { toast('Agrega prendas primero'); return; }
+
+      // Use the branded buildStoryCanvas template
+      const tempLook = { visualLayers };
+      buildStoryCanvas(tempLook).then(cvs => {
+        if (!cvs) { toast('Error al generar imagen'); return; }
+
+        cvs.toBlob(function(blob) {
+          if (!blob) { toast('Error al generar imagen'); return; }
+
+          const file = new File([blob], 'mi-outfit-casatrame.png', { type: 'image/png' });
+
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            navigator.share({
+              files: [file],
+              title: 'Mi outfit — Casa Tramé',
+              text: 'Armé este look en el Vestidor™ de Casa Tramé ✨'
+            }).then(() => {
+              toast('¡Compartido!');
+            }).catch(err => {
+              if (err.name !== 'AbortError') {
+                toast('Descargando imagen...');
+                downloadBlob(blob);
+              }
+            });
+          } else {
+            downloadBlob(blob);
+            toast('Imagen descargada — súbela a tu Story');
+          }
+        }, 'image/png');
+      });
+    }
+
+    function downloadBlob(blob) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'mi-outfit-casatrame.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    /* ============================================
+       INIT
+       ============================================ */
+    initItemStates();
+
+    // Shopify/local saved looks only. No demo looks.
+    function getDefaultDemoLooks() {
+      return [];
+    }
+
+    // Load saved looks from localStorage
+    try {
+      const storedLooks = JSON.parse(localStorage.getItem('ct_saved_looks_v2') || '[]');
+      storedLooks.forEach(sl => {
+        if ((sl.visualLayers || []).some(v => !String(v.img || '').startsWith('img/productos/'))) return;
+        // Reconstruct layers from saved item IDs
+        const restoredLayers = (sl.layers || []).map(snap => {
+          const allItems = getAllItems();
+          const item = allItems.find(i => i.id === snap.itemId);
+          if (!item) return null;
+          return { item, layerType: snap.layerType, state: snap.state || null };
+        }).filter(Boolean);
+        if (restoredLayers.length === 0) return;
+
+        const uniqueItems = [];
+        const seen = new Set();
+        restoredLayers.forEach(l => {
+          if (!seen.has(l.item.id)) { seen.add(l.item.id); uniqueItems.push(l.item); }
+        });
+
+        savedLookCounter = Math.max(savedLookCounter, sl.id);
+        savedLooks.push({
+          id: sl.id,
+          name: sl.name,
+          layers: restoredLayers,
+          items: uniqueItems,
+          total: sl.total || uniqueItems.reduce((s, i) => s + i.price, 0),
+          visualLayers: sl.visualLayers || []
+        });
+      });
+      syncLooksToStorage();
+    } catch(e) {}
+
+    renderPanels();
+    renderFavoritos();
+    renderSavedLooks();
+    renderSummary();
+
+    // Auto-add item from URL param: vestidor.html?add=abrigos,101
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlAdd = urlParams.get('add');
+    if (urlAdd) {
+      const [cat, idStr] = urlAdd.split(',');
+      const id = parseInt(idStr);
+      if (cat && id && catalog[cat]) {
+        setTimeout(() => addItemToCanvas(cat, id), 300);
+      }
+    }
+
+    // Auto-load look from URL param: vestidor.html?look=1
+    const urlLook = urlParams.get('look');
+    if (urlLook) {
+      const lookId = parseInt(urlLook);
+      if (lookId) setTimeout(() => loadLook(lookId), 400);
+    }
+
+    // Show onboarding on first visit
+    if (!localStorage.getItem('ct_vestidor_onboarded')) {
+      setTimeout(startOnboarding, 600);
+    }
+  </script>
+
+  <!-- ── Outfit Size Popup ── -->
+  <div class="outfit-popup-overlay" id="outfitPopupOverlay" onclick="if(event.target===this)closeOutfitPopup()">
+    <div class="outfit-popup">
+      <button class="outfit-popup__close" onclick="closeOutfitPopup()">&times;</button>
+      <div class="outfit-popup__title">Elegí tus tallas</div>
+      <div class="outfit-popup__items" id="outfitPopupItems"></div>
+      <button class="outfit-popup__submit" onclick="submitOutfitToCart()">Agregar todo al carrito</button>
+    </div>
+  </div>
+</body>
+</html>

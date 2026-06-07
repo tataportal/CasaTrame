@@ -1,0 +1,8 @@
+{
+  "sections": {
+    "main": {
+      "type": "casa-trame-page"
+    }
+  },
+  "order": ["main"]
+}

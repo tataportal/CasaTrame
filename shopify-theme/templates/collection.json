@@ -1,0 +1,23 @@
+{
+  "sections": {
+    "main": {
+      "type": "casa-trame-collection",
+      "settings": {
+        "catalog_title": "OTOÑO\nINVIERNO",
+        "catalog_subtitle": "Una colección que nace desde lo esencial: versátil, cómoda, y pensada para acompañarte en el día a día.",
+        "sort_label": "Ordenar por precio",
+        "products_per_page": 24,
+        "empty_state_title": "Estamos preparando esta selección.",
+        "empty_state_text": "Publica productos en esta colección y aparecerán aquí automáticamente con este layout.",
+        "footer_brand_name": "Casa Tramé",
+        "footer_brand_text": "Moda artesanal con visión contemporánea.\nDiseñada para quienes valoran la calidad y la intención detrás de cada prenda.",
+        "shop_heading": "Comprar",
+        "info_heading": "Info",
+        "help_heading": "Atención",
+        "social_heading": "Síguenos",
+        "footer_bottom_text": "Todos los derechos reservados."
+      }
+    }
+  },
+  "order": ["main"]
+}

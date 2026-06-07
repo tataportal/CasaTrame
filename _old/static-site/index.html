@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Casa Tramé</title>
+  <link rel="preload" href="fonts/GoiaDisplay-ExtraLightItalic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/GoiaDisplay-Bold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/GoiaDisplay-Light.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+/* ===========================================
+       HERO
+       =========================================== */
+    .hero {
+      position: relative; width: 100%; height: 100vh; min-height: 40rem;
+      overflow: hidden; margin-bottom: 14rem;
+    }
+    .hero__video {
+      position: absolute; inset: 0; z-index: 0;
+      overflow: hidden; pointer-events: none;
+      filter: none;
+    }
+    .hero__video video {
+      position: absolute;
+      top: 50%; left: 50%;
+      min-width: 100%; min-height: 100%;
+      width: auto; height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+    }
+    .hero__overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background: transparent;
+      pointer-events: none;
+    }
+    .hero__content {
+      position: absolute; bottom: 8rem; left: 0; right: 0;
+      text-align: center; z-index: 2;
+    }
+    .hero__cta {
+      display: inline-flex; align-items: center; gap: 1.067rem;
+      padding: 1.733rem 4.8rem; border: 1px solid rgba(255,255,255,0.7);
+      color: #fff; font-size: var(--fs-btn); letter-spacing: 0.12em;
+      text-transform: uppercase; font-family: var(--body); font-weight: 300;
+      transition: 0.3s; backdrop-filter: blur(2px);
+    }
+    .hero__cta:hover { background: rgba(255,255,255,0.15); border-color: #fff; }
+    .hero__cta svg { width: 1.867rem; height: 1.867rem; stroke: #fff; fill: none; stroke-width: 1.5; }
+
+    /* ===========================================
+       BRAND STATEMENT
+       =========================================== */
+    .brand-statement {
+      min-height: 100vh; display: grid; grid-template-columns: 2fr 1fr;
+      align-items: center;
+      background: var(--bg); margin-bottom: 14rem;
+    }
+    .brand-statement__img {
+      padding: 0;
+    }
+    .brand-statement__img img {
+      display: block; width: 100%;
+    }
+    .brand-statement__content {
+      padding: 3rem 3rem 3rem 4rem;
+    }
+    .brand-statement__title {
+      font-family: var(--heading); font-weight: 200; font-style: italic;
+      font-size: var(--fs-section); line-height: 1.2; margin-bottom: 1.333rem;
+    }
+    .brand-statement__text {
+      font-size: var(--fs-subtitle); color: var(--text-mid); font-weight: 300;
+      max-width: 30rem; line-height: 1.6;
+    }
+
+    /* ===========================================
+       COLLECTION SECTION
+       =========================================== */
+    .collection-section {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 3rem 0; overflow-x: hidden;
+      margin-bottom: 14rem;
+    }
+    .collection-section__title {
+      text-align: center; font-family: var(--heading); font-weight: 200; font-style: italic;
+      font-size: var(--fs-section); letter-spacing: 0.04em;
+      margin-bottom: 1.5rem; color: var(--text);
+    }
+    .collection-grid {
+      display: flex; gap: 0.8rem; width: 100%;
+      padding: 0; overflow: hidden;
+      position: relative;
+      cursor: grab;
+      height: 65vh;
+    }
+    .collection-grid.is-dragging { cursor: grabbing; }
+    .carousel-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      z-index: 10; width: 3.2rem; height: 3.2rem;
+      background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.1);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; opacity: 0; transition: opacity 0.3s;
+      color: var(--text);
+    }
+    .collection-grid:hover .carousel-arrow { opacity: 1; }
+    .carousel-arrow:hover { background: #fff; }
+    .carousel-arrow--left { left: 1rem; }
+    .carousel-arrow--right { right: 1rem; }
+    .carousel-arrow svg { width: 1.2rem; height: 1.2rem; stroke-width: 2; }
+    .collection-grid__track {
+      display: flex; gap: 0.8rem;
+      will-change: transform;
+      height: 100%;
+    }
+    .collection-card {
+      flex: 0 0 calc(65vh * 0.75);
+      cursor: pointer; display: flex; flex-direction: column;
+      height: 100%;
+    }
+    .collection-card__img {
+      position: relative; overflow: hidden;
+      flex: 1; min-height: 0;
+    }
+    .collection-card__img img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.6s ease, filter 0.6s ease;
+      filter: saturate(0.6);
+    }
+    .collection-card:hover .collection-card__img img { transform: scale(1.03); filter: saturate(1); }
+    .collection-card__name {
+      padding: 0.6rem 0.2rem 0;
+      font-family: var(--body); font-weight: 300;
+      font-size: var(--fs-body); letter-spacing: 0.02em;
+      color: var(--text); text-align: left;
+      white-space: nowrap;
+    }
+    .collection-section__cta {
+      display: flex; justify-content: center; margin-top: 2rem;
+    }
+    .collection-section__cta .btn-outline {
+      padding: 1.213rem 3.36rem; border: 1px solid var(--text);
+      font-size: var(--fs-btn); letter-spacing: 0.12em;
+    }
+    .collection-section__cta .btn-outline svg { width: 1.307rem; height: 1.307rem; stroke-width: 1.5; }
+/* ===========================================
+       VESTIDOR SECTION
+       =========================================== */
+    .vestidor {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 8rem 3.2rem 5.333rem; text-align: center;
+      background: var(--bg); margin-bottom: 14rem;
+    }
+    .vestidor__title {
+      font-family: var(--heading); font-weight: 200; font-style: italic;
+      font-size: var(--fs-section); line-height: 1.2; margin-bottom: 1.333rem;
+    }
+    .vestidor__subtitle {
+      font-size: var(--fs-subtitle); color: var(--text-mid); font-weight: 300;
+      max-width: 40rem; margin: 0 auto 1.6rem; line-height: 1.6;
+    }
+    .vestidor__mockup {
+      display: flex; align-items: center; justify-content: center;
+      max-width: 100%; width: 100%; margin: 0 auto 2.667rem;
+    }
+    .vestidor__mockup img {
+      max-width: 70%; max-height: 56vh; object-fit: contain;
+    }
+    .vestidor__cta {
+      padding: 1.733rem 4.8rem; border: 1px solid var(--text);
+      font-size: var(--fs-btn); letter-spacing: 0.12em;
+    }
+    .vestidor__cta strong { font-weight: 600; }
+    .vestidor__cta svg { width: 1.867rem; height: 1.867rem; stroke-width: 1.5; }
+
+    /* ===========================================
+       NEWSLETTER
+       =========================================== */
+    .newsletter {
+      position: relative; padding: 0; text-align: center;
+      overflow: hidden; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .newsletter__bg {
+      position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1686530489698-d74e6f165b87?w=1920&q=80&fit=crop') center 30% / cover no-repeat;
+      filter: saturate(0.6);
+    }
+    .newsletter__bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.85) 65%, rgba(0,0,0,0.95) 100%);
+    }
+    .newsletter__content {
+      position: relative; z-index: 2; max-width: 60rem;
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 5.333rem 3.2rem;
+    }
+    .newsletter__title {
+      font-family: var(--heading); font-weight: 200; font-style: italic;
+      font-size: var(--fs-section); color: #fff; margin-bottom: 2.667rem;
+      line-height: 1.25; white-space: nowrap;
+    }
+    .newsletter__form {
+      display: flex; align-items: baseline; gap: 0;
+      max-width: 100%; margin: 0 auto 1.6rem;
+      border-bottom: 1px solid rgba(255,255,255,0.4);
+    }
+    .newsletter__input {
+      flex: 1; padding: 0 0 0.5rem 0; border: none;
+      background: transparent; color: #fff; font-size: var(--fs-page);
+      font-family: var(--body); font-weight: 300; outline: none;
+    }
+    .newsletter__input::placeholder { color: rgba(255,255,255,0.4); }
+    .newsletter__input:-webkit-autofill,
+    .newsletter__input:-webkit-autofill:hover,
+    .newsletter__input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 1000px #3a3a3a inset;
+      -webkit-text-fill-color: #fff;
+      caret-color: #fff;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+    .newsletter__input:focus { border-color: #fff; }
+    .newsletter__submit {
+      padding: 0 0 0.5rem 1.5rem; background: none; color: rgba(255,255,255,0.6);
+      border: none;
+      font-size: var(--fs-subtitle); letter-spacing: 0.1em;
+      text-transform: uppercase; font-family: var(--body); font-weight: 600;
+      cursor: pointer; transition: 0.2s; white-space: nowrap;
+    }
+    .newsletter__submit:hover { color: #fff; }
+    .newsletter__submit-wrap {
+      position: relative;
+    }
+    .newsletter__legal-tip {
+      position: absolute; bottom: calc(100% + 0.6rem); right: 0;
+      background: rgba(0,0,0,0.85); color: rgba(255,255,255,0.7);
+      font-size: var(--fs-label); padding: 0.5rem 0.8rem;
+      border-radius: 0.25rem; white-space: nowrap;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+      letter-spacing: 0.03em;
+    }
+    .newsletter__submit-wrap:hover .newsletter__legal-tip { opacity: 1; }
+/* ===========================================
+       RESPONSIVE
+       =========================================== */
+    @media (max-width: 768px) {
+      .hero { min-height: 100vh; margin-bottom: 2rem; }
+      .hero__content { bottom: 12rem; }
+      .brand-statement { margin-bottom: 2rem; }
+      .collection-section { margin-bottom: 2rem; }
+      .vestidor { margin-bottom: 2rem; }
+      .hero__cta { padding: 0.85rem 2rem; font-size: var(--fs-btn); white-space: nowrap; }
+      .hero__cta svg { width: 1rem; height: 1rem; }
+
+      /* ── Brand statement: image top, clear text block below ── */
+      .brand-statement { grid-template-columns: 1fr; min-height: 100vh; background: var(--bg); align-content: center; }
+      .brand-statement__img { padding: 0; }
+      .brand-statement__img img { display: block; width: 100%; }
+      .brand-statement__content {
+        padding: 0.5rem 1.5rem 2.5rem; text-align: center;
+        background: var(--bg);
+      }
+      .brand-statement__title {
+        font-size: var(--fs-section); margin-bottom: 0.8rem;
+        line-height: 1.25;
+      }
+      .brand-statement__text {
+        font-size: var(--fs-body); max-width: 100%; line-height: 1.65;
+        color: var(--text-mid);
+      }
+
+      .collection-section { padding: 2.5rem 0; min-height: 100vh; }
+      .collection-section__title { margin-bottom: 1.2rem; }
+      .collection-grid { padding: 0; overflow: visible; height: auto; }
+      .collection-grid__track {
+        animation: none !important; transform: none !important;
+        gap: 0.15rem; padding: 0 1rem;
+        overflow-x: auto; -webkit-overflow-scrolling: touch;
+      }
+      .collection-card { flex: 0 0 92vw; width: 92vw; }
+      .collection-card img { filter: saturate(1); }
+      .collection-card::after { background: rgba(0,0,0,0.18); }
+      .collection-section__cta { margin-top: 1.2rem; }
+      .collection-section__cta .btn-outline { padding: 0.85rem 2rem; font-size: var(--fs-btn); white-space: nowrap; }
+      .collection-section__cta .btn-outline svg { width: 1rem; height: 1rem; }
+      .vestidor { padding: 1rem 0 4rem; min-height: 100vh; }
+      .vestidor__subtitle { padding: 0 2rem; }
+      .vestidor__mockup { max-width: 100%; width: 100%; padding: 0; margin: 0 auto 2rem; }
+      .vestidor__mockup img { max-height: none; max-width: 100%; width: 100%; }
+      .vestidor__cta { padding: 0.85rem 2rem; font-size: var(--fs-btn); white-space: nowrap; }
+      .vestidor__cta svg { width: 1rem; height: 1rem; }
+      .newsletter { padding: 3rem 1rem; height: auto; min-height: 100vh; }
+      .newsletter__title { white-space: normal; font-size: var(--fs-hero); }
+      .newsletter__form { flex-direction: row; gap: 0; flex-wrap: wrap; }
+      .newsletter__input { padding: 0 0 0.5rem 0; font-size: var(--fs-body); }
+      .newsletter__submit { padding: 0 0 0.5rem 1rem; font-size: var(--fs-btn); }
+      .newsletter__legal-tip { font-size: var(--fs-label); position: static; opacity: 1; pointer-events: auto; white-space: normal; width: 100%; text-align: center; padding: 0.6rem 0 0; background: none; color: rgba(255,255,255,0.45); display: block; order: 3; }
+    }
+</style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="nav nav--transparent" id="mainNav">
+    <div class="nav__inner">
+      <div class="nav__left" id="navLinks">
+        <a href="catalogo.html">Colección</a>
+        <a href="#conocenos" class="underlined">Conócenos</a>
+        <a href="vestidor.html">Vestidor&trade;</a>
+      </div>
+      <button class="nav__hamburger" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="#hero" class="nav__logo"><img src="img/trame_horizontal-black.svg" alt="Casa Tramé"></a>
+      <div class="nav__right">
+        <button title="Buscar" onclick="window.location.href='catalogo.html?search=1'">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <a href="#" onclick="event.preventDefault(); toast('Cuenta — próximamente');" title="Cuenta">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
+        <a href="catalogo.html#favoritos" title="Favoritos">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        </a>
+        <a href="#" onclick="event.preventDefault(); openCart();" title="Carrito" style="position:relative;">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span id="cartBadge" style="display:none;position:absolute;top:-0.267rem;right:-0.267rem;background:var(--text);width:0.533rem;height:0.533rem;border-radius:50%;"></span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile menu (hidden on desktop) -->
+  <div class="nav__mobile-menu" id="mobileMenu">
+    <a href="catalogo.html">Colección</a>
+    <a href="#conocenos" class="underlined">Conócenos</a>
+    <a href="vestidor.html">Vestidor&trade;</a>
+    <hr>
+    <a href="catalogo.html#favoritos">Favoritos</a>
+    <a href="catalogo.html">Buscar</a>
+    <a href="#" onclick="event.preventDefault(); openCart();">Carrito</a>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <div class="hero__video">
+      <video autoplay muted loop playsinline>
+        <source src="img/trame_nuevovideo2.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <a href="catalogo.html" class="hero__cta">
+        Conoce la colección
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== BRAND STATEMENT ===== -->
+  <section class="brand-statement" id="conocenos">
+    <div class="brand-statement__img">
+      <picture>
+        <source srcset="img/concepto.webp" type="image/webp">
+        <img src="img/concepto.png" alt="Casa Tramé — concepto de marca" loading="lazy">
+      </picture>
+    </div>
+    <div class="brand-statement__content">
+      <h2 class="brand-statement__title">Ropa que<br>trasciende el tiempo</h2>
+      <p class="brand-statement__text">
+        En Casa Tramé creamos prendas pensadas para quedarse. Diseños atemporales con una mirada contemporánea, concebidos para quienes priorizan la calidad, el detalle y un estilo que evoluciona sin perder identidad.
+        Cada pieza es una inversión en un guardarropa con intención.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== COLECCIÓN OTOÑO – INVIERNO ===== -->
+  <section class="collection-section">
+    <h3 class="collection-section__title">Colección Otoño – Invierno</h3>
+    <div class="collection-grid">
+      <div class="collection-grid__track">
+        <a href="catalogo.html" class="collection-card">
+          <div class="collection-card__img"><img src="img/productos/abrigo-suede-pampa-verde.png" alt="Abrigos"></div>
+          <span class="collection-card__name">Abrigos</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <div class="collection-card__img"><img src="img/productos/camisa-oversize-belgrano-blanco.png" alt="Camisas"></div>
+          <span class="collection-card__name">Camisas</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <div class="collection-card__img"><img src="img/productos/jean-wide-leg-corrientes-claro.png" alt="Denim"></div>
+          <span class="collection-card__name">Denim</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <div class="collection-card__img"><img src="img/productos/polera-con-capucha-aconcagua-blanco.png" alt="Poleras"></div>
+          <span class="collection-card__name">Poleras</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <div class="collection-card__img"><img src="img/productos/polo-basico-trenque-lauquen-blanco.png" alt="Polos"></div>
+          <span class="collection-card__name">Polos</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <div class="collection-card__img"><img src="img/productos/falda-suede-pampa-verde.png" alt="Faldas"></div>
+          <span class="collection-card__name">Faldas</span>
+        </a>
+        <a href="catalogo.html" class="collection-card">
+          <div class="collection-card__img"><img src="img/productos/pantalon-ancho-barolo-marron.png" alt="Pantalones"></div>
+          <span class="collection-card__name">Pantalones</span>
+        </a>
+      </div>
+      <button class="carousel-arrow carousel-arrow--left" aria-label="Anterior">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <button class="carousel-arrow carousel-arrow--right" aria-label="Siguiente">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+    <div class="collection-section__cta">
+      <a href="catalogo.html" class="btn-outline">
+        Ver todos
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== VESTIDOR ===== -->
+  <section class="vestidor">
+    <h2 class="vestidor__title">Menos prendas,<br>más combinaciones.</h2>
+    <p class="vestidor__subtitle">
+      En Casa Tramé, cada prenda se integra con naturalidad, descubre nuevas formas de combinarlas en el vestidor y construye un estilo propio con intención.
+    </p>
+    <div class="vestidor__mockup">
+      <picture>
+        <source srcset="img/app.webp" type="image/webp">
+        <img src="img/app.png" alt="Vestidor App">
+      </picture>
+    </div>
+    <div class="collection-section__cta">
+      <a href="vestidor.html" class="btn-outline">
+        Ir al vestidor
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== NEWSLETTER + FOOTER ===== -->
+  <section class="newsletter">
+    <div class="newsletter__bg"></div>
+    <div class="newsletter__content">
+      <h2 class="newsletter__title">Mantengámonos en contacto</h2>
+      <form class="newsletter__form" onsubmit="event.preventDefault(); this.querySelector('input').value=''; toast('Gracias por suscribirte!');">
+        <input class="newsletter__input" type="email" placeholder="Tu email" required>
+        <div class="newsletter__submit-wrap">
+          <span class="newsletter__legal-tip">Al suscribirte aceptas recibir mensajes y bases legales.</span>
+          <button class="newsletter__submit" type="submit">Enviar</button>
+        </div>
+      </form>
+    </div>
+    <footer class="footer">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <div class="footer__brand-name">Casa Tramé</div>
+          <p>Diseñado en Argentina<br>Producido en Perú</p>
+        </div>
+        <div>
+          <h4>Síguenos</h4>
+          <ul>
+            <li><a href="https://instagram.com" target="_blank">Instagram</a></li>
+            <li><a href="https://tiktok.com" target="_blank">TikTok</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Info</h4>
+          <ul>
+            <li><a href="index.html">Conócenos</a></li>
+            <li><a href="#">Sustentabilidad</a></li>
+            <li><a href="#">Guía de tallas</a></li>
+            <li><a href="#">Envíos y devoluciones</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Atención</h4>
+          <ul>
+            <li><a href="#">Contacto</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Términos</a></li>
+            <li><a href="#">Privacidad</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; Casa Tramé. Todos los derechos reservados.</span>
+      </div>
+    </footer>
+  </section>
+
+  <!-- ===== CART DRAWER ===== -->
+  <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer__header">
+      <span class="cart-drawer__title">Carrito</span>
+      <button class="cart-drawer__close" onclick="closeCart()">&times;</button>
+    </div>
+    <div class="cart-drawer__items" id="cartItems">
+      <div class="cart-drawer__empty" id="cartEmpty">Tu carrito está vacío.</div>
+    </div>
+    <div class="cart-drawer__footer" id="cartFooter" style="display:none;">
+      <div class="cart-drawer__subtotal">
+        <span class="cart-drawer__subtotal-label">Subtotal</span>
+        <span class="cart-drawer__subtotal-value" id="cartSubtotal">$ 0</span>
+      </div>
+      <button class="cart-drawer__checkout" onclick="toast('Checkout con Shopify próximamente')">Finalizar Compra</button>
+      <button class="cart-drawer__continue" onclick="closeCart()">Seguir comprando</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toastEl"></div>
+
+  <script src="cart.js"></script>
+  <script>
+    /* ---- Toast ---- */
+    function toast(msg) {
+      const el = document.getElementById('toastEl');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2200);
+    }
+
+    /* ---- Navbar: transparent over hero, solid after ---- */
+    const nav = document.getElementById('mainNav');
+    const hero = document.querySelector('.hero');
+    function updateNav() {
+      const heroBottom = hero.getBoundingClientRect().bottom;
+      if (heroBottom <= window.innerHeight * 0.5) {
+        nav.classList.remove('nav--transparent');
+        nav.classList.add('nav--solid');
+      } else {
+        nav.classList.remove('nav--solid');
+        nav.classList.add('nav--transparent');
+      }
+    }
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+
+    /* ---- Collection Carousel: drag + arrow buttons ---- */
+    (function() {
+      const grid = document.querySelector('.collection-grid');
+      const track = document.querySelector('.collection-grid__track');
+      const arrowL = grid.querySelector('.carousel-arrow--left');
+      const arrowR = grid.querySelector('.carousel-arrow--right');
+      if (!grid || !track) return;
+
+      let pos = 0;
+      let dragging = false;
+      let startX = 0;
+      let dragStartPos = 0;
+      let lastDragX = 0;
+      let dragVelocity = 0;
+      let didDrag = false;
+
+      function maxPos() { return track.scrollWidth - grid.clientWidth; }
+      function clampPos() { pos = Math.max(0, Math.min(pos, maxPos())); }
+      function updateArrows() {
+        arrowL.style.opacity = pos <= 5 ? '0' : '';
+        arrowL.style.pointerEvents = pos <= 5 ? 'none' : '';
+        arrowR.style.opacity = pos >= maxPos() - 5 ? '0' : '';
+        arrowR.style.pointerEvents = pos >= maxPos() - 5 ? 'none' : '';
+      }
+
+      function loop() {
+        if (!dragging && Math.abs(dragVelocity) > 0.5) {
+          pos -= dragVelocity;
+          dragVelocity *= 0.95;
+        } else if (!dragging) {
+          dragVelocity = 0;
+        }
+        clampPos();
+        track.style.transform = 'translateX(' + (-pos) + 'px)';
+        updateArrows();
+        requestAnimationFrame(loop);
+      }
+
+      /* Arrow clicks — scroll by one card width */
+      function getCardWidth() {
+        const card = track.querySelector('.collection-card');
+        return card ? card.offsetWidth + 2 : 300;
+      }
+      function smoothScroll(delta) {
+        const target = Math.max(0, Math.min(pos + delta, maxPos()));
+        const start = pos;
+        const duration = 400;
+        const startTime = performance.now();
+        function step(now) {
+          const t = Math.min((now - startTime) / duration, 1);
+          const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+          pos = start + (target - start) * ease;
+          if (t < 1) requestAnimationFrame(step);
+        }
+        dragVelocity = 0;
+        requestAnimationFrame(step);
+      }
+      arrowL.addEventListener('click', function(e) { e.stopPropagation(); smoothScroll(-getCardWidth()); });
+      arrowR.addEventListener('click', function(e) { e.stopPropagation(); smoothScroll(getCardWidth()); });
+
+      /* Drag */
+      grid.addEventListener('mousedown', function(e) {
+        if (e.target.closest('.carousel-arrow')) return;
+        dragging = true; didDrag = false;
+        grid.classList.add('is-dragging');
+        startX = e.clientX; dragStartPos = pos;
+        lastDragX = e.clientX; dragVelocity = 0;
+        e.preventDefault();
+      });
+      window.addEventListener('mousemove', function(e) {
+        if (!dragging) return;
+        didDrag = true;
+        dragVelocity = e.clientX - lastDragX;
+        lastDragX = e.clientX;
+        pos = dragStartPos - (e.clientX - startX);
+      });
+      window.addEventListener('mouseup', function() {
+        if (!dragging) return;
+        dragging = false;
+        grid.classList.remove('is-dragging');
+      });
+
+      /* Touch */
+      grid.addEventListener('touchstart', function(e) {
+        dragging = true; didDrag = false;
+        startX = e.touches[0].clientX; dragStartPos = pos;
+        lastDragX = e.touches[0].clientX; dragVelocity = 0;
+      }, { passive: true });
+      grid.addEventListener('touchmove', function(e) {
+        if (!dragging) return;
+        didDrag = true;
+        dragVelocity = e.touches[0].clientX - lastDragX;
+        lastDragX = e.touches[0].clientX;
+        pos = dragStartPos - (e.touches[0].clientX - startX);
+      }, { passive: true });
+      grid.addEventListener('touchend', function() { dragging = false; });
+
+      grid.addEventListener('click', function(e) {
+        if (didDrag) e.preventDefault();
+      }, true);
+
+      /* Trackpad horizontal */
+      grid.addEventListener('wheel', function(e) {
+        if (Math.abs(e.deltaX) < 2) return;
+        pos += e.deltaX;
+        dragVelocity = 0;
+        e.preventDefault();
+      }, { passive: false });
+
+      requestAnimationFrame(loop);
+    })();
+
+    /* ---- Mobile Menu Toggle ---- */
+    const mobileMenu = document.getElementById('mobileMenu');
+    const hamburger = document.querySelector('.nav__hamburger');
+    let menuOpen = false;
+
+    function toggleMobileMenu() {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      document.body.style.overflow = menuOpen ? 'hidden' : '';
+
+      /* Force solid nav when menu is open so text/bg are readable */
+      if (menuOpen) {
+        nav.classList.remove('nav--transparent');
+        nav.classList.add('nav--solid');
+      } else {
+        updateNav(); /* Restore correct state based on scroll */
+      }
+
+      /* Animate hamburger → X */
+      hamburger.classList.toggle('is-open', menuOpen);
+    }
+
+    /* Close menu on resize to desktop */
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && menuOpen) {
+        menuOpen = false;
+        mobileMenu.classList.remove('open');
+        document.body.style.overflow = '';
+        hamburger.classList.remove('is-open');
+        updateNav();
+      }
+    });
+
+  </script>
+</body>
+</html>

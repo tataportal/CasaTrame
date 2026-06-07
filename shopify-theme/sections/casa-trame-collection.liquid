@@ -1,0 +1,736 @@
+{% liquid
+  assign collection_url = collection.url
+  if collection_url == blank
+    assign collection_url = routes.all_products_collection_url
+  endif
+
+  assign about_url = routes.root_url | append: '#conocenos'
+
+  assign vestidor_url = section.settings.vestidor_url
+  if vestidor_url == blank
+    assign vestidor_url = '/pages/vestidor'
+  endif
+
+  assign favorites_url = section.settings.favorites_url
+  if favorites_url == blank
+    assign favorites_url = '/pages/favoritos'
+  endif
+
+  assign catalog_title = section.settings.catalog_title
+  if catalog_title == blank
+    assign catalog_title = collection.title
+  endif
+
+  assign catalog_subtitle = section.settings.catalog_subtitle
+  if catalog_subtitle == blank and collection.description != blank
+    assign catalog_subtitle = collection.description | strip_html
+  endif
+
+  assign current_sort = collection.sort_by | default: collection.default_sort_by
+  assign has_price_ascending = false
+  assign has_price_descending = false
+  for sort_option in collection.sort_options
+    if sort_option.value == 'price-ascending'
+      assign has_price_ascending = true
+    elsif sort_option.value == 'price-descending'
+      assign has_price_descending = true
+    endif
+  endfor
+
+  assign price_sort_target = current_sort
+  assign price_sort_arrow = '↑'
+  if has_price_ascending or has_price_descending
+    assign price_sort_target = 'price-ascending'
+    if current_sort == 'price-ascending' and has_price_descending
+      assign price_sort_target = 'price-descending'
+      assign price_sort_arrow = '↑'
+    elsif current_sort == 'price-descending' and has_price_ascending
+      assign price_sort_target = 'price-ascending'
+      assign price_sort_arrow = '↓'
+    elsif current_sort == 'price-descending'
+      assign price_sort_arrow = '↓'
+    endif
+  endif
+
+  assign price_sort_url = collection.url | append: '?sort_by=' | append: price_sort_target
+
+  assign display_collection = collection
+%}
+
+{% paginate display_collection.products by section.settings.products_per_page %}
+  {% liquid
+    assign derived_categories = ''
+    for product in display_collection.products
+      assign category_label = product.type | strip
+      if category_label == blank and product.tags.size > 0
+        assign category_label = product.tags.first | strip
+      endif
+      if category_label == blank
+        assign product_handle = product.handle
+        if product_handle contains 'abrigo' or product_handle contains 'blazer' or product_handle contains 'capa' or product_handle contains 'tapado'
+          assign category_label = 'Abrigos'
+        elsif product_handle contains 'camisa-basica' or product_handle contains 'camisa-oversize'
+          assign category_label = 'Camisas'
+        elsif product_handle contains 'denim' or product_handle contains 'jean'
+          assign category_label = 'Denim'
+        elsif product_handle contains 'falda'
+          assign category_label = 'Faldas'
+        elsif product_handle contains 'pantalon' or product_handle contains 'jogging'
+          assign category_label = 'Pantalones'
+        elsif product_handle contains 'polera' or product_handle contains 'sweater'
+          assign category_label = 'Poleras'
+        elsif product_handle contains 'polo'
+          assign category_label = 'Polos'
+        endif
+      endif
+      if category_label != blank
+        assign derived_categories = derived_categories | append: category_label | append: '||'
+      endif
+    endfor
+    assign derived_categories = derived_categories | split: '||' | uniq | sort_natural
+  %}
+
+  <nav class="nav nav--solid nav--catalog" id="mainNav">
+    <div class="nav__inner">
+      <div class="nav__left" id="navLinks">
+        {% if section.settings.header_menu != blank %}
+          {% for link in section.settings.header_menu.links %}
+            <a href="{{ link.url }}" {% if link.current or link.url == collection_url %}class="underlined"{% endif %}>{{ link.title }}</a>
+          {% endfor %}
+        {% else %}
+          <a href="{{ collection_url }}" class="underlined">{{ section.settings.collection_label }}</a>
+          <a href="{{ about_url }}">{{ section.settings.about_label }}</a>
+          <a href="{{ vestidor_url }}">{{ section.settings.vestidor_label }}</a>
+        {% endif %}
+      </div>
+      <button class="nav__hamburger" type="button" onclick="toggleMobileMenu()" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="{{ routes.root_url }}" class="nav__logo">
+        <img src="{{ 'trame_horizontal-black.svg' | asset_url }}" alt="{{ shop.name | escape }}" width="1115" height="142">
+      </a>
+      <div class="nav__right">
+        <a href="{{ routes.search_url }}" title="Buscar">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </a>
+        <a href="{{ routes.account_url }}" title="Cuenta">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
+        <a href="{{ favorites_url }}" title="Favoritos">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        </a>
+        <a href="{{ routes.cart_url }}" title="Carrito" class="nav__cart">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          {% if cart.item_count > 0 %}<span class="nav__cart-dot"></span>{% endif %}
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="nav__mobile-menu" id="mobileMenu">
+    {% if section.settings.header_menu != blank %}
+      {% for link in section.settings.header_menu.links %}
+        <a href="{{ link.url }}" {% if link.current or link.url == collection_url %}class="underlined"{% endif %}>{{ link.title }}</a>
+      {% endfor %}
+    {% else %}
+      <a href="{{ collection_url }}" class="underlined">{{ section.settings.collection_label }}</a>
+      <a href="{{ about_url }}">{{ section.settings.about_label }}</a>
+      <a href="{{ vestidor_url }}">{{ section.settings.vestidor_label }}</a>
+    {% endif %}
+    <hr>
+    <a href="{{ favorites_url }}">{{ section.settings.favorites_label }}</a>
+    <a href="{{ routes.search_url }}">Buscar</a>
+    <a href="{{ routes.cart_url }}">Carrito</a>
+  </div>
+
+  <section class="catalog-page" data-ct-collection="{{ section.id }}">
+    <div class="catalog-main">
+      <aside class="catalog-sidebar">
+        <h1 class="catalog-sidebar__title">{{ catalog_title | escape | newline_to_br }}</h1>
+        {% if catalog_subtitle != blank %}
+          <p class="catalog-sidebar__subtitle">{{ catalog_subtitle | escape | newline_to_br }}</p>
+        {% endif %}
+
+        <div class="catalog-sidebar__mobile-toggles">
+          <button class="catalog-sidebar__toggle-btn" type="button" data-toggle-target="filters">
+            Filtrar <span class="catalog-sidebar__toggle-icon" data-toggle-icon="filters">+</span>
+          </button>
+          <button class="catalog-sidebar__toggle-btn" type="button" data-toggle-target="sort">
+            Ordenar <span class="catalog-sidebar__toggle-icon" data-toggle-icon="sort">+</span>
+          </button>
+        </div>
+
+        <div class="catalog-sidebar__collapsible catalog-sidebar__collapsible--filters" data-toggle-panel="filters">
+          <p class="catalog-sidebar__section-title">Filtrar</p>
+          <div class="catalog-sidebar__filters">
+            <button class="is-active" type="button" data-filter="all">Ver todo</button>
+            {% for category in derived_categories %}
+              {% assign category_label = category | strip %}
+              {% if category_label != blank %}
+                <button type="button" data-filter="{{ category_label | handleize }}">{{ category_label }}</button>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="catalog-sidebar__collapsible catalog-sidebar__collapsible--sort" data-toggle-panel="sort">
+          <p class="catalog-sidebar__section-title">Ordenar</p>
+          {% if has_price_ascending or has_price_descending %}
+            <div class="catalog-sidebar__sort">
+              <a href="{{ price_sort_url }}" class="catalog-sidebar__sort-toggle">
+                {{ section.settings.sort_label }}
+                <span class="catalog-sidebar__sort-arrow">{{ price_sort_arrow }}</span>
+              </a>
+            </div>
+          {% else %}
+            <p class="catalog-sidebar__sort-note">Configura opciones de orden en la colección para activar este control.</p>
+          {% endif %}
+        </div>
+
+        <div class="catalog-sidebar__meta">
+          <span data-visible-count>{{ display_collection.products.size }}</span> productos en esta vista
+        </div>
+      </aside>
+
+      <div class="catalog-grid-area">
+        <div class="catalog-grid-view-toggle" aria-label="Vista de productos">
+          <button class="catalog-grid-view-btn" type="button" data-grid-cols="3" title="3 columnas" aria-label="Ver productos en 3 columnas">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="21" height="21" rx="2"/><line x1="8" y1="1.5" x2="8" y2="22.5"/><line x1="16" y1="1.5" x2="16" y2="22.5"/><line x1="1.5" y1="8.5" x2="22.5" y2="8.5"/><line x1="1.5" y1="15.5" x2="22.5" y2="15.5"/></svg>
+          </button>
+          <button class="catalog-grid-view-btn is-active" type="button" data-grid-cols="2" title="2 columnas" aria-label="Ver productos en 2 columnas">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="21" height="21" rx="2"/><line x1="12" y1="1.5" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="22.5" y2="12"/></svg>
+          </button>
+          <button class="catalog-grid-view-btn" type="button" data-grid-cols="1" title="1 columna" aria-label="Ver productos en 1 columna">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="21" height="21" rx="2"/><line x1="1.5" y1="8.5" x2="22.5" y2="8.5"/><line x1="1.5" y1="15.5" x2="22.5" y2="15.5"/></svg>
+          </button>
+        </div>
+
+        {% if display_collection.products_count > 0 %}
+          <div class="catalog-product-grid" data-product-grid>
+            {% for product in display_collection.products %}
+              {% liquid
+                assign category_label = product.type | strip
+                if category_label == blank and product.tags.size > 0
+                  assign category_label = product.tags.first | strip
+                endif
+                if category_label == blank
+                  assign product_handle = product.handle
+                  if product_handle contains 'abrigo' or product_handle contains 'blazer' or product_handle contains 'capa' or product_handle contains 'tapado'
+                    assign category_label = 'Abrigos'
+                  elsif product_handle contains 'camisa-basica' or product_handle contains 'camisa-oversize'
+                    assign category_label = 'Camisas'
+                  elsif product_handle contains 'denim' or product_handle contains 'jean'
+                    assign category_label = 'Denim'
+                  elsif product_handle contains 'falda'
+                    assign category_label = 'Faldas'
+                  elsif product_handle contains 'pantalon' or product_handle contains 'jogging'
+                    assign category_label = 'Pantalones'
+                  elsif product_handle contains 'polera' or product_handle contains 'sweater'
+                    assign category_label = 'Poleras'
+                  elsif product_handle contains 'polo'
+                    assign category_label = 'Polos'
+                  endif
+                endif
+                assign category_handle = category_label | handleize
+
+                assign primary_media = product.featured_media.preview_image | default: product.featured_image
+                assign secondary_media = blank
+                if product.media.size > 1
+                  assign secondary_media = product.media[1].preview_image
+                endif
+
+                assign product_description = product.description | strip_html | strip_newlines | truncate: 220
+
+                assign color_option = blank
+                assign color_option_position = 0
+                for option in product.options_with_values
+                  assign option_name = option.name | downcase
+                  if option_name contains 'color' or option_name contains 'colour'
+                    assign color_option = option
+                    assign color_option_position = forloop.index
+                  endif
+                endfor
+
+                assign primary_asset_name = ''
+                if color_option != blank
+                  assign primary_color_slug = color_option.values.first | handleize
+                  if primary_color_slug == 'black'
+                    assign primary_color_slug = 'negro'
+                  elsif primary_color_slug == 'verde-pacay' or primary_color_slug == 'verde-botella'
+                    assign primary_color_slug = 'verde'
+                  elsif primary_color_slug == 'gris-oscuro'
+                    assign primary_color_slug = 'gris'
+                  elsif primary_color_slug == 'azul-oscuro'
+                    assign primary_color_slug = 'azul'
+                  elsif primary_color_slug == 'perla'
+                    assign primary_color_slug = 'blanco'
+                  endif
+                  assign primary_asset_name = product.handle | append: '-' | append: primary_color_slug | append: '.png'
+                else
+                  assign primary_asset_name = product.handle | append: '.png'
+                endif
+
+                assign primary_asset_url = primary_asset_name | asset_url
+                assign primary_display_url = primary_asset_url
+                assign primary_modal_url = primary_asset_url
+                if primary_display_url == blank and primary_media != blank
+                  assign primary_display_url = primary_media | image_url: width: 1000
+                  assign primary_modal_url = primary_media | image_url: width: 1200
+                endif
+                assign secondary_display_url = primary_display_url
+                if secondary_media != blank
+                  assign secondary_display_url = secondary_media | image_url: width: 1000
+                endif
+
+                assign primary_color_display = ''
+                if color_option != blank
+                  assign primary_color_display = color_option.values.first
+                  if primary_color_display == 'Black'
+                    assign primary_color_display = 'Negro'
+                  endif
+                endif
+              %}
+              <article
+                class="catalog-card"
+                data-product-card
+                data-category="{{ category_handle }}"
+                data-title="{{ product.title | escape }}"
+                data-category-label="{{ category_label | escape }}"
+                data-description="{{ product_description | escape }}"
+                data-image="{{ primary_modal_url }}"
+                data-price="{{ product.price | money | escape }}"
+                data-url="{{ product.url }}"
+                data-current-color="{% if color_option != blank %}{{ color_option.values.first | escape }}{% endif %}"
+                data-current-color-display="{{ primary_color_display | escape }}"
+              >
+                <div class="catalog-card__image">
+                  <a href="{{ product.url }}" class="catalog-card__image-link" aria-label="Ver {{ product.title | escape }}"></a>
+                  {% if primary_display_url != blank %}
+                    <img
+                      class="catalog-card__img catalog-card__img--primary"
+                      src="{{ primary_display_url }}"
+                      alt="{{ primary_media.alt | default: product.title | escape }}"
+                      width="1200"
+                      height="1500"
+                      loading="lazy"
+                    >
+                  {% endif %}
+                  {% if secondary_display_url != blank %}
+                    <img
+                      class="catalog-card__img catalog-card__img--secondary"
+                      src="{{ secondary_display_url }}"
+                      alt="{{ secondary_media.alt | default: product.title | escape }}"
+                      width="1200"
+                      height="1500"
+                      loading="lazy"
+                    >
+                  {% endif %}
+                  <button class="catalog-card__quick" type="button" data-quick-view aria-label="Vista rápida de {{ product.title | escape }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                <div class="catalog-card__info">
+                  <a href="{{ product.url }}" class="catalog-card__text">
+                    <div class="catalog-card__name">{{ product.title }}</div>
+                    <div class="catalog-card__price">
+                      <span>{{ product.price | money }}</span>
+                      {% if product.compare_at_price_max > product.price %}
+                        <span class="catalog-card__price-compare">{{ product.compare_at_price_max | money }}</span>
+                      {% endif %}
+                    </div>
+                  </a>
+                  {% if color_option != blank and color_option.values.size > 1 %}
+                    <div class="catalog-card__swatches" aria-label="Colores de {{ product.title | escape }}">
+                      {% for color_value in color_option.values %}
+                        {% liquid
+                          assign color_variant = blank
+                          for variant in product.variants
+                            assign variant_color = ''
+                            case color_option_position
+                              when 1
+                                assign variant_color = variant.option1
+                              when 2
+                                assign variant_color = variant.option2
+                              when 3
+                                assign variant_color = variant.option3
+                            endcase
+                            if variant_color == color_value and color_variant == blank
+                              assign color_variant = variant
+                            endif
+                          endfor
+
+                          assign color_slug = color_value | handleize
+                          assign color_display = color_value
+                          if color_value == 'Black'
+                            assign color_display = 'Negro'
+                          endif
+                          if color_slug == 'black'
+                            assign color_slug = 'negro'
+                          elsif color_slug == 'verde-pacay' or color_slug == 'verde-botella'
+                            assign color_slug = 'verde'
+                          elsif color_slug == 'gris-oscuro'
+                            assign color_slug = 'gris'
+                          elsif color_slug == 'azul-oscuro'
+                            assign color_slug = 'azul'
+                          elsif color_slug == 'perla'
+                            assign color_slug = 'blanco'
+                          endif
+
+                          assign color_asset_name = product.handle | append: '-' | append: color_slug | append: '.png'
+                          assign color_image_url = color_asset_name | asset_url
+                          assign color_modal_image_url = color_image_url
+
+                          assign color_image = blank
+                          if color_variant.featured_media != blank
+                            assign color_image = color_variant.featured_media.preview_image
+                          elsif color_variant.image != blank
+                            assign color_image = color_variant.image
+                          endif
+
+                          if color_image_url == blank and color_image != blank
+                            assign color_image_url = color_image | image_url: width: 1000
+                            assign color_modal_image_url = color_image | image_url: width: 1200
+                          endif
+
+                          assign variant_url = product.url
+                          if color_variant != blank
+                            assign variant_url = product.url | append: '?variant=' | append: color_variant.id
+                          endif
+                        %}
+                        <button
+                          class="catalog-card__swatch{% if forloop.first %} is-active{% endif %}"
+                          type="button"
+                          data-color-swatch
+                          data-color-name="{{ color_value | escape }}"
+                          data-color-display="{{ color_display | escape }}"
+                          data-color-image="{{ color_image_url }}"
+                          data-color-modal-image="{{ color_modal_image_url }}"
+                          data-color-url="{{ variant_url }}"
+                          aria-label="{{ product.title | escape }} — {{ color_display | escape }}"
+                          title="{{ color_display | escape }}"
+                        >
+                          {% if color_image_url != blank %}
+                            <img
+                              src="{{ color_image_url }}"
+                              alt="{{ color_display | escape }}"
+                              width="120"
+                              height="150"
+                              loading="lazy"
+                            >
+                          {% else %}
+                            <span>{{ color_value | slice: 0, 1 }}</span>
+                          {% endif %}
+                        </button>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+          <div class="catalog-empty-state" data-empty-state hidden>
+            <span class="catalog-empty-state__eyebrow">Filtro activo</span>
+            <h3 class="catalog-empty-state__title">Sin coincidencias</h3>
+            <p>No hay productos visibles con ese filtro. Prueba otra categoría o vuelve a ver todo.</p>
+          </div>
+        {% else %}
+          <div class="catalog-empty-state catalog-empty-state--static">
+            <span class="catalog-empty-state__eyebrow">{{ section.settings.collection_label }}</span>
+            <h3 class="catalog-empty-state__title">{{ section.settings.empty_state_title }}</h3>
+            <p>{{ section.settings.empty_state_text }}</p>
+          </div>
+        {% endif %}
+
+        {% if paginate.pages > 1 %}
+          <nav class="catalog-pagination" aria-label="Paginación">
+            {% if paginate.previous %}
+              <a href="{{ paginate.previous.url }}">Anterior</a>
+            {% else %}
+              <span class="is-disabled">Anterior</span>
+            {% endif %}
+            <span>{{ paginate.current_page }} / {{ paginate.pages }}</span>
+            {% if paginate.next %}
+              <a href="{{ paginate.next.url }}">Siguiente</a>
+            {% else %}
+              <span class="is-disabled">Siguiente</span>
+            {% endif %}
+          </nav>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="catalog-modal-overlay" data-quick-modal hidden>
+      <div class="catalog-modal" role="dialog" aria-modal="true" aria-labelledby="CatalogQuickViewTitle-{{ section.id }}">
+        <button class="catalog-modal__close" type="button" data-close-modal aria-label="Cerrar">&times;</button>
+        <div class="catalog-modal__gallery">
+          {% liquid
+            assign modal_fallback_image = display_collection.products.first.featured_media.preview_image | default: display_collection.products.first.featured_image
+          %}
+          {% if modal_fallback_image != blank %}
+            <img
+              src="{{ modal_fallback_image | image_url: width: 1200 }}"
+              alt=""
+              width="{{ modal_fallback_image.width }}"
+              height="{{ modal_fallback_image.height }}"
+              data-modal-image
+            >
+          {% else %}
+            <img
+              src="{{ 'abrigo-suede-pampa-verde.png' | asset_url }}"
+              alt=""
+              width="1200"
+              height="1500"
+              data-modal-image
+            >
+          {% endif %}
+        </div>
+        <div class="catalog-modal__info">
+          <div class="catalog-modal__cat" data-modal-category></div>
+          <h2 class="catalog-modal__title" id="CatalogQuickViewTitle-{{ section.id }}" data-modal-title></h2>
+          <div class="catalog-modal__price" data-modal-price></div>
+          <p class="catalog-modal__desc" data-modal-description></p>
+          <div class="catalog-modal__actions">
+            <a class="btn-outline catalog-modal__cta" href="#" data-modal-link>
+              Ver producto
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer footer--catalog">
+      <div class="footer__grid footer__grid--catalog">
+        <div class="footer__brand">
+          <div class="footer__brand-name">{{ section.settings.footer_brand_name }}</div>
+          <p>{{ section.settings.footer_brand_text | escape | newline_to_br }}</p>
+        </div>
+        <div>
+          <h4>{{ section.settings.shop_heading }}</h4>
+          {% if section.settings.footer_shop_menu != blank %}
+            <ul>
+              {% for link in section.settings.footer_shop_menu.links %}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {% endfor %}
+            </ul>
+          {% elsif section.settings.header_menu != blank %}
+            <ul>
+              {% for link in section.settings.header_menu.links %}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <ul>
+              <li><a href="{{ collection_url }}">{{ section.settings.collection_label }}</a></li>
+              <li><a href="{{ vestidor_url }}">{{ section.settings.vestidor_label }}</a></li>
+              <li><a href="{{ routes.search_url }}">Buscar</a></li>
+            </ul>
+          {% endif %}
+        </div>
+        <div>
+          <h4>{{ section.settings.info_heading }}</h4>
+          {% if section.settings.footer_info_menu != blank %}
+            <ul>
+              {% for link in section.settings.footer_info_menu.links %}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <ul>
+              <li><a href="{{ about_url }}">{{ section.settings.about_label }}</a></li>
+              <li><a href="/pages/contact">Contacto</a></li>
+            </ul>
+          {% endif %}
+        </div>
+        <div>
+          <h4>{{ section.settings.help_heading }}</h4>
+          {% if section.settings.footer_help_menu != blank %}
+            <ul>
+              {% for link in section.settings.footer_help_menu.links %}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <ul>
+              <li><a href="/pages/contact">Contacto</a></li>
+              <li><a href="/policies/terms-of-service">Términos</a></li>
+              <li><a href="/policies/privacy-policy">Privacidad</a></li>
+            </ul>
+          {% endif %}
+        </div>
+      </div>
+      <div class="footer__bottom footer__bottom--catalog">
+        <span>&copy; {{ 'now' | date: '%Y' }} {{ section.settings.footer_brand_name }}. {{ section.settings.footer_bottom_text }}</span>
+        <div class="footer__social">
+          {% if section.settings.instagram_url != blank %}
+            <a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener">Instagram</a>
+          {% endif %}
+          {% if section.settings.tiktok_url != blank %}
+            <a href="{{ section.settings.tiktok_url }}" target="_blank" rel="noopener">TikTok</a>
+          {% endif %}
+        </div>
+      </div>
+    </footer>
+  </section>
+{% endpaginate %}
+
+{% schema %}
+{
+  "name": "Casa Tramé Collection",
+  "enabled_on": {
+    "templates": ["collection"]
+  },
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "header_menu",
+      "label": "Menú principal"
+    },
+    {
+      "type": "text",
+      "id": "collection_label",
+      "label": "Label colección",
+      "default": "Colección"
+    },
+    {
+      "type": "text",
+      "id": "about_label",
+      "label": "Label conócenos",
+      "default": "Conócenos"
+    },
+    {
+      "type": "text",
+      "id": "vestidor_label",
+      "label": "Label vestidor",
+      "default": "Vestidor™"
+    },
+    {
+      "type": "url",
+      "id": "vestidor_url",
+      "label": "Link vestidor"
+    },
+    {
+      "type": "text",
+      "id": "favorites_label",
+      "label": "Label favoritos móvil",
+      "default": "Favoritos"
+    },
+    {
+      "type": "url",
+      "id": "favorites_url",
+      "label": "Link favoritos"
+    },
+    {
+      "type": "text",
+      "id": "catalog_title",
+      "label": "Título catálogo",
+      "default": "OTOÑO\nINVIERNO"
+    },
+    {
+      "type": "textarea",
+      "id": "catalog_subtitle",
+      "label": "Subtítulo catálogo",
+      "default": "Una colección que nace desde lo esencial: versátil, cómoda, y pensada para acompañarte en el día a día."
+    },
+    {
+      "type": "text",
+      "id": "sort_label",
+      "label": "Texto ordenar",
+      "default": "Ordenar por precio"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Productos por página",
+      "min": 12,
+      "max": 48,
+      "step": 12,
+      "default": 24
+    },
+    {
+      "type": "text",
+      "id": "empty_state_title",
+      "label": "Título colección vacía",
+      "default": "Estamos preparando esta selección."
+    },
+    {
+      "type": "textarea",
+      "id": "empty_state_text",
+      "label": "Texto colección vacía",
+      "default": "Publica productos en esta colección y aparecerán aquí automáticamente con este layout."
+    },
+    {
+      "type": "text",
+      "id": "footer_brand_name",
+      "label": "Nombre footer",
+      "default": "Casa Tramé"
+    },
+    {
+      "type": "textarea",
+      "id": "footer_brand_text",
+      "label": "Texto footer",
+      "default": "Moda artesanal con visión contemporánea.\nDiseñada para quienes valoran la calidad y la intención detrás de cada prenda."
+    },
+    {
+      "type": "text",
+      "id": "shop_heading",
+      "label": "Título comprar",
+      "default": "Comprar"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_shop_menu",
+      "label": "Menú comprar"
+    },
+    {
+      "type": "text",
+      "id": "info_heading",
+      "label": "Título info",
+      "default": "Info"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_info_menu",
+      "label": "Menú info"
+    },
+    {
+      "type": "text",
+      "id": "help_heading",
+      "label": "Título atención",
+      "default": "Atención"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_help_menu",
+      "label": "Menú atención"
+    },
+    {
+      "type": "text",
+      "id": "social_heading",
+      "label": "Título redes",
+      "default": "Síguenos"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram"
+    },
+    {
+      "type": "url",
+      "id": "tiktok_url",
+      "label": "TikTok"
+    },
+    {
+      "type": "text",
+      "id": "footer_bottom_text",
+      "label": "Texto legal footer",
+      "default": "Todos los derechos reservados."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Casa Tramé Collection"
+    }
+  ]
+}
+{% endschema %}
