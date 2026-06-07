@@ -957,6 +957,7 @@
               endif
               assign item_name = product.title | append: ' · ' | append: color_display
               assign variant_url = product.url
+              assign variant_id = ''
               for variant in product.variants
                 assign variant_color = ''
                 case color_option_position
@@ -969,7 +970,12 @@
                 endcase
                 if variant_color == color_value
                   assign variant_url = product.url | append: '?variant=' | append: variant.id
-                  break
+                  if variant.available and variant_id == ''
+                    assign variant_id = variant.id
+                    break
+                  elsif variant_id == ''
+                    assign variant_id = variant.id
+                  endif
                 endif
               endfor
             %}
@@ -977,6 +983,7 @@
               catalog[{{ category_key | json }}].push({
                 id: {{ product.id | append: '-' | append: color_slug | json }},
                 productId: {{ product.id | json }},
+                variantId: {{ variant_id | json }},
                 handle: {{ product.handle | json }},
                 name: {{ item_name | json }},
                 productName: {{ product.title | json }},
@@ -1009,6 +1016,7 @@
             catalog[{{ category_key | json }}].push({
               id: {{ product.id | json }},
               productId: {{ product.id | json }},
+              variantId: {{ product.selected_or_first_available_variant.id | json }},
               handle: {{ product.handle | json }},
               name: {{ product.title | json }},
               productName: {{ product.title | json }},
@@ -1034,6 +1042,7 @@
       const summaryList = root.querySelector('[data-summary-list]');
       const summaryTotal = root.querySelector('[data-summary-total]');
       const saveBtn = root.querySelector('[data-save]');
+      const checkoutBtn = root.querySelector('.ct-v__checkout');
       const savedList = root.querySelector('[data-saved-list]');
       const toastEl = document.querySelector('[data-vestidor-toast]');
       const helpModal = document.querySelector('[data-help-modal]');
@@ -1276,6 +1285,7 @@
         const total = unique.reduce((sum, item) => sum + Number(item.price || 0), 0);
         summaryTotal.textContent = formatMoney(total);
         if (saveBtn) saveBtn.disabled = !unique.length;
+        if (checkoutBtn) checkoutBtn.disabled = !unique.length || unique.some((item) => !item.variantId);
       }
 
       function uniqueItemsFromLayerRefs(layerRefs) {
@@ -1483,6 +1493,49 @@
         toast('Look eliminado');
       }
 
+      async function addCurrentLookToCart() {
+        const unique = [];
+        layers.forEach((layer) => {
+          if (!unique.some((item) => item.id === layer.item.id)) unique.push(layer.item);
+        });
+        if (!unique.length) {
+          toast('Agrega prendas al outfit');
+          return;
+        }
+        const missingVariant = unique.find((item) => !item.variantId);
+        if (missingVariant) {
+          toast('Falta variante para ' + missingVariant.productName);
+          return;
+        }
+        if (checkoutBtn) checkoutBtn.disabled = true;
+
+        try {
+          const response = await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              items: unique.map((item) => ({
+                id: Number(item.variantId),
+                quantity: 1,
+                properties: {
+                  Vestidor: 'Outfit Casa Trame',
+                  Color: item.color || ''
+                }
+              }))
+            })
+          });
+
+          if (!response.ok) throw new Error('cart-add-failed');
+          window.location.href = '/cart';
+        } catch (error) {
+          toast('No se pudo agregar al carrito');
+          if (checkoutBtn) checkoutBtn.disabled = false;
+        }
+      }
+
       function randomItem(category) {
         const items = catalog[category] || [];
         if (!items.length) return null;
@@ -1568,6 +1621,7 @@
       root.querySelector('[data-randomize]')?.addEventListener('click', randomizeLook);
       root.querySelector('[data-help]')?.addEventListener('click', openHelpModal);
       root.querySelector('[data-save]')?.addEventListener('click', saveCurrentLook);
+      checkoutBtn?.addEventListener('click', addCurrentLookToCart);
 
       helpGuideToggle?.addEventListener('click', toggleFullGuide);
       helpModal?.addEventListener('click', (event) => {
