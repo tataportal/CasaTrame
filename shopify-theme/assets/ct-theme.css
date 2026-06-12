@@ -527,7 +527,7 @@ body:has(.launch-home) .ct-v-nav,
 .brand-statement {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr 2fr;
   align-items: center;
   background: var(--bg);
   margin-bottom: 14rem;
@@ -551,7 +551,7 @@ body:has(.launch-home) .ct-v-nav,
   height: auto;
   mix-blend-mode: multiply;
 }
-.brand-statement__content { padding: 3rem 3rem 3rem 4rem; }
+.brand-statement__content { padding: 3rem 4rem 3rem 8rem; }
 .brand-statement__title {
   font-family: var(--heading);
   font-weight: 200;

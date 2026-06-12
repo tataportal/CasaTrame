@@ -39,17 +39,17 @@
 </section>
 
 <section class="brand-statement" id="conocenos">
-  <div class="brand-statement__img">
-    <picture class="brand-statement__picture">
-      <source srcset="{{ concept_webp_asset | asset_url }}" type="image/webp">
-      <img src="{{ concept_png_asset | asset_url }}" alt="{{ section.settings.brand_title | escape }}" width="1164" height="950" loading="lazy">
-    </picture>
-  </div>
   <div class="brand-statement__content">
     <h2 class="brand-statement__title">{{ section.settings.brand_title | escape | newline_to_br }}</h2>
     <p class="brand-statement__text">
       {{ section.settings.brand_text | escape | newline_to_br }}
     </p>
+  </div>
+  <div class="brand-statement__img">
+    <picture class="brand-statement__picture">
+      <source srcset="{{ concept_webp_asset | asset_url }}" type="image/webp">
+      <img src="{{ concept_png_asset | asset_url }}" alt="{{ section.settings.brand_title | escape }}" width="1164" height="950" loading="lazy">
+    </picture>
   </div>
 </section>
 
