@@ -535,11 +535,20 @@ body:has(.launch-home) .ct-v-nav,
 .brand-statement__img {
   background: var(--bg);
   isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 3rem;
 }
-.brand-statement__picture { display: block; }
+.brand-statement__picture {
+  display: block;
+  width: 100%;
+  max-width: 1164px;
+}
 .brand-statement__img img {
   display: block;
   width: 100%;
+  height: auto;
   mix-blend-mode: multiply;
 }
 .brand-statement__content { padding: 3rem 3rem 3rem 4rem; }
@@ -2164,6 +2173,7 @@ body:has(.launch-home) .ct-v-nav,
   .hero__cta svg { width: 1rem; height: 1rem; }
 
   .brand-statement { grid-template-columns: 1fr; min-height: 100vh; margin-bottom: 2rem; align-content: center; }
+  .brand-statement__img { padding-inline: 1.5rem; }
   .brand-statement__content { padding: 0.5rem 1.5rem 2.5rem; text-align: center; }
   .brand-statement__title { font-size: var(--fs-section); margin-bottom: 0.8rem; line-height: 1.25; }
   .brand-statement__text { font-size: var(--fs-body); max-width: 100%; line-height: 1.65; }
