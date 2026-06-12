@@ -1,0 +1,111 @@
+<section class="launch-home" id="drop" data-launch-home="{{ section.id }}">
+  <style>
+    .launch-home {
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: #0c0c0c;
+    }
+    body:has(.launch-home) {
+      background: #0c0c0c;
+    }
+  </style>
+  <div class="launch-home__media" aria-hidden="true">
+    <video class="launch-home__video" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="{{ 'casatrame_lookbook_poster.jpg' | asset_url }}">
+      <source src="{{ 'casatrame_lookbook_mobile_ios.mp4' | asset_url }}" type="video/mp4" media="(max-width: 768px)">
+      <source src="{{ 'casatrame_lookbook_1920.mp4' | asset_url }}" type="video/mp4">
+    </video>
+  </div>
+  <div class="launch-home__overlay"></div>
+
+  <button class="launch-home__sound" type="button" aria-label="Prender volumen" aria-pressed="false" data-launch-sound>
+    <svg class="launch-home__sound-icon launch-home__sound-icon--off" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 9v6h4l5 4V5L7 9H3Z" fill="currentColor"/>
+      <path d="m17 9 4 4m0-4-4 4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/>
+    </svg>
+    <svg class="launch-home__sound-icon launch-home__sound-icon--on" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 9v6h4l5 4V5L7 9H3Z" fill="currentColor"/>
+      <path d="M16 8.5a5 5 0 0 1 0 7M18.8 5.8a9 9 0 0 1 0 12.4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/>
+    </svg>
+  </button>
+
+  <div class="launch-home__content">
+    <img class="launch-home__logo" src="{{ 'trame_horizontal-black.svg' | asset_url }}" alt="Casa Tramé" width="1115" height="142">
+    <h1 class="launch-home__title">Lanzamiento otoño/invierno 2026</h1>
+    <p class="launch-home__body">Suscríbete para obtener 20% de descuento<br>en tu primera compra en productos seleccionados.</p>
+    {% form 'customer', class: 'launch-home__form' %}
+      <input type="hidden" name="contact[tags]" value="newsletter,drop">
+      <input type="hidden" name="contact[accepts_marketing]" value="true">
+      <div class="launch-home__row">
+        <label class="visually-hidden" for="SignupEmail-{{ section.id }}">Email</label>
+        <input
+          id="SignupEmail-{{ section.id }}"
+          class="launch-home__input"
+          type="email"
+          name="contact[email]"
+          placeholder="Tu email"
+          value="{{ form.email }}"
+          autocomplete="email"
+          required
+        >
+        <button class="launch-home__submit" type="submit">Suscribirme</button>
+      </div>
+      <p class="launch-home__legal">Al suscribirte aceptas recibir novedades del drop.</p>
+      {% if form.posted_successfully? %}
+        <p class="launch-home__status" role="status">Listo. Te avisaremos apenas salga el drop.</p>
+      {% endif %}
+      {% if form.errors %}
+        <div class="launch-home__errors">
+          {{ form.errors | default_errors }}
+        </div>
+      {% endif %}
+    {% endform %}
+  </div>
+</section>
+
+<script>
+  (() => {
+    if (window.location.pathname === '/pages/lanzamiento' && window.history && window.history.replaceState) {
+      window.history.replaceState(null, document.title, '/lanzamiento');
+    }
+
+    const section = document.querySelector('[data-launch-home="{{ section.id }}"]');
+    if (!section) return;
+
+    const video = section.querySelector('.launch-home__video');
+    const button = section.querySelector('[data-launch-sound]');
+    if (!video || !button) return;
+
+    const setMutedState = (muted) => {
+      video.muted = muted;
+      button.setAttribute('aria-pressed', String(!muted));
+      button.setAttribute('aria-label', muted ? 'Prender volumen' : 'Apagar volumen');
+      button.classList.toggle('is-on', !muted);
+    };
+
+    video.defaultMuted = true;
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    setMutedState(true);
+    video.play().catch(() => {});
+
+    button.addEventListener('click', () => {
+      setMutedState(!video.muted);
+      if (video.paused) video.play().catch(() => {});
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Casa Tramé Signup",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Casa Tramé Signup"
+    }
+  ]
+}
+{% endschema %}

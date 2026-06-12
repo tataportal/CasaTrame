@@ -11,10 +11,10 @@
   </header>
 
   {% if cart.item_count > 0 %}
-    <form class="cart-page__form" action="{{ routes.cart_url }}" method="post" novalidate>
+    <form class="cart-page__form" action="{{ routes.cart_url }}" method="post" novalidate data-cart-form>
       <div class="cart-page__items">
         {% for item in cart.items %}
-          <article class="cart-item">
+          <article class="cart-item" data-cart-item data-cart-line-key="{{ item.key }}">
             <a class="cart-item__media" href="{{ item.url }}">
               {% if item.image %}
                 <img src="{{ item.image | image_url: width: 360 }}" alt="{{ item.image.alt | default: item.product.title | escape }}" width="180" height="225" loading="lazy">
@@ -42,10 +42,14 @@
             </div>
             <div class="cart-item__qty">
               <label for="Quantity-{{ forloop.index }}">Cantidad</label>
-              <input id="Quantity-{{ forloop.index }}" type="number" name="updates[{{ item.key }}]" value="{{ item.quantity }}" min="0" inputmode="numeric">
+              <div class="cart-item__qty-control" data-cart-quantity>
+                <button type="button" class="cart-item__qty-button" data-cart-qty-minus aria-label="Restar cantidad">−</button>
+                <input id="Quantity-{{ forloop.index }}" type="number" name="updates[{{ item.key }}]" value="{{ item.quantity }}" min="0" inputmode="numeric" data-cart-qty-input>
+                <button type="button" class="cart-item__qty-button" data-cart-qty-plus aria-label="Sumar cantidad">+</button>
+              </div>
             </div>
             <div class="cart-item__price">
-              <span>{{ item.final_line_price | money }}</span>
+              <span data-cart-line-price>{{ item.final_line_price | money }}</span>
               {% if item.original_line_price != item.final_line_price %}
                 <s>{{ item.original_line_price | money }}</s>
               {% endif %}
@@ -57,11 +61,10 @@
       <aside class="cart-page__summary">
         <div class="cart-page__summary-row">
           <span>Subtotal</span>
-          <strong>{{ cart.total_price | money }}</strong>
+          <strong data-cart-subtotal>{{ cart.total_price | money }}</strong>
         </div>
         <p>Envíos, cambios y devoluciones se confirman antes del pago final.</p>
         <button class="cart-page__checkout" type="submit" name="checkout">Checkout</button>
-        <button class="cart-page__update" type="submit" name="update">Actualizar carrito</button>
         <a class="cart-page__continue" href="{{ collection_url }}">Seguir comprando</a>
       </aside>
     </form>
@@ -72,6 +75,8 @@
     </section>
   {% endif %}
 </main>
+
+{% render 'casa-trame-footer' %}
 
 {% schema %}
 {

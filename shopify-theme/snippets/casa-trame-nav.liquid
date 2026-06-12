@@ -14,12 +14,12 @@
   assign nav_active = active | default: ''
 %}
 
-<nav class="ct-v-nav">
+<nav class="ct-v-nav{% if transparent_on_hero %} ct-v-nav--transparent{% endif %}"{% if transparent_on_hero %} data-transparent-nav{% endif %}>
   <div class="ct-v-nav__inner">
     <div class="ct-v-nav__left">
       <a href="{{ nav_collection_url }}"{% if nav_active == 'collection' %} class="underlined"{% endif %}>Colección</a>
       <a href="{{ nav_about_url }}"{% if nav_active == 'about' %} class="underlined"{% endif %}>Conócenos</a>
-      <a href="{{ nav_vestidor_url }}"{% if nav_active == 'vestidor' %} class="underlined"{% endif %}>Vestidor™</a>
+      <a href="{{ nav_vestidor_url }}"{% if nav_active == 'vestidor' %} class="underlined"{% endif %}>Vestidor</a>
     </div>
     <a href="{{ routes.root_url }}" class="ct-v-nav__logo">
       <img src="{{ 'trame_horizontal-black.svg' | asset_url }}" alt="{{ shop.name | escape }}" width="1115" height="142">
@@ -38,5 +38,20 @@
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
       </a>
     </div>
+    <button class="ct-v-nav__menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" data-ct-menu-toggle>
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+  <div class="ct-v-nav__mobile-menu" data-ct-mobile-menu>
+    <a href="{{ nav_collection_url }}"{% if nav_active == 'collection' %} class="underlined"{% endif %}>Colección</a>
+    <a href="{{ nav_about_url }}"{% if nav_active == 'about' %} class="underlined"{% endif %}>Conócenos</a>
+    <a href="{{ nav_vestidor_url }}"{% if nav_active == 'vestidor' %} class="underlined"{% endif %}>Vestidor</a>
+    <hr>
+    <a href="{{ routes.search_url }}">Buscar</a>
+    <a href="{{ routes.account_url }}">Cuenta</a>
+    <a href="{{ nav_favorites_url }}">Favoritos</a>
+    <a href="{{ routes.cart_url }}">Carrito</a>
   </div>
 </nav>

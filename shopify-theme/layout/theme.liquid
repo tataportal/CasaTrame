@@ -1,5 +1,16 @@
 <!doctype html>
-<html lang="{{ request.locale.iso_code | default: 'es' }}">
+{% liquid
+  assign ct_is_public_launch = false
+  if request.path == '/lanzamiento' or request.path == '/pages/lanzamiento'
+    assign ct_is_public_launch = true
+  endif
+
+  assign ct_route_locked = true
+  if ct_is_public_launch or request.design_mode or request.visual_preview_mode
+    assign ct_route_locked = false
+  endif
+%}
+<html lang="{{ request.locale.iso_code | default: 'es' }}" class="{% if ct_route_locked %}ct-route-locked{% endif %}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,8 +25,176 @@
     {{ content_for_header }}
 
     {{ 'ct-theme.css' | asset_url | stylesheet_tag }}
+    {% if ct_route_locked %}
+      <style>
+        html.ct-route-locked:not(.ct-access-granted),
+        html.ct-route-locked:not(.ct-access-granted) body {
+          min-height: 100%;
+          background: #0c0c0c;
+        }
+        html.ct-route-locked.ct-access-granted,
+        html.ct-route-locked.ct-access-granted body {
+          background: var(--bg, #f7f7f7);
+        }
+        html.ct-route-locked body > :not(.ct-password-gate) {
+          visibility: hidden;
+          pointer-events: none;
+          user-select: none;
+        }
+        html.ct-route-locked.ct-access-granted body > :not(.ct-password-gate) {
+          visibility: visible;
+          pointer-events: auto;
+          user-select: auto;
+        }
+        html.ct-route-locked.ct-access-granted .ct-password-gate {
+          display: none;
+        }
+        .ct-password-gate {
+          position: fixed;
+          inset: 0;
+          z-index: 2147483647;
+          display: grid;
+          place-items: center;
+          min-height: 100vh;
+          padding: 2rem;
+          color: #fff;
+          background:
+            radial-gradient(circle at center, rgba(255,255,255,0.08), rgba(12,12,12,0.92) 58%),
+            #0c0c0c;
+          font-family: var(--body, system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif);
+          text-align: center;
+        }
+        .ct-password-gate__panel {
+          width: min(100%, 28rem);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .ct-password-gate__logo {
+          width: 15rem;
+          max-width: 70vw;
+          height: auto;
+          margin-bottom: 2.6rem;
+          filter: brightness(0) invert(1);
+        }
+        .ct-password-gate__title {
+          margin: 0 0 1.6rem;
+          color: rgba(255,255,255,0.86);
+          font-size: 1.45rem;
+          font-weight: 300;
+          line-height: 1.4;
+        }
+        .ct-password-gate__form {
+          width: 100%;
+          display: grid;
+          gap: 1rem;
+        }
+        .ct-password-gate__input {
+          width: 100%;
+          padding: 0.9rem 0;
+          border: 0;
+          border-bottom: 1px solid rgba(255,255,255,0.58);
+          border-radius: 0;
+          outline: 0;
+          color: #fff;
+          background: transparent;
+          font: inherit;
+          font-size: 1.35rem;
+          text-align: center;
+        }
+        .ct-password-gate__input::placeholder {
+          color: rgba(255,255,255,0.52);
+        }
+        .ct-password-gate__submit,
+        .ct-password-gate__launch {
+          color: rgba(255,255,255,0.86);
+          font: inherit;
+          font-size: 0.9rem;
+          font-weight: 600;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+        }
+        .ct-password-gate__submit {
+          padding: 0.75rem 1rem;
+        }
+        .ct-password-gate__launch {
+          margin-top: 2rem;
+          text-decoration: none;
+        }
+        .ct-password-gate__error {
+          min-height: 1.25rem;
+          margin: 0;
+          color: rgba(255,255,255,0.68);
+          font-size: 0.95rem;
+          line-height: 1.35;
+        }
+      </style>
+      <script>
+        (() => {
+          const accessKey = 'casa-trame-route-access-v1';
+          const accessHash = 'c4e2b62d34f74e4fe94ea4d9326953659076c86345c087042aac860f6c86c79f';
+          try {
+            if (window.localStorage.getItem(accessKey) === accessHash) {
+              document.documentElement.classList.add('ct-access-granted');
+            }
+          } catch (error) {}
+        })();
+      </script>
+    {% endif %}
   </head>
   <body>
+    {% if ct_route_locked %}
+      <div class="ct-password-gate" data-ct-password-gate>
+        <div class="ct-password-gate__panel">
+          <img class="ct-password-gate__logo" src="{{ 'trame_horizontal-black.svg' | asset_url }}" alt="Casa Tramé" width="1115" height="142">
+          <p class="ct-password-gate__title">Sitio privado por ahora.</p>
+          <form class="ct-password-gate__form" data-ct-password-form>
+            <input class="ct-password-gate__input" type="password" name="password" placeholder="Clave" autocomplete="current-password" autofocus data-ct-password-input>
+            <button class="ct-password-gate__submit" type="submit">Entrar</button>
+            <p class="ct-password-gate__error" role="status" data-ct-password-error></p>
+          </form>
+          <a class="ct-password-gate__launch" href="/lanzamiento">Ir a lanzamiento</a>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const form = document.querySelector('[data-ct-password-form]');
+          const input = document.querySelector('[data-ct-password-input]');
+          const error = document.querySelector('[data-ct-password-error]');
+          const accessKey = 'casa-trame-route-access-v1';
+          const accessHash = 'c4e2b62d34f74e4fe94ea4d9326953659076c86345c087042aac860f6c86c79f';
+
+          const sha256 = async (value) => {
+            const bytes = new TextEncoder().encode(value);
+            const digest = await window.crypto.subtle.digest('SHA-256', bytes);
+            return Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, '0')).join('');
+          };
+
+          if (!form || !input) return;
+
+          form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            if (!window.crypto || !window.crypto.subtle) {
+              if (error) error.textContent = 'Actualiza tu navegador para entrar.';
+              return;
+            }
+
+            const candidate = await sha256(input.value.trim());
+            if (candidate !== accessHash) {
+              if (error) error.textContent = 'Clave incorrecta.';
+              input.select();
+              return;
+            }
+
+            try {
+              window.localStorage.setItem(accessKey, accessHash);
+            } catch (storageError) {}
+
+            document.documentElement.classList.add('ct-access-granted');
+          });
+        })();
+      </script>
+    {% endif %}
     {{ content_for_layout }}
 
     <script src="{{ 'ct-theme.js' | asset_url }}" defer></script>

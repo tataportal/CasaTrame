@@ -1,7 +1,31 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "general": {
     "accessibility": {
       "close": "Cerrar"
+    }
+  },
+  "shopify": {
+    "checkout": {
+      "contact": {
+        "company_label": "Ingresa tu DNI / CE / RUC para comprobante de pago",
+        "optional_company_label": "Ingresa tu DNI / CE / RUC para comprobante de pago"
+      },
+      "field_errors": {
+        "address_company_blank": "Introducir número de DNI / CE / RUC (Para comprobante de pago)",
+        "address_company_too_long": "Excede caracteres permitidos",
+        "address_company_contains_html_tags": "No puede contener HTML",
+        "address_company_contains_emojis": "No puede contener emojis",
+        "address_company_contains_mathematical_symbols": "No puede contener signos matemáticos"
+      }
     }
   }
 }

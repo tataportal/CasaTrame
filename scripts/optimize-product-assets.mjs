@@ -65,14 +65,23 @@ let totalBytes = 0;
 
 for (const file of sourceFiles) {
   const sourcePath = path.join(sourceDir, file);
-  const outputPath = path.join(assetsDir, file);
-  const result = optimizePng(sourcePath, outputPath);
-  baseCount += 1;
-  totalBytes += result.size;
+  const outputNames = aliases.get(file) || [file];
+  let firstOutputPath = '';
 
-  for (const alias of aliases.get(file) || []) {
-    fs.copyFileSync(outputPath, path.join(assetsDir, alias));
-    aliasCount += 1;
+  for (const [index, outputName] of outputNames.entries()) {
+    const outputPath = path.join(assetsDir, outputName);
+    if (index === 0) {
+      const result = optimizePng(sourcePath, outputPath);
+      firstOutputPath = outputPath;
+      baseCount += 1;
+      totalBytes += result.size;
+    } else {
+      fs.copyFileSync(firstOutputPath, outputPath);
+    }
+  }
+
+  if (outputNames.length > 1 || outputNames[0] !== file) {
+    aliasCount += outputNames.length;
   }
 }
 

@@ -27,9 +27,10 @@
     endif
   endif
 
-  assign clean_description = product.description | strip_html | strip
+  assign clean_description = product.description | replace: '</p>', ' ' | replace: '<br />', ' ' | replace: '<br/>', ' ' | replace: '<br>', ' ' | strip_html | strip
   assign description_text = clean_description | replace: 'Descripción:', '' | strip
   assign composition_text = 'A confirmar.'
+  assign care_text = ''
   if clean_description contains 'Composición:'
     assign description_text = clean_description | split: 'Composición:' | first | replace: 'Descripción:', '' | strip
     assign composition_text = clean_description | split: 'Composición:' | last | strip
@@ -37,11 +38,39 @@
     assign description_text = clean_description | split: 'Composicion:' | first | replace: 'Descripción:', '' | strip
     assign composition_text = clean_description | split: 'Composicion:' | last | strip
   endif
-%}
+  if description_text contains 'Cuidados:'
+    assign description_text = description_text | split: 'Cuidados:' | first | strip
+  endif
+  if description_text contains 'Envíos'
+    assign description_text = description_text | split: 'Envíos' | first | strip
+  elsif description_text contains 'Envios'
+    assign description_text = description_text | split: 'Envios' | first | strip
+  elsif description_text contains 'Consulta nuestra política'
+    assign description_text = description_text | split: 'Consulta nuestra política' | first | strip
+  endif
+  if composition_text contains 'Cuidados:'
+    assign care_text = composition_text | split: 'Cuidados:' | last | strip
+    assign composition_text = composition_text | split: 'Cuidados:' | first | strip
+  endif
+  if composition_text contains 'Envíos'
+    assign composition_text = composition_text | split: 'Envíos' | first | strip
+  elsif composition_text contains 'Envios'
+    assign composition_text = composition_text | split: 'Envios' | first | strip
+  elsif composition_text contains 'Consulta nuestra política'
+    assign composition_text = composition_text | split: 'Consulta nuestra política' | first | strip
+  endif
+  if care_text contains 'Envíos'
+    assign care_text = care_text | split: 'Envíos' | first | strip
+  elsif care_text contains 'Envios'
+    assign care_text = care_text | split: 'Envios' | first | strip
+  elsif care_text contains 'Consulta nuestra política'
+    assign care_text = care_text | split: 'Consulta nuestra política' | first | strip
+  endif
+%} 
 
 {% render 'casa-trame-nav', active: 'collection', collection_url: collection_url %}
 
-<main class="pdp" data-pdp data-color-position="{{ color_option_position }}" data-size-position="{{ size_option_position }}">
+<main class="pdp" data-pdp data-product-handle="{{ product.handle }}" data-color-position="{{ color_option_position }}" data-size-position="{{ size_option_position }}">
   <section class="pdp-gallery" id="pdpGallery">
     <div class="pdp-gallery__pair pdp-gallery__pair--single" data-pdp-gallery-track>
       {% if color_option != blank %}
@@ -149,34 +178,66 @@
         <div class="pdp-size__error" id="sizeError" data-pdp-size-error>Por favor selecciona una talla</div>
       {% endif %}
 
-      <button class="pdp-cta" type="submit" {% unless product.available %}disabled{% endunless %}>
+      <button class="pdp-cta" type="submit" data-pdp-add-cta {% unless product.available %}disabled{% endunless %}>
         {% if product.available %}Añadir al Carrito{% else %}Próximamente{% endif %}
       </button>
     {% endform %}
 
-    <a class="pdp-stylewith" href="{{ vestidor_url }}">Añadir al Vestidor™</a>
+    {% liquid
+      assign waitlist_class = 'pdp-waitlist'
+      if product.available
+        assign waitlist_class = 'pdp-waitlist is-hidden'
+      endif
+    %}
+    <form class="{{ waitlist_class }}" id="PdpWaitlistForm" data-pdp-waitlist-form>
+      <input type="hidden" name="contact[tags]" value="waitlist, waitlist-{{ product.handle }}" data-pdp-waitlist-tags>
+      <input type="hidden" name="contact[accepts_marketing]" value="true">
+      {% if customer %}
+        <input type="hidden" name="contact[email]" value="{{ customer.email | escape }}">
+        <p class="pdp-waitlist__note">Te avisaremos a {{ customer.email }} cuando vuelva a estar disponible.</p>
+      {% else %}
+        <input class="pdp-waitlist__input" type="email" name="contact[email]" placeholder="Tu email" required>
+      {% endif %}
+      <button class="pdp-cta pdp-cta--waitlist" type="submit">Anotarme en lista de espera</button>
+      <p class="pdp-waitlist__status" role="status" data-pdp-waitlist-status hidden></p>
+    </form>
 
-    <details class="pdp-accordion" open>
+    <a class="pdp-stylewith" href="{{ vestidor_url }}">Añadir al Vestidor</a>
+
+    <details class="pdp-accordion">
       <summary>Composición</summary>
       <div class="pdp-accordion__panel">
         {{ composition_text }}
       </div>
     </details>
 
-    <details class="pdp-accordion" open>
+    <details class="pdp-accordion">
       <summary>Cuidados</summary>
       <div class="pdp-accordion__panel">
-        Lavar a mano o en ciclo delicado con agua fría.<br>
-        No usar blanqueador. No retorcer.<br>
-        Secar a la sombra sobre superficie plana.<br>
-        Planchar a baja temperatura por el reverso.
+        {% if care_text != blank %}
+          {{ care_text | replace: ' / ', '<br>' }}
+        {% else %}
+          Lavar a mano o en ciclo delicado con agua fría.<br>
+          No usar blanqueador. No retorcer.<br>
+          Secar a la sombra sobre superficie plana.<br>
+          Planchar a baja temperatura por el reverso.
+        {% endif %}
       </div>
     </details>
 
-    <details class="pdp-accordion" open>
+    <details class="pdp-accordion">
+      <summary>Guía de talles</summary>
+      <div class="pdp-accordion__panel">
+        Las medidas pueden variar ligeramente según la prenda y el calce elegido.<br>
+        Si estás entre dos talles, te recomendamos elegir el mayor para un fit más relajado.
+      </div>
+    </details>
+
+    <details class="pdp-accordion">
       <summary>Envío y devoluciones</summary>
       <div class="pdp-accordion__panel">
-        A confirmar.
+        Los tiempos, cambios y devoluciones se rigen por nuestros
+        <a href="/policies/terms-of-service">términos y condiciones</a>.
       </div>
     </details>
   </section>
@@ -210,6 +271,8 @@
     ]
   </script>
 </main>
+
+{% render 'casa-trame-footer' %}
 
 {% schema %}
 {

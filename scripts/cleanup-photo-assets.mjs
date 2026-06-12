@@ -101,8 +101,12 @@ const productPrefixes = [
 const keep = new Set();
 
 for (const file of fs.readdirSync(productSourceDir).filter((name) => name.toLowerCase().endsWith('.png'))) {
-  keep.add(file);
-  for (const alias of productAliases.get(file) || []) keep.add(alias);
+  const aliases = productAliases.get(file) || [];
+  if (aliases.length) {
+    for (const alias of aliases) keep.add(alias);
+  } else {
+    keep.add(file);
+  }
 }
 
 for (const output of vestidorOutputs) {

@@ -14,13 +14,13 @@
     assign favorites_url = '/pages/favoritos'
   endif
 
-  assign concept_asset = 'concepto.png'
-  assign concept_webp_asset = 'concepto.webp'
+  assign concept_png_asset = 'web_home.png'
+  assign concept_webp_asset = 'web_home.webp'
   assign vestidor_asset = 'app.png'
   assign vestidor_webp_asset = 'app.webp'
 %}
 
-{% render 'casa-trame-nav', active: 'about', collection_url: collection_url %}
+{% render 'casa-trame-nav', active: 'about', collection_url: collection_url, transparent_on_hero: true %}
 
 <section class="hero" id="hero">
   <div class="hero__video">
@@ -40,20 +40,10 @@
 
 <section class="brand-statement" id="conocenos">
   <div class="brand-statement__img">
-    {% if section.settings.brand_image != blank %}
-      <img
-        src="{{ section.settings.brand_image | image_url: width: 1400 }}"
-        alt="{{ section.settings.brand_image.alt | default: section.settings.brand_title | escape }}"
-        width="{{ section.settings.brand_image.width }}"
-        height="{{ section.settings.brand_image.height }}"
-        loading="lazy"
-      >
-    {% else %}
-      <picture>
-        <source srcset="{{ concept_webp_asset | asset_url }}" type="image/webp">
-        <img src="{{ concept_asset | asset_url }}" alt="{{ section.settings.brand_title | escape }}" width="1000" height="732" loading="lazy">
-      </picture>
-    {% endif %}
+    <picture class="brand-statement__picture">
+      <source srcset="{{ concept_webp_asset | asset_url }}" type="image/webp">
+      <img src="{{ concept_png_asset | asset_url }}" alt="{{ section.settings.brand_title | escape }}" width="1164" height="950" loading="lazy">
+    </picture>
   </div>
   <div class="brand-statement__content">
     <h2 class="brand-statement__title">{{ section.settings.brand_title | escape | newline_to_br }}</h2>
@@ -145,11 +135,11 @@
     <h2 class="newsletter__title">{{ section.settings.newsletter_title | escape | newline_to_br }}</h2>
     {% form 'customer', class: 'newsletter__form' %}
       <input type="hidden" name="contact[tags]" value="newsletter">
-      <input class="newsletter__input" type="email" name="contact[email]" placeholder="{{ section.settings.newsletter_placeholder }}" value="{{ form.email }}" required>
-      <div class="newsletter__submit-wrap">
-        <span class="newsletter__legal-tip">{{ section.settings.newsletter_legal_tip }}</span>
+      <div class="newsletter__row">
+        <input class="newsletter__input" type="email" name="contact[email]" placeholder="{{ section.settings.newsletter_placeholder }}" value="{{ form.email }}" required>
         <button class="newsletter__submit" type="submit">{{ section.settings.newsletter_button_label }}</button>
       </div>
+      <p class="newsletter__legal-tip">{{ section.settings.newsletter_legal_tip }}</p>
       {% if form.posted_successfully? %}
         <p class="newsletter__status" role="status">{{ section.settings.newsletter_success_message }}</p>
       {% endif %}
@@ -160,59 +150,21 @@
       {% endif %}
     {% endform %}
   </div>
-  <footer class="footer">
-    <div class="footer__grid">
-      <div class="footer__brand">
-        <div class="footer__brand-name">{{ section.settings.footer_brand_name }}</div>
-        <p>{{ section.settings.footer_brand_text | escape | newline_to_br }}</p>
-      </div>
-      <div>
-        <h4>{{ section.settings.social_heading }}</h4>
-        <ul>
-          {% if section.settings.instagram_url != blank %}
-            <li><a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener">Instagram</a></li>
-          {% endif %}
-          {% if section.settings.tiktok_url != blank %}
-            <li><a href="{{ section.settings.tiktok_url }}" target="_blank" rel="noopener">TikTok</a></li>
-          {% endif %}
-        </ul>
-      </div>
-      <div>
-        <h4>{{ section.settings.info_heading }}</h4>
-        {% if section.settings.footer_info_menu != blank %}
-          <ul>
-            {% for link in section.settings.footer_info_menu.links %}
-              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <ul>
-            <li><a href="#conocenos">{{ section.settings.about_label }}</a></li>
-            <li><a href="/pages/contact">Contacto</a></li>
-          </ul>
-        {% endif %}
-      </div>
-      <div>
-        <h4>{{ section.settings.help_heading }}</h4>
-        {% if section.settings.footer_help_menu != blank %}
-          <ul>
-            {% for link in section.settings.footer_help_menu.links %}
-              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <ul>
-            <li><a href="/pages/contact">Contacto</a></li>
-            <li><a href="/policies/terms-of-service">Términos</a></li>
-            <li><a href="/policies/privacy-policy">Privacidad</a></li>
-          </ul>
-        {% endif %}
-      </div>
-    </div>
-    <div class="footer__bottom">
-      <span>&copy; {{ 'now' | date: '%Y' }} {{ section.settings.footer_brand_name }}. {{ section.settings.footer_bottom_text }}</span>
-    </div>
-  </footer>
+  {% render 'casa-trame-footer',
+    brand_name: section.settings.footer_brand_name,
+    brand_text: section.settings.footer_brand_text,
+    bottom_text: section.settings.footer_bottom_text,
+    social_heading: section.settings.social_heading,
+    facebook_url: 'https://www.facebook.com/people/Casa-Tram%C3%A9/61590043711199/',
+    instagram_url: 'https://www.instagram.com/casa.trame/',
+    tiktok_url: 'https://www.tiktok.com/@casa.trame',
+    info_heading: section.settings.info_heading,
+    help_heading: section.settings.help_heading,
+    info_menu: section.settings.footer_info_menu,
+    help_menu: section.settings.footer_help_menu,
+    about_label: section.settings.about_label,
+    about_url: '#conocenos'
+  %}
 </section>
 
 {% schema %}
@@ -245,7 +197,7 @@
       "type": "text",
       "id": "vestidor_label",
       "label": "Label vestidor",
-      "default": "Vestidor™"
+      "default": "Vestidor"
     },
     {
       "type": "url",
@@ -366,7 +318,7 @@
       "type": "textarea",
       "id": "footer_brand_text",
       "label": "Texto footer",
-      "default": "Diseñado en Argentina\nProducido en Perú"
+      "default": "Diseñado y producido en Perú"
     },
     {
       "type": "text",
@@ -466,7 +418,7 @@
           "type": "card",
           "settings": {
             "title": "Denim",
-            "asset_fallback": "jean-wide-leg-corrientes-claro.png"
+            "asset_fallback": "jean-wide-leg-corrientes-denim-claro.png"
           }
         },
         {

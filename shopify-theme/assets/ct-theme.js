@@ -1,9 +1,122 @@
 (function () {
+  const cartForm = document.querySelector('[data-cart-form]');
+  if (!cartForm) return;
+
+  const subtotal = cartForm.querySelector('[data-cart-subtotal]');
+  const moneyFormat = new Intl.NumberFormat('es-PE', {
+    style: 'currency',
+    currency: 'PEN',
+    currencyDisplay: 'narrowSymbol',
+    minimumFractionDigits: 2
+  });
+  let pendingChange = Promise.resolve();
+
+  function formatMoney(cents) {
+    return moneyFormat.format(Number(cents || 0) / 100).replace('PEN', 'S/.').replace('S/', 'S/.');
+  }
+
+  async function syncQuantity(item, input) {
+    const lineKey = item.dataset.cartLineKey || '';
+    const quantity = Math.max(Number(input.getAttribute('min') || 0), Number(input.value || 0));
+    if (!lineKey) return;
+
+    input.value = String(quantity);
+    item.classList.add('is-updating');
+    pendingChange = fetch('/cart/change.js', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ id: lineKey, quantity: quantity })
+    })
+      .then(function (response) {
+        if (!response.ok) throw new Error('cart change failed');
+        return response.json();
+      })
+      .then(function (cart) {
+        const updatedLine = cart.items.find(function (cartItem) {
+          return cartItem.key === lineKey;
+        });
+        if (!updatedLine || quantity === 0) {
+          window.location.reload();
+          return;
+        }
+        const price = item.querySelector('[data-cart-line-price]');
+        if (price) price.textContent = formatMoney(updatedLine.final_line_price);
+        if (subtotal) subtotal.textContent = formatMoney(cart.total_price);
+      })
+      .catch(function () {
+        window.location.reload();
+      })
+      .finally(function () {
+        item.classList.remove('is-updating');
+      });
+
+    await pendingChange;
+  }
+
+  document.querySelectorAll('[data-cart-quantity]').forEach(function (control) {
+    const input = control.querySelector('[data-cart-qty-input]');
+    const minus = control.querySelector('[data-cart-qty-minus]');
+    const plus = control.querySelector('[data-cart-qty-plus]');
+    const item = control.closest('[data-cart-item]');
+    if (!input) return;
+
+    function setQuantity(delta) {
+      const current = Number(input.value || 0);
+      const min = Number(input.getAttribute('min') || 0);
+      input.value = String(Math.max(min, current + delta));
+      syncQuantity(item, input);
+    }
+
+    if (minus) minus.addEventListener('click', function () { setQuantity(-1); });
+    if (plus) plus.addEventListener('click', function () { setQuantity(1); });
+    input.addEventListener('change', function () { syncQuantity(item, input); });
+  });
+
+  cartForm.addEventListener('submit', function (event) {
+    const submitter = event.submitter;
+    if (!submitter || submitter.name !== 'checkout') return;
+    event.preventDefault();
+    pendingChange.finally(function () {
+      window.location.href = '/checkout';
+    });
+  });
+})();
+
+(function () {
+  const transparentNav = document.querySelector('[data-transparent-nav]');
+  const transparentHero = document.querySelector('.hero');
   const nav = document.getElementById('mainNav');
   const hero = document.querySelector('.hero') || document.querySelector('.pdp-gallery');
   const mobileMenu = document.getElementById('mobileMenu');
   const hamburger = document.querySelector('.nav__hamburger');
+  const ctNav = document.querySelector('.ct-v-nav');
+  const ctMenuToggle = document.querySelector('[data-ct-menu-toggle]');
+  const ctMobileMenu = document.querySelector('[data-ct-mobile-menu]');
   let menuOpen = false;
+  let ctMenuOpen = false;
+
+  function updateTransparentNav() {
+    if (!transparentNav || !transparentHero) return;
+    if (ctMenuOpen) {
+      transparentNav.classList.remove('ct-v-nav--transparent');
+      return;
+    }
+    const heroBottom = transparentHero.getBoundingClientRect().bottom;
+    const navHeight = transparentNav.offsetHeight || 0;
+    transparentNav.classList.toggle('ct-v-nav--transparent', heroBottom > navHeight);
+  }
+
+  function setCtMenuOpen(open) {
+    if (!ctNav || !ctMenuToggle || !ctMobileMenu) return;
+    ctMenuOpen = open;
+    ctNav.classList.toggle('is-menu-open', ctMenuOpen);
+    ctMenuToggle.classList.toggle('is-open', ctMenuOpen);
+    ctMenuToggle.setAttribute('aria-expanded', String(ctMenuOpen));
+    ctMenuToggle.setAttribute('aria-label', ctMenuOpen ? 'Cerrar menú' : 'Abrir menú');
+    document.body.style.overflow = ctMenuOpen ? 'hidden' : '';
+    updateTransparentNav();
+  }
 
   function updateNav() {
     if (!nav || !hero) return;
@@ -33,6 +146,28 @@
   };
 
   window.addEventListener('scroll', updateNav, { passive: true });
+  window.addEventListener('scroll', updateTransparentNav, { passive: true });
+  if (ctMenuToggle) {
+    ctMenuToggle.addEventListener('click', function () {
+      setCtMenuOpen(!ctMenuOpen);
+    });
+  }
+  if (ctMobileMenu) {
+    ctMobileMenu.addEventListener('click', function (event) {
+      if (event.target.closest('a')) setCtMenuOpen(false);
+    });
+  }
+  document.addEventListener('click', function (event) {
+    const link = event.target.closest('a[href^="#"]');
+    if (!link) return;
+    const hash = link.getAttribute('href');
+    if (!hash || hash === '#') return;
+    const target = document.querySelector(hash);
+    if (!target) return;
+    event.preventDefault();
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.history.pushState(null, '', hash);
+  });
   window.addEventListener('resize', function () {
     if (window.innerWidth > 768 && menuOpen) {
       menuOpen = false;
@@ -41,8 +176,16 @@
       hamburger.classList.remove('is-open');
       updateNav();
     }
+    if (window.innerWidth > 768 && ctMenuOpen) {
+      setCtMenuOpen(false);
+    }
+    updateTransparentNav();
   });
   updateNav();
+  updateTransparentNav();
+  if (window.location.search.includes('customer_posted=true') || window.location.hash === '#contact_form') {
+    window.history.replaceState(null, '', window.location.pathname || '/');
+  }
 
   const grid = document.querySelector('.collection-grid');
   const track = document.querySelector('.collection-grid__track');
@@ -176,7 +319,12 @@
   const variantsEl = pdp.querySelector('[data-pdp-variants]');
   const mediaEl = pdp.querySelector('[data-pdp-media]');
   const form = pdp.querySelector('form');
+  const addCta = pdp.querySelector('[data-pdp-add-cta]');
+  const waitlistForm = pdp.querySelector('[data-pdp-waitlist-tags]')?.closest('form');
+  const waitlistTags = pdp.querySelector('[data-pdp-waitlist-tags]');
+  const waitlistStatus = pdp.querySelector('[data-pdp-waitlist-status]');
   const productTitle = (document.querySelector('.pdp-info__title')?.textContent || '').trim();
+  const productHandle = pdp.dataset.productHandle || normalizeText(productTitle);
   const colorPosition = Number(pdp.dataset.colorPosition || 0);
   const sizePosition = Number(pdp.dataset.sizePosition || 0);
   let selectedColor = colorButtons[0] ? colorButtons[0].dataset.pdpColor : '';
@@ -337,13 +485,110 @@
   }
 
   function updateVariant() {
-    if (!variantInput || !variants.length) return;
+    if (!variantInput || !variants.length) return null;
     const match = variants.find(function (variant) {
       const colorMatches = !colorPosition || !selectedColor || optionValue(variant, colorPosition) === selectedColor;
       const sizeMatches = !sizePosition || !selectedSize || optionValue(variant, sizePosition) === selectedSize;
       return colorMatches && sizeMatches;
     });
     if (match) variantInput.value = match.id;
+    updatePurchaseState(match);
+    return match || null;
+  }
+
+  function updatePurchaseState(variant) {
+    const waitingForSize = Boolean(sizeButtons.length && !selectedSize);
+    const isAvailable = Boolean(variant && (variant.available || variant.available_for_sale));
+
+    if (addCta) {
+      addCta.hidden = !waitingForSize && !isAvailable;
+      addCta.disabled = !waitingForSize && !isAvailable;
+      addCta.textContent = isAvailable || waitingForSize ? 'Añadir al Carrito' : 'Próximamente';
+    }
+
+    if (waitlistForm) {
+      const hasFeedback = Boolean(waitlistStatus && !waitlistStatus.hidden && waitlistStatus.textContent.trim());
+      const shouldHideWaitlist = !hasFeedback && (waitingForSize || isAvailable);
+      waitlistForm.hidden = shouldHideWaitlist;
+      waitlistForm.classList.toggle('is-hidden', shouldHideWaitlist);
+    }
+
+    if (waitlistTags) {
+      const tags = ['waitlist'];
+      tags.push('waitlist-' + productHandle);
+      if (selectedColor) tags.push('color-' + normalizeText(selectedColor));
+      if (selectedSize) tags.push('talla-' + normalizeText(selectedSize));
+      if (variant && variant.id) tags.push('variant-' + variant.id);
+      waitlistTags.value = tags.join(', ');
+    }
+  }
+
+  function setWaitlistStatus(message, isError) {
+    if (!waitlistStatus) return;
+    waitlistStatus.textContent = message;
+    waitlistStatus.hidden = !message;
+    waitlistStatus.classList.toggle('pdp-waitlist__status--error', Boolean(isError));
+  }
+
+  async function submitWaitlist(event) {
+    if (!waitlistForm) return;
+    event.preventDefault();
+    event.stopPropagation();
+
+    const emailInput = waitlistForm.querySelector('input[type="email"]');
+    if (emailInput && !emailInput.checkValidity()) {
+      emailInput.reportValidity();
+      return;
+    }
+
+    const submitButton = waitlistForm.querySelector('button[type="submit"]');
+    const previousText = submitButton ? submitButton.textContent : '';
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = 'Anotando...';
+    }
+    setWaitlistStatus('', false);
+
+    try {
+      const formData = new FormData(waitlistForm);
+      const email = String(formData.get('contact[email]') || '').trim();
+      const tags = String(formData.get('contact[tags]') || '').trim();
+      const entry = {
+        email: email,
+        product: productTitle,
+        handle: productHandle,
+        color: selectedColor,
+        size: selectedSize,
+        variantId: variantInput ? variantInput.value : '',
+        tags: tags,
+        createdAt: new Date().toISOString()
+      };
+      const saved = JSON.parse(window.localStorage.getItem('ctWaitlist') || '[]');
+      const nextSaved = saved.filter(function (item) {
+        return !(item.email === entry.email && item.variantId === entry.variantId);
+      });
+      nextSaved.push(entry);
+      window.localStorage.setItem('ctWaitlist', JSON.stringify(nextSaved));
+      fetch('/cart/update.js', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          attributes: {
+            ['waitlist_' + productHandle]: [entry.color, entry.size, entry.email].filter(Boolean).join(' / ')
+          }
+        })
+      }).catch(function () {});
+      setWaitlistStatus('Listo. Te avisaremos cuando vuelva a estar disponible.', false);
+      if (emailInput) emailInput.value = '';
+    } catch (error) {
+      setWaitlistStatus('No se pudo guardar. Intenta otra vez.', true);
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = previousText;
+      }
+    }
   }
 
   function slideWidth() {
@@ -371,8 +616,74 @@
     if (!track) return;
     const slideCount = track.querySelectorAll('img').length;
     const nextIndex = Math.min(slideCount - 1, Math.max(0, index));
-    track.scrollTo({ left: nextIndex * slideWidth(), behavior: behavior || 'smooth' });
+    const left = nextIndex * slideWidth();
+    if (typeof track.scrollTo === 'function') {
+      track.scrollTo({ left: left, behavior: behavior || 'smooth' });
+    } else {
+      track.scrollLeft = left;
+    }
+    if (behavior === 'auto') track.scrollLeft = left;
     window.requestAnimationFrame(updateGallery);
+    window.setTimeout(updateGallery, 260);
+  }
+
+  function enableDragScroll() {
+    if (!track || !window.PointerEvent) return;
+
+    let pointerDown = false;
+    let dragging = false;
+    let startX = 0;
+    let startY = 0;
+    let startScrollLeft = 0;
+
+    function endDrag(event) {
+      if (!pointerDown) return;
+      if (dragging) {
+        track.classList.remove('is-dragging');
+        goToSlide(currentSlideIndex());
+        if (event && track.releasePointerCapture) {
+          try { track.releasePointerCapture(event.pointerId); } catch (error) {}
+        }
+      }
+      pointerDown = false;
+      dragging = false;
+    }
+
+    track.addEventListener('pointerdown', function (event) {
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      pointerDown = true;
+      dragging = false;
+      startX = event.clientX;
+      startY = event.clientY;
+      startScrollLeft = track.scrollLeft;
+    });
+
+    track.addEventListener('pointermove', function (event) {
+      if (!pointerDown) return;
+      const deltaX = event.clientX - startX;
+      const deltaY = event.clientY - startY;
+
+      if (!dragging) {
+        if (Math.abs(deltaX) < 8 && Math.abs(deltaY) < 8) return;
+        if (Math.abs(deltaY) > Math.abs(deltaX)) {
+          endDrag(event);
+          return;
+        }
+        dragging = true;
+        track.classList.add('is-dragging');
+        if (track.setPointerCapture) {
+          try { track.setPointerCapture(event.pointerId); } catch (error) {}
+        }
+      }
+
+      event.preventDefault();
+      track.scrollLeft = startScrollLeft - deltaX;
+      updateGallery();
+    });
+
+    track.addEventListener('pointerup', endDrag);
+    track.addEventListener('pointercancel', endDrag);
+    track.addEventListener('pointerleave', endDrag);
   }
 
   if (track) track.addEventListener('scroll', updateGallery, { passive: true });
@@ -385,6 +696,7 @@
   });
 
   renderGallery(selectedColor);
+  enableDragScroll();
 
   colorButtons.forEach(function (button) {
     button.addEventListener('click', function () {
@@ -428,6 +740,10 @@
     });
   }
 
+  if (waitlistForm) {
+    waitlistForm.addEventListener('submit', submitWaitlist, true);
+  }
+
   updateVariant();
   updateGallery();
 })();
@@ -468,12 +784,38 @@
   const togglePanels = Array.from(section.querySelectorAll('[data-toggle-panel]'));
   const modal = section.querySelector('[data-quick-modal]');
 
+  function sortCatalogCards() {
+    if (!grid || !cards.length) return;
+    const categoryOrder = new Map();
+    filterButtons.forEach(function (button) {
+      const filter = button.dataset.filter || '';
+      if (filter && filter !== 'all' && !categoryOrder.has(filter)) {
+        categoryOrder.set(filter, categoryOrder.size);
+      }
+    });
+
+    cards
+      .slice()
+      .sort(function (a, b) {
+        const categoryA = a.dataset.category || '';
+        const categoryB = b.dataset.category || '';
+        const categoryIndexA = categoryOrder.has(categoryA) ? categoryOrder.get(categoryA) : 999;
+        const categoryIndexB = categoryOrder.has(categoryB) ? categoryOrder.get(categoryB) : 999;
+        if (categoryIndexA !== categoryIndexB) return categoryIndexA - categoryIndexB;
+        return (a.dataset.title || '').localeCompare(b.dataset.title || '', 'es', { sensitivity: 'base' });
+      })
+      .forEach(function (card) {
+        grid.appendChild(card);
+      });
+  }
+
   function setCardColor(card, button) {
     if (!card || !button) return;
 
     const imageUrl = button.dataset.colorImage || '';
     const modalImageUrl = button.dataset.colorModalImage || imageUrl;
     const colorUrl = button.dataset.colorUrl || card.dataset.url || '#';
+    const variantId = button.dataset.variantId || '';
     const colorName = button.dataset.colorName || '';
     const colorDisplay = button.dataset.colorDisplay || colorName;
 
@@ -481,20 +823,63 @@
     const secondaryImage = card.querySelector('.catalog-card__img--secondary');
     const imageLink = card.querySelector('.catalog-card__image-link');
     const textLink = card.querySelector('.catalog-card__text');
+    const cartLink = card.querySelector('[data-card-cart-link]');
 
     if (imageUrl && primaryImage) primaryImage.src = imageUrl;
     if (imageUrl && secondaryImage) secondaryImage.src = imageUrl;
     if (imageLink) imageLink.href = colorUrl;
     if (textLink) textLink.href = colorUrl;
+    if (cartLink) {
+      cartLink.dataset.productUrl = colorUrl;
+      if (variantId) cartLink.dataset.variantId = variantId;
+    }
 
     card.dataset.image = modalImageUrl;
     card.dataset.url = colorUrl;
+    if (variantId) card.dataset.variantId = variantId;
     card.dataset.currentColor = colorName;
     card.dataset.currentColorDisplay = colorDisplay;
 
     card.querySelectorAll('[data-color-swatch]').forEach(function (swatch) {
       swatch.classList.toggle('is-active', swatch === button);
     });
+  }
+
+  async function addCardToCart(button) {
+    const card = button.closest('[data-product-card]');
+    if (!card) return;
+
+    const variantId = button.dataset.variantId || card.dataset.variantId || '';
+    if (!variantId) {
+      const productUrl = button.dataset.productUrl || card.dataset.url || '#';
+      if (productUrl && productUrl !== '#') window.location.href = productUrl;
+      return;
+    }
+
+    const previousText = button.textContent;
+    button.disabled = true;
+    button.textContent = 'Agregando';
+
+    try {
+      const response = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ id: Number(variantId), quantity: 1 })
+      });
+
+      if (!response.ok) throw new Error('cart add failed');
+      button.textContent = 'Agregado';
+      window.setTimeout(function () {
+        button.textContent = previousText;
+        button.disabled = false;
+      }, 1400);
+    } catch (error) {
+      button.textContent = 'Error';
+      window.setTimeout(function () {
+        button.textContent = previousText;
+        button.disabled = false;
+      }, 1600);
+    }
   }
 
   function updateVisibleCount() {
@@ -524,6 +909,7 @@
       applyFilter(button.dataset.filter || 'all');
     });
   });
+  sortCatalogCards();
   updateVisibleCount();
 
   function setGridCols(cols) {
@@ -604,6 +990,14 @@
         event.preventDefault();
         event.stopPropagation();
         setCardColor(button.closest('[data-product-card]'), button);
+      });
+    });
+
+    section.querySelectorAll('[data-card-cart-link]').forEach(function (button) {
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        addCardToCart(button);
       });
     });
 
