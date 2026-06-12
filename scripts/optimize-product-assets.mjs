@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const sourceDir = '/Users/tata/Desktop/Casa Trame/Casa Trame - Productos/_Productos 1200x1500';
+const optimizedSourceDir = path.join(sourceDir, 'optimizadas');
 const assetsDir = path.resolve('shopify-theme/assets');
 
 const aliases = new Map([
@@ -64,7 +65,8 @@ let aliasCount = 0;
 let totalBytes = 0;
 
 for (const file of sourceFiles) {
-  const sourcePath = path.join(sourceDir, file);
+  const optimizedSourcePath = path.join(optimizedSourceDir, file);
+  const sourcePath = fs.existsSync(optimizedSourcePath) ? optimizedSourcePath : path.join(sourceDir, file);
   const outputNames = aliases.get(file) || [file];
   let firstOutputPath = '';
 
