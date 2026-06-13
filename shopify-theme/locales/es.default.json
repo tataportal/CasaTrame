@@ -25,6 +25,42 @@
         "address_company_contains_html_tags": "No puede contener HTML",
         "address_company_contains_emojis": "No puede contener emojis",
         "address_company_contains_mathematical_symbols": "No puede contener signos matemáticos"
+      },
+      "shipping": {
+        "no_rates_for_cart_or_destination_notice": "Por ahora enviamos solo dentro de Lima Metropolitana.",
+        "no_rates_for_country_notice": "Por ahora enviamos solo dentro de Lima Metropolitana.",
+        "no_rates_contact_notice": "Escríbenos para coordinar opciones fuera de cobertura.",
+        "no_other_methods_available": "No hay otros métodos disponibles para esta zona",
+        "invalid_shipping_method_summary": "Ingresa una dirección dentro de Lima Metropolitana para ver los métodos de envío disponibles",
+        "invalid_shipping_method_summary_selected": "Usa una dirección dentro de Lima Metropolitana para ver los métodos de envío disponibles"
+      },
+      "shipping_errors": {
+        "shipping_method_not_available": "Por ahora el envío está disponible solo dentro de Lima Metropolitana. Escríbenos para coordinar opciones fuera de cobertura.",
+        "shipping_method_not_available_generic": {
+          "one": "Por ahora el envío está disponible solo dentro de Lima Metropolitana. Escríbenos para coordinar opciones fuera de cobertura.",
+          "other": "Por ahora el envío está disponible solo dentro de Lima Metropolitana. Escríbenos para coordinar opciones fuera de cobertura.",
+          "many": "Por ahora el envío está disponible solo dentro de Lima Metropolitana. Escríbenos para coordinar opciones fuera de cobertura."
+        },
+        "shipping_method_not_available_updated": {
+          "one": "Por ahora el envío está disponible solo dentro de Lima Metropolitana. Escríbenos para coordinar opciones fuera de cobertura.",
+          "other": "Por ahora el envío está disponible solo dentro de Lima Metropolitana. Escríbenos para coordinar opciones fuera de cobertura.",
+          "many": "Por ahora el envío está disponible solo dentro de Lima Metropolitana. Escríbenos para coordinar opciones fuera de cobertura."
+        },
+        "unavailable_selected_address": "Por ahora enviamos solo dentro de Lima Metropolitana.",
+        "unavailable_selected_address_for_region": "Por ahora enviamos solo dentro de Lima Metropolitana.",
+        "unavailable_addresses_only_countries": "Por ahora enviamos solo dentro de Lima Metropolitana.",
+        "unavailable_address_country": "Por ahora enviamos solo dentro de Lima Metropolitana."
+      },
+      "merchandise_unavailable_in_buyer_location": {
+        "banner_title": {
+          "some_products_one": "Por ahora enviamos solo dentro de Lima Metropolitana.",
+          "some_products_other": "Por ahora enviamos solo dentro de Lima Metropolitana.",
+          "all_products_one": "Por ahora enviamos solo dentro de Lima Metropolitana.",
+          "all_products_other": "Por ahora enviamos solo dentro de Lima Metropolitana."
+        },
+        "change_address_only": "Usa una dirección dentro de Lima Metropolitana para continuar.",
+        "change_address_or_remove": "Usa una dirección dentro de Lima Metropolitana para continuar.",
+        "empty_cart_action": "vacía el carrito para regresar a la tienda"
       }
     }
   }
