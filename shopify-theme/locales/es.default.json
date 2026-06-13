@@ -29,22 +29,22 @@
       "shipping": {
         "no_rates_for_cart_or_destination_notice": "Por ahora enviamos solo dentro de Lima Metropolitana.",
         "no_rates_for_country_notice": "Por ahora enviamos solo dentro de Lima Metropolitana.",
-        "no_rates_contact_notice": "Escríbenos para coordinar opciones fuera de cobertura.",
+        "no_rates_contact_notice": "Verifica que tu dirección esté dentro de Lima Metropolitana.",
         "no_other_methods_available": "No hay otros métodos disponibles para esta zona",
         "invalid_shipping_method_summary": "Ingresa una dirección dentro de Lima Metropolitana para ver los métodos de envío disponibles",
         "invalid_shipping_method_summary_selected": "Usa una dirección dentro de Lima Metropolitana para ver los métodos de envío disponibles"
       },
       "shipping_errors": {
-        "shipping_method_not_available": "Por ahora el envío está disponible solo dentro de Lima Metropolitana. Escríbenos para coordinar opciones fuera de cobertura.",
+        "shipping_method_not_available": "Por ahora el envío está disponible solo dentro de Lima Metropolitana.",
         "shipping_method_not_available_generic": {
-          "one": "Por ahora el envío está disponible solo dentro de Lima Metropolitana. Escríbenos para coordinar opciones fuera de cobertura.",
-          "other": "Por ahora el envío está disponible solo dentro de Lima Metropolitana. Escríbenos para coordinar opciones fuera de cobertura.",
-          "many": "Por ahora el envío está disponible solo dentro de Lima Metropolitana. Escríbenos para coordinar opciones fuera de cobertura."
+          "one": "Por ahora el envío está disponible solo dentro de Lima Metropolitana.",
+          "other": "Por ahora el envío está disponible solo dentro de Lima Metropolitana.",
+          "many": "Por ahora el envío está disponible solo dentro de Lima Metropolitana."
         },
         "shipping_method_not_available_updated": {
-          "one": "Por ahora el envío está disponible solo dentro de Lima Metropolitana. Escríbenos para coordinar opciones fuera de cobertura.",
-          "other": "Por ahora el envío está disponible solo dentro de Lima Metropolitana. Escríbenos para coordinar opciones fuera de cobertura.",
-          "many": "Por ahora el envío está disponible solo dentro de Lima Metropolitana. Escríbenos para coordinar opciones fuera de cobertura."
+          "one": "Por ahora el envío está disponible solo dentro de Lima Metropolitana.",
+          "other": "Por ahora el envío está disponible solo dentro de Lima Metropolitana.",
+          "many": "Por ahora el envío está disponible solo dentro de Lima Metropolitana."
         },
         "unavailable_selected_address": "Por ahora enviamos solo dentro de Lima Metropolitana.",
         "unavailable_selected_address_for_region": "Por ahora enviamos solo dentro de Lima Metropolitana.",
