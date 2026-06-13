@@ -21,7 +21,15 @@
 <footer class="footer{{ footer_variant_class }}">
   <div class="footer__grid">
     <div class="footer__brand">
-      <div class="footer__brand-name">{{ resolved_brand_name }}</div>
+      <a href="{{ routes.root_url }}" class="footer__brand-logo" aria-label="{{ resolved_brand_name | escape }}">
+        <img
+          src="{{ 'trame_horizontal-black.svg' | asset_url }}"
+          alt="{{ resolved_brand_name | escape }}"
+          width="1115"
+          height="142"
+          loading="lazy"
+        >
+      </a>
       <p>{{ resolved_brand_text | escape | newline_to_br }}</p>
     </div>
     <div>
