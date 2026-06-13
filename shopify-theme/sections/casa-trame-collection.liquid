@@ -250,6 +250,7 @@
                   endif
                 endfor
 
+                assign primary_asset_base = ''
                 assign primary_asset_name = ''
                 if color_option != blank
                   assign primary_color_slug = color_option.values.first | handleize
@@ -262,23 +263,42 @@
                   elsif primary_color_slug == 'azul-oscuro'
                     assign primary_color_slug = 'azul'
                   elsif primary_color_slug == 'perla'
-                    assign primary_color_slug = 'blanco'
+                      assign primary_color_slug = 'blanco'
                   endif
-                  assign primary_asset_name = product.handle | append: '-' | append: primary_color_slug | append: '.png'
+                  assign primary_asset_base = product.handle | append: '-' | append: primary_color_slug
+                  assign primary_asset_name = primary_asset_base | append: '.png'
                 else
-                  assign primary_asset_name = product.handle | append: '.png'
+                  assign primary_asset_base = product.handle
+                  assign primary_asset_name = primary_asset_base | append: '.png'
                 endif
+
+                capture primary_model_gallery
+                  render 'casa-trame-model-gallery', asset_base: primary_asset_base
+                endcapture
+                assign primary_model_gallery = primary_model_gallery | strip
+                assign primary_model_gallery_urls = primary_model_gallery | split: '|'
 
                 assign primary_asset_url = primary_asset_name | asset_url
                 assign primary_display_url = primary_asset_url
                 assign primary_modal_url = primary_asset_url
+                if primary_model_gallery != blank
+                  assign primary_display_url = primary_model_gallery_urls.first
+                  assign primary_modal_url = primary_model_gallery_urls.first
+                endif
                 if primary_display_url == blank and primary_media != blank
                   assign primary_display_url = primary_media | image_url: width: 1000
                   assign primary_modal_url = primary_media | image_url: width: 1200
                 endif
                 assign secondary_display_url = primary_display_url
-                if secondary_media != blank
+                if primary_model_gallery != blank
+                  assign secondary_display_url = ''
+                elsif secondary_media != blank
                   assign secondary_display_url = secondary_media | image_url: width: 1000
+                endif
+
+                assign primary_gallery_has_controls = false
+                if primary_model_gallery_urls.size > 1
+                  assign primary_gallery_has_controls = true
                 endif
 
                 assign primary_color_display = ''
@@ -310,13 +330,15 @@
                 endif
               %}
               <article
-                class="catalog-card"
+                class="catalog-card{% if primary_model_gallery != blank %} catalog-card--has-gallery{% endif %}"
                 data-product-card
                 data-category="{{ category_handle }}"
                 data-title="{{ product.title | escape }}"
                 data-category-label="{{ category_label | escape }}"
                 data-description="{{ product_description | escape }}"
                 data-image="{{ primary_modal_url }}"
+                data-gallery="{{ primary_model_gallery | escape }}"
+                data-gallery-index="0"
                 data-price="{{ product.price | money | escape }}"
                 data-url="{{ product.url }}"
                 data-variant-id="{{ primary_variant_id }}"
@@ -347,6 +369,12 @@
                   {% endif %}
                   <button class="catalog-card__quick" type="button" data-quick-view aria-label="Vista rápida de {{ product.title | escape }}">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                  <button class="catalog-card__gallery-arrow catalog-card__gallery-arrow--prev" type="button" data-card-gallery-prev aria-label="Foto anterior de {{ product.title | escape }}"{% unless primary_gallery_has_controls %} hidden{% endunless %}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg>
+                  </button>
+                  <button class="catalog-card__gallery-arrow catalog-card__gallery-arrow--next" type="button" data-card-gallery-next aria-label="Siguiente foto de {{ product.title | escape }}"{% unless primary_gallery_has_controls %} hidden{% endunless %}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
                   </button>
                 </div>
                 <div class="catalog-card__info">
@@ -401,9 +429,21 @@
                             assign color_slug = 'blanco'
                           endif
 
-                          assign color_asset_name = product.handle | append: '-' | append: color_slug | append: '.png'
+                          assign color_asset_base = product.handle | append: '-' | append: color_slug
+                          assign color_asset_name = color_asset_base | append: '.png'
                           assign color_image_url = color_asset_name | asset_url
                           assign color_modal_image_url = color_image_url
+                          assign color_swatch_image_url = color_image_url
+
+                          capture color_model_gallery
+                            render 'casa-trame-model-gallery', asset_base: color_asset_base
+                          endcapture
+                          assign color_model_gallery = color_model_gallery | strip
+                          assign color_model_gallery_urls = color_model_gallery | split: '|'
+                          if color_model_gallery != blank
+                            assign color_image_url = color_model_gallery_urls.first
+                            assign color_modal_image_url = color_model_gallery_urls.first
+                          endif
 
                           assign color_image = blank
                           if color_variant.featured_media != blank
@@ -412,7 +452,7 @@
                             assign color_image = color_variant.image
                           endif
 
-                          if color_image_url == blank and color_image != blank
+                          if color_model_gallery == blank and color_image_url == blank and color_image != blank
                             assign color_image_url = color_image | image_url: width: 1000
                             assign color_modal_image_url = color_image | image_url: width: 1200
                           endif
@@ -432,14 +472,15 @@
                           data-color-display="{{ color_display | escape }}"
                           data-color-image="{{ color_image_url }}"
                           data-color-modal-image="{{ color_modal_image_url }}"
+                          data-color-gallery="{{ color_model_gallery | escape }}"
                           data-color-url="{{ variant_url }}"
                           data-variant-id="{{ variant_id }}"
                           aria-label="{{ product.title | escape }} — {{ color_display | escape }}"
                           title="{{ color_display | escape }}"
                         >
-                          {% if color_image_url != blank %}
+                          {% if color_swatch_image_url != blank %}
                             <img
-                              src="{{ color_image_url }}"
+                              src="{{ color_swatch_image_url }}"
                               alt="{{ color_display | escape }}"
                               width="120"
                               height="150"

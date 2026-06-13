@@ -809,11 +809,54 @@
       });
   }
 
+  function parseCardGallery(value) {
+    return String(value || '')
+      .split('|')
+      .map(function (url) {
+        return url.trim();
+      })
+      .filter(Boolean);
+  }
+
+  function updateCardGalleryControls(card, gallery) {
+    if (!card) return;
+
+    const images = gallery || parseCardGallery(card.dataset.gallery);
+    const hasGallery = images.length > 0;
+    const hasControls = images.length > 1;
+
+    card.classList.toggle('catalog-card--has-gallery', hasGallery);
+    card.querySelectorAll('[data-card-gallery-prev], [data-card-gallery-next]').forEach(function (control) {
+      control.hidden = !hasControls;
+      control.disabled = !hasControls;
+    });
+  }
+
+  function setCardGalleryIndex(card, index) {
+    if (!card) return;
+
+    const gallery = parseCardGallery(card.dataset.gallery);
+    if (!gallery.length) return;
+
+    const nextIndex = ((index % gallery.length) + gallery.length) % gallery.length;
+    const nextImage = gallery[nextIndex];
+    const primaryImage = card.querySelector('.catalog-card__img--primary');
+    const secondaryImage = card.querySelector('.catalog-card__img--secondary');
+
+    if (nextImage && primaryImage) primaryImage.src = nextImage;
+    if (nextImage && secondaryImage) secondaryImage.src = nextImage;
+
+    card.dataset.galleryIndex = String(nextIndex);
+    card.dataset.image = nextImage;
+    updateCardGalleryControls(card, gallery);
+  }
+
   function setCardColor(card, button) {
     if (!card || !button) return;
 
-    const imageUrl = button.dataset.colorImage || '';
-    const modalImageUrl = button.dataset.colorModalImage || imageUrl;
+    const colorGallery = parseCardGallery(button.dataset.colorGallery);
+    const imageUrl = colorGallery[0] || button.dataset.colorImage || '';
+    const modalImageUrl = colorGallery[0] || button.dataset.colorModalImage || imageUrl;
     const colorUrl = button.dataset.colorUrl || card.dataset.url || '#';
     const variantId = button.dataset.variantId || '';
     const colorName = button.dataset.colorName || '';
@@ -835,10 +878,13 @@
     }
 
     card.dataset.image = modalImageUrl;
+    card.dataset.gallery = colorGallery.join('|');
+    card.dataset.galleryIndex = '0';
     card.dataset.url = colorUrl;
     if (variantId) card.dataset.variantId = variantId;
     card.dataset.currentColor = colorName;
     card.dataset.currentColorDisplay = colorDisplay;
+    updateCardGalleryControls(card, colorGallery);
 
     card.querySelectorAll('[data-color-swatch]').forEach(function (swatch) {
       swatch.classList.toggle('is-active', swatch === button);
@@ -910,6 +956,9 @@
     });
   });
   sortCatalogCards();
+  cards.forEach(function (card) {
+    updateCardGalleryControls(card);
+  });
   updateVisibleCount();
 
   function setGridCols(cols) {
@@ -943,6 +992,18 @@
   toggleButtons.forEach(function (button) {
     button.addEventListener('click', function () {
       closeAllPanels(button.dataset.toggleTarget || '');
+    });
+  });
+
+  section.querySelectorAll('[data-card-gallery-prev], [data-card-gallery-next]').forEach(function (button) {
+    button.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const card = button.closest('[data-product-card]');
+      const currentIndex = Number.parseInt(card && card.dataset.galleryIndex ? card.dataset.galleryIndex : '0', 10) || 0;
+      const direction = button.hasAttribute('data-card-gallery-next') ? 1 : -1;
+      setCardGalleryIndex(card, currentIndex + direction);
     });
   });
 
