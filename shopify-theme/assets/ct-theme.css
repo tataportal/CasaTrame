@@ -184,6 +184,7 @@ ul { list-style: none; }
   display: none;
 }
 .ct-v-nav__menu-toggle {
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   justify-self: end;
