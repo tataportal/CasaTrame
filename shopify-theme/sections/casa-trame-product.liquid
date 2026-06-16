@@ -89,14 +89,24 @@
             assign color_slug = 'blanco'
           endif
           assign color_order_name = color_value | replace: ' ', '_' | append: '_0'
-          assign color_asset_name = product.handle | append: '-' | append: color_slug | append: '.png'
+          assign color_asset_base = product.handle | append: '-' | append: color_slug
+          assign color_asset_name = color_asset_base | append: '.webp'
           assign color_image_url = color_asset_name | asset_url
+          capture color_model_gallery
+            render 'casa-trame-model-gallery', asset_base: color_asset_base
+          endcapture
+          assign color_model_gallery = color_model_gallery | strip
+          assign color_model_gallery_urls = color_model_gallery | split: '|'
+          assign color_hero_url = color_image_url
+          if color_model_gallery != blank
+            assign color_hero_url = color_model_gallery_urls.first
+          endif
         %}
-        <img src="{{ color_image_url }}" alt="{{ color_order_name | escape }}" width="1200" height="1500" data-frame="product" data-pdp-hero-image>
+        <img src="{{ color_hero_url }}" alt="{{ color_order_name | escape }}" width="1200" height="1500" data-frame="product" data-pdp-hero-image>
       {% elsif product.featured_media.preview_image != blank %}
         <img src="{{ product.featured_media.preview_image | image_url: width: 1400 }}" alt="{{ product.title | escape }}" width="{{ product.featured_media.preview_image.width }}" height="{{ product.featured_media.preview_image.height }}" data-frame="product" data-pdp-hero-image>
       {% else %}
-        {% assign fallback_asset = product.handle | append: '.png' %}
+        {% assign fallback_asset = product.handle | append: '.webp' %}
         <img src="{{ fallback_asset | asset_url }}" alt="{{ product.title | escape }}" width="1200" height="1500" data-frame="product" data-pdp-hero-image>
       {% endif %}
     </div>
@@ -140,10 +150,20 @@
                 assign color_slug = 'blanco'
               endif
               assign color_order_name = color_value | replace: ' ', '_' | append: '_0'
-              assign color_asset_name = product.handle | append: '-' | append: color_slug | append: '.png'
+              assign color_asset_base = product.handle | append: '-' | append: color_slug
+              assign color_asset_name = color_asset_base | append: '.webp'
               assign color_image_url = color_asset_name | asset_url
+              capture color_model_gallery
+                render 'casa-trame-model-gallery', asset_base: color_asset_base
+              endcapture
+              assign color_model_gallery = color_model_gallery | strip
+              assign color_model_gallery_urls = color_model_gallery | split: '|'
+              assign color_hero_url = color_image_url
+              if color_model_gallery != blank
+                assign color_hero_url = color_model_gallery_urls.first
+              endif
             %}
-            <button class="thumb{% if forloop.first %} active{% endif %}" type="button" data-pdp-color="{{ color_value | escape }}" data-pdp-color-display="{{ color_display | escape }}" data-pdp-image="{{ color_image_url }}" title="{{ color_display | escape }}">
+            <button class="thumb{% if forloop.first %} active{% endif %}" type="button" data-pdp-color="{{ color_value | escape }}" data-pdp-color-display="{{ color_display | escape }}" data-pdp-image="{{ color_hero_url }}" data-pdp-gallery="{{ color_model_gallery | escape }}" title="{{ color_display | escape }}">
               <img src="{{ color_image_url }}" alt="{{ color_display | escape }}" width="120" height="150" loading="lazy">
             </button>
           {% endfor %}
@@ -226,10 +246,9 @@
     </details>
 
     <details class="pdp-accordion">
-      <summary>Guía de talles</summary>
+      <summary>Guía de tallas</summary>
       <div class="pdp-accordion__panel">
-        Las medidas pueden variar ligeramente según la prenda y el calce elegido.<br>
-        Si estás entre dos talles, te recomendamos elegir el mayor para un fit más relajado.
+        {% render 'casa-trame-size-guide', product_handle: product.handle %}
       </div>
     </details>
 
@@ -237,7 +256,7 @@
       <summary>Envío y devoluciones</summary>
       <div class="pdp-accordion__panel">
         Los tiempos, cambios y devoluciones se rigen por nuestros
-        <a href="/policies/terms-of-service">términos y condiciones</a>.
+        <a href="/pages/terminos-y-condiciones">términos y condiciones</a>.
       </div>
     </details>
   </section>

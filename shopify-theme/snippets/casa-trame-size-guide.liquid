@@ -1,0 +1,135 @@
+{%- liquid
+  assign guide_title = ''
+  assign guide_note = ''
+-%}
+
+{%- capture size_guide_markup -%}
+{%- case product_handle -%}
+  {%- when 'jogging-cafayate' -%}
+    {%- assign guide_title = 'Jogging Cafayate' -%}
+    <table class="pdp-size-guide__table">
+      <thead><tr><th>Talla</th><th>Cintura (cm)</th><th>Cadera (cm)</th></tr></thead>
+      <tbody>
+        <tr><td>S</td><td>65 - 75</td><td>90 - 94</td></tr>
+        <tr><td>M</td><td>76 - 81</td><td>95 - 98</td></tr>
+        <tr><td>L</td><td>81 - 86</td><td>99 - 104</td></tr>
+      </tbody>
+    </table>
+  {%- when 'jean-recto-ceibo' -%}
+    {%- assign guide_title = 'Jean Recto Ceibo' -%}
+    <table class="pdp-size-guide__table">
+      <thead><tr><th>Talla</th><th>Cintura (cm)</th><th>Cadera (cm)</th></tr></thead>
+      <tbody>
+        <tr><td>28</td><td>70 - 76</td><td>90 - 94</td></tr>
+        <tr><td>30</td><td>77 - 79</td><td>95 - 97</td></tr>
+        <tr><td>32</td><td>80 - 84</td><td>98 - 104</td></tr>
+        <tr><td>34</td><td>85 - 87</td><td>105 - 110</td></tr>
+      </tbody>
+    </table>
+  {%- when 'jean-wide-leg-corrientes' -%}
+    {%- assign guide_title = 'Jean Wide Leg Corrientes' -%}
+    <table class="pdp-size-guide__table">
+      <thead><tr><th>Talla</th><th>Cintura (cm)</th><th>Cadera (cm)</th></tr></thead>
+      <tbody>
+        <tr><td>28</td><td>70 - 76</td><td>90 - 94</td></tr>
+        <tr><td>30</td><td>77 - 79</td><td>95 - 97</td></tr>
+        <tr><td>32</td><td>80 - 84</td><td>98 - 104</td></tr>
+        <tr><td>34</td><td>85 - 87</td><td>105 - 110</td></tr>
+      </tbody>
+    </table>
+  {%- when 'falda-suede-pampa' -%}
+    {%- assign guide_title = 'Falda Suede Pampa' -%}
+    <table class="pdp-size-guide__table">
+      <thead><tr><th>Talla</th><th>Cintura (cm)</th><th>Cadera (cm)</th></tr></thead>
+      <tbody>
+        <tr><td>28</td><td>75 - 77</td><td>90 - 94</td></tr>
+        <tr><td>30</td><td>78 - 79</td><td>95 - 97</td></tr>
+        <tr><td>32</td><td>80 - 82</td><td>98 - 104</td></tr>
+        <tr><td>34</td><td>83 - 85</td><td>105 - 110</td></tr>
+      </tbody>
+    </table>
+  {%- when 'sweater-cuello-alto-bariloche' -%}
+    {%- assign guide_title = 'Sweater Cuello Alto Bariloche' -%}
+    {%- assign guide_note = 'Es una prenda oversize. Si buscas una medida más al cuerpo, elige una talla menos.' -%}
+    <table class="pdp-size-guide__table">
+      <thead><tr><th>Talla</th><th>Busto (cm)</th><th>Cadera (cm)</th></tr></thead>
+      <tbody>
+        <tr><td>S</td><td>90 - 95</td><td>90 - 94</td></tr>
+        <tr><td>M</td><td>96 - 99</td><td>95 - 98</td></tr>
+        <tr><td>L</td><td>100 - 110</td><td>99 - 104</td></tr>
+      </tbody>
+    </table>
+  {%- when 'polo-cuello-cuadrado-ombu' -%}
+    {%- assign guide_title = 'Polo Cuello Cuadrado Ombú' -%}
+    <table class="pdp-size-guide__table">
+      <thead><tr><th>Talla</th><th>Busto (cm)</th><th>Cintura (cm)</th><th>Cadera (cm)</th></tr></thead>
+      <tbody>
+        <tr><td>S</td><td>85 - 97</td><td>65 - 75</td><td>85 - 95</td></tr>
+        <tr><td>M</td><td>98 - 103</td><td>76 - 82</td><td>96 - 100</td></tr>
+        <tr><td>L</td><td>104 - 110</td><td>83 - 90</td><td>101 - 110</td></tr>
+      </tbody>
+    </table>
+  {%- when 'polo-cuello-alto-ushuaia' -%}
+    {%- assign guide_title = 'Polo Cuello Alto Ushuaia' -%}
+    <table class="pdp-size-guide__table">
+      <thead><tr><th>Talla</th><th>Busto (cm)</th><th>Cintura (cm)</th><th>Cadera (cm)</th></tr></thead>
+      <tbody>
+        <tr><td>S</td><td>85 - 97</td><td>65 - 75</td><td>85 - 95</td></tr>
+        <tr><td>M</td><td>98 - 103</td><td>76 - 82</td><td>96 - 100</td></tr>
+        <tr><td>L</td><td>104 - 110</td><td>83 - 90</td><td>101 - 110</td></tr>
+      </tbody>
+    </table>
+  {%- when 'polera-con-capucha-aconcagua' -%}
+    {%- assign guide_title = 'Polera con Capucha Aconcagua' -%}
+    <table class="pdp-size-guide__table">
+      <thead><tr><th>Talla</th><th>Busto (cm)</th><th>Cadera (cm)</th></tr></thead>
+      <tbody>
+        <tr><td>S</td><td>90 - 95</td><td>90 - 94</td></tr>
+        <tr><td>M</td><td>96 - 99</td><td>95 - 98</td></tr>
+        <tr><td>L</td><td>100 - 110</td><td>99 - 104</td></tr>
+      </tbody>
+    </table>
+  {%- when 'polera-cuello-alto-calafate' -%}
+    {%- assign guide_title = 'Polera Cuello Alto Calafate' -%}
+    <table class="pdp-size-guide__table">
+      <thead><tr><th>Talla</th><th>Busto (cm)</th><th>Cadera (cm)</th></tr></thead>
+      <tbody>
+        <tr><td>S</td><td>90 - 95</td><td>90 - 94</td></tr>
+        <tr><td>M</td><td>96 - 99</td><td>95 - 98</td></tr>
+        <tr><td>L</td><td>100 - 110</td><td>99 - 104</td></tr>
+      </tbody>
+    </table>
+  {%- when 'camisa-denim-soho' -%}
+    {%- assign guide_title = 'Camisa Denim Soho' -%}
+    {%- assign guide_note = 'Es una prenda oversize. Si buscas una medida más al cuerpo, elige una talla menos.' -%}
+    <table class="pdp-size-guide__table">
+      <thead><tr><th>Talla</th><th>Busto (cm)</th><th>Cadera (cm)</th></tr></thead>
+      <tbody>
+        <tr><td>S</td><td>90 - 95</td><td>90 - 94</td></tr>
+        <tr><td>M</td><td>96 - 99</td><td>95 - 98</td></tr>
+        <tr><td>L</td><td>100 - 110</td><td>99 - 104</td></tr>
+      </tbody>
+    </table>
+  {%- when 'camisa-oversize-belgrano' -%}
+    {%- assign guide_title = 'Camisa Oversize Belgrano' -%}
+    {%- assign guide_note = 'Es una prenda oversize. Si buscas una medida más al cuerpo, elige una talla menos.' -%}
+    <table class="pdp-size-guide__table">
+      <thead><tr><th>Talla</th><th>Busto (cm)</th><th>Cadera (cm)</th></tr></thead>
+      <tbody>
+        <tr><td>S</td><td>90 - 95</td><td>90 - 94</td></tr>
+        <tr><td>M</td><td>96 - 99</td><td>95 - 98</td></tr>
+        <tr><td>L</td><td>100 - 110</td><td>99 - 104</td></tr>
+      </tbody>
+    </table>
+  {%- else -%}
+    <p>Las medidas de esta prenda estarán disponibles pronto. Si estás entre dos tallas, te recomendamos elegir la mayor para un fit más relajado.</p>
+{%- endcase -%}
+{%- endcapture -%}
+
+{%- if guide_title != blank -%}
+  <p class="pdp-size-guide__title">{{ guide_title }}</p>
+{%- endif -%}
+{{- size_guide_markup -}}
+{%- if guide_note != blank -%}
+  <p class="pdp-size-guide__note">{{ guide_note }}</p>
+{%- endif -%}

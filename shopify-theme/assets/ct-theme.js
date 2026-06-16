@@ -376,6 +376,22 @@
     }];
   }
 
+  function explicitGalleryForColor(color) {
+    const activeButton = colorButtons.find(function (button) {
+      return button.dataset.pdpColor === color;
+    });
+    if (!activeButton || !activeButton.dataset.pdpGallery) return [];
+    return activeButton.dataset.pdpGallery.split('|').filter(Boolean).map(function (url, index) {
+      return {
+        url: url,
+        thumb: url,
+        alt: productTitle + ' — ' + color + ' — foto ' + (index + 1),
+        width: 1200,
+        height: 1500
+      };
+    });
+  }
+
   function filenameFromUrl(url) {
     return String(url || '').split('/').pop().split('?')[0];
   }
@@ -414,6 +430,9 @@
   }
 
   function imagesForColor(color) {
+    const explicitGallery = explicitGalleryForColor(color);
+    if (explicitGallery.length) return explicitGallery;
+
     const baseImages = fallbackImageForColor(color);
     const aliases = colorAliases(color);
     const matches = mediaItems.filter(function (item) {
@@ -783,6 +802,47 @@
   const toggleButtons = Array.from(section.querySelectorAll('[data-toggle-target]'));
   const togglePanels = Array.from(section.querySelectorAll('[data-toggle-panel]'));
   const modal = section.querySelector('[data-quick-modal]');
+  const favoriteStorageKey = 'casa-trame-favorites-v1';
+
+  function readFavorites() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(favoriteStorageKey) || '[]');
+      return Array.isArray(parsed) ? parsed.map(String) : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function writeFavorites(ids) {
+    const uniqueIds = Array.from(new Set(ids.map(String).filter(Boolean)));
+    try {
+      localStorage.setItem(favoriteStorageKey, JSON.stringify(uniqueIds));
+      window.dispatchEvent(new CustomEvent('ct:favorites-changed'));
+    } catch (error) {
+      // Favoritos son una mejora local; si el navegador bloquea storage, no rompemos el catálogo.
+    }
+  }
+
+  function updateFavoriteButton(card) {
+    const button = card && card.querySelector('[data-favorite-toggle]');
+    if (!button) return;
+    const favoriteId = String(card.dataset.favoriteId || '');
+    const isActive = favoriteId && readFavorites().includes(favoriteId);
+    button.classList.toggle('is-active', Boolean(isActive));
+    button.setAttribute('aria-pressed', String(Boolean(isActive)));
+    button.setAttribute('aria-label', isActive ? 'Quitar de favoritos' : 'Guardar en favoritos');
+  }
+
+  function toggleFavorite(card) {
+    const favoriteId = String(card && card.dataset.favoriteId ? card.dataset.favoriteId : '');
+    if (!favoriteId) return;
+    const favorites = readFavorites();
+    const nextFavorites = favorites.includes(favoriteId)
+      ? favorites.filter(function (id) { return id !== favoriteId; })
+      : favorites.concat(favoriteId);
+    writeFavorites(nextFavorites);
+    updateFavoriteButton(card);
+  }
 
   function sortCatalogCards() {
     if (!grid || !cards.length) return;
@@ -882,9 +942,11 @@
     card.dataset.galleryIndex = '0';
     card.dataset.url = colorUrl;
     if (variantId) card.dataset.variantId = variantId;
+    if (button.dataset.favoriteId) card.dataset.favoriteId = button.dataset.favoriteId;
     card.dataset.currentColor = colorName;
     card.dataset.currentColorDisplay = colorDisplay;
     updateCardGalleryControls(card, colorGallery);
+    updateFavoriteButton(card);
 
     card.querySelectorAll('[data-color-swatch]').forEach(function (swatch) {
       swatch.classList.toggle('is-active', swatch === button);
@@ -958,6 +1020,7 @@
   sortCatalogCards();
   cards.forEach(function (card) {
     updateCardGalleryControls(card);
+    updateFavoriteButton(card);
   });
   updateVisibleCount();
 
@@ -1005,6 +1068,19 @@
       const direction = button.hasAttribute('data-card-gallery-next') ? 1 : -1;
       setCardGalleryIndex(card, currentIndex + direction);
     });
+  });
+
+  section.querySelectorAll('[data-favorite-toggle]').forEach(function (button) {
+    button.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      toggleFavorite(button.closest('[data-product-card]'));
+    });
+  });
+
+  window.addEventListener('storage', function (event) {
+    if (event.key !== favoriteStorageKey) return;
+    cards.forEach(updateFavoriteButton);
   });
 
   if (modal) {

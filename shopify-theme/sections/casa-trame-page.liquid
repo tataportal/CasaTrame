@@ -45,14 +45,14 @@
       cursor: pointer;
     }
     .ct-v__section-title {
-      font-size: 1.5rem;
+      font-size: var(--fs-body);
       font-weight: 700;
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
     .ct-v__count {
       color: var(--muted);
-      font-size: 1.3rem;
+      font-size: var(--fs-ui);
       letter-spacing: 0.06em;
       margin-left: 0.4rem;
     }
@@ -66,7 +66,7 @@
     .ct-v__empty-list {
       grid-column: 1 / -1;
       color: var(--muted);
-      font-size: 1.3rem;
+      font-size: var(--fs-ui);
       line-height: 1.45;
       padding: 1.333rem 0.333rem;
       font-style: italic;
@@ -96,7 +96,7 @@
     .ct-v__catalog-item span {
       display: block;
       padding-top: 0.333rem;
-      font-size: 1.2rem;
+      font-size: var(--fs-label);
       line-height: 1.2;
       color: var(--muted);
       white-space: nowrap;
@@ -138,11 +138,24 @@
       justify-content: center;
       padding: 2rem;
       color: var(--muted);
-      font-size: 1.35rem;
+      font-size: var(--fs-ui);
       text-align: center;
       pointer-events: none;
     }
     .ct-v__empty.is-hidden { display: none; }
+    .ct-v__reference-note {
+      position: absolute;
+      left: 1rem;
+      bottom: 5.2rem;
+      z-index: 40;
+      max-width: 18rem;
+      color: var(--muted);
+      font-size: var(--fs-label);
+      line-height: 1.35;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
     .ct-v__layer {
       position: absolute;
       top: 0;
@@ -192,7 +205,7 @@
       border: 1px solid var(--line);
       background: rgba(255,255,255,0.92);
       color: var(--text);
-      font-size: 1.3rem;
+      font-size: var(--fs-ui);
       letter-spacing: 0.16em;
       text-transform: uppercase;
       cursor: pointer;
@@ -203,14 +216,16 @@
     }
     .ct-v__btn svg { width: 1rem; height: 1rem; }
     .ct-v__layers {
-      flex: 0 0 8.4rem;
+      flex: 0 0 18rem;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 0.533rem;
-      padding: 0.8rem;
+      gap: 0.45rem;
+      padding: 0.7rem;
       background: #f7f7f7;
-      overflow: auto;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
     .ct-v__layers.has-layers {
       justify-content: flex-start;
@@ -218,19 +233,19 @@
     }
     .ct-v__layers-title {
       color: var(--muted);
-      font-size: 1.25rem;
+      font-size: var(--fs-ui);
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
     .ct-v__layers.has-layers .ct-v__layers-title { display: none; }
     .ct-v__chip {
-      width: 18rem;
-      flex: 0 0 18rem;
+      width: 100%;
+      flex: 0 0 auto;
       display: grid;
-      grid-template-columns: 3rem minmax(0, 1fr) auto;
+      grid-template-columns: 2.2rem minmax(0, 1fr) auto;
       align-items: center;
-      gap: 0.6rem;
-      padding: 0.667rem;
+      gap: 0.5rem;
+      padding: 0.45rem 0.55rem;
       border: 1px solid var(--line);
       background: #fff;
     }
@@ -238,8 +253,8 @@
       opacity: 0.55;
     }
     .ct-v__chip-thumb {
-      width: 3rem;
-      height: 3.75rem;
+      width: 2.2rem;
+      height: 2.75rem;
       object-fit: contain;
       background: #f5f5f5;
     }
@@ -247,22 +262,16 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      font-size: 1.25rem;
-    }
-    .ct-v__chip-type {
-      margin-top: 0.2rem;
-      color: var(--muted);
-      font-size: 1.2rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+      font-size: var(--fs-ui);
     }
     .ct-v__chip-actions {
       display: flex;
-      gap: 0.133rem;
+      gap: 0.45rem;
+      align-items: center;
     }
     .ct-v__chip-btn {
-      width: 1.9rem;
-      height: 1.9rem;
+      width: 2.4rem;
+      height: 2.4rem;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -276,15 +285,18 @@
       color: var(--text);
     }
     .ct-v__chip-btn svg {
-      width: 1.1rem;
-      height: 1.1rem;
+      width: 1.25rem;
+      height: 1.25rem;
     }
     .ct-v__summary {
+      min-height: 100%;
       padding: 2rem 1.733rem;
+      display: flex;
+      flex-direction: column;
     }
     .ct-v__summary-title,
     .ct-v__saved-title {
-      font-size: 1.45rem;
+      font-size: var(--fs-body);
       font-weight: 700;
       letter-spacing: 0.16em;
       text-transform: uppercase;
@@ -297,7 +309,7 @@
     }
     .ct-v__summary-empty {
       color: var(--muted);
-      font-size: 1.3rem;
+      font-size: var(--fs-ui);
       font-style: italic;
       text-align: center;
       padding-top: 2.5rem;
@@ -309,6 +321,9 @@
       gap: 0.8rem;
       padding: 0.533rem 0;
     }
+    .ct-v__summary-info {
+      min-width: 0;
+    }
     .ct-v__summary-item img {
       width: 3rem;
       height: 3.75rem;
@@ -316,13 +331,39 @@
       background: #f5f5f5;
     }
     .ct-v__summary-name {
-      font-size: 1.25rem;
+      font-size: var(--fs-ui);
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
     .ct-v__summary-price {
-      font-size: 1.25rem;
+      font-size: var(--fs-ui);
+      color: var(--muted);
+    }
+    .ct-v__size-select {
+      width: min(12rem, 100%);
+      margin-top: 0.45rem;
+      min-height: 2rem;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: var(--fs-label);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0 1.8rem 0 0.55rem;
+      appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+        linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+      background-position:
+        calc(100% - 0.9rem) 50%,
+        calc(100% - 0.55rem) 50%;
+      background-size: 0.35rem 0.35rem, 0.35rem 0.35rem;
+      background-repeat: no-repeat;
+    }
+    .ct-v__size-select:invalid {
       color: var(--muted);
     }
     .ct-v__total {
@@ -331,7 +372,7 @@
       align-items: center;
       gap: 1rem;
       padding: 1.333rem 0;
-      font-size: 1.45rem;
+      font-size: var(--fs-body);
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -344,7 +385,7 @@
       border: 1px solid var(--text);
       background: var(--text);
       color: #fff;
-      font-size: 1.3rem;
+      font-size: var(--fs-ui);
       letter-spacing: 0.16em;
       text-transform: uppercase;
       cursor: pointer;
@@ -355,17 +396,30 @@
     }
     .ct-v__saved {
       padding-top: 2rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
     .ct-v__saved-empty {
       color: var(--muted);
-      font-size: 1.25rem;
+      font-size: var(--fs-ui);
       line-height: 1.5;
       text-align: center;
     }
     .ct-v__saved-list {
+      flex: 1;
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-content: start;
       gap: 0.533rem;
+    }
+    .ct-v__saved-list.is-empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 18rem;
+      padding-bottom: 2rem;
     }
     .ct-v__saved-look {
       position: relative;
@@ -410,7 +464,7 @@
       background: rgba(255, 255, 255, 0.88);
       color: var(--text);
       cursor: pointer;
-      font-size: 1rem;
+      font-size: var(--fs-label);
       line-height: 1;
     }
     .ct-v__saved-remove:hover { background: #fff; }
@@ -426,7 +480,7 @@
       opacity: 0;
       pointer-events: none;
       transition: 0.2s ease;
-      font-size: 1.2rem;
+      font-size: var(--fs-label);
     }
     .ct-v__toast.show {
       opacity: 1;
@@ -463,13 +517,13 @@
     .ct-v__help-kicker {
       margin-bottom: 0.533rem;
       color: var(--muted);
-      font-size: 1rem;
+      font-size: var(--fs-label);
       letter-spacing: 0.18em;
       text-transform: uppercase;
     }
     .ct-v__help-title {
       margin: 0;
-      font-size: 1.667rem;
+      font-size: var(--fs-subtitle);
       font-weight: 500;
       letter-spacing: 0.06em;
       text-transform: uppercase;
@@ -482,7 +536,7 @@
       background: transparent;
       color: var(--text);
       cursor: pointer;
-      font-size: 1.6rem;
+      font-size: var(--fs-body);
       line-height: 1;
     }
     .ct-v__help-body { padding: 1.667rem 2rem 2rem; }
@@ -490,7 +544,7 @@
       margin: 0 0 1.6rem;
       max-width: 34rem;
       color: #4d4945;
-      font-size: 1.2rem;
+      font-size: var(--fs-ui);
       line-height: 1.55;
     }
     .ct-v__help-grid {
@@ -507,14 +561,14 @@
     .ct-v__help-card strong {
       display: block;
       margin-bottom: 0.333rem;
-      font-size: 1rem;
+      font-size: var(--fs-label);
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
     .ct-v__help-card span {
       display: block;
       color: #5e5954;
-      font-size: 1.15rem;
+      font-size: var(--fs-label);
       line-height: 1.45;
     }
     .ct-v__help-guide-btn {
@@ -524,7 +578,7 @@
       background: transparent;
       color: var(--text);
       cursor: pointer;
-      font-size: 1.1rem;
+      font-size: var(--fs-label);
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
@@ -542,7 +596,7 @@
     .ct-v__help-guide li {
       margin: 0.667rem 0;
       color: #4d4945;
-      font-size: 1.15rem;
+      font-size: var(--fs-label);
       line-height: 1.45;
     }
     .ct-page {
@@ -556,13 +610,13 @@
       margin: 0 auto;
     }
     .ct-page h1 {
-      font-family: 'Playfair Display', Georgia, serif;
+      font-family: var(--title-heading);
       font-size: clamp(2.6rem, 5vw, 5rem);
       font-weight: 400;
       margin-bottom: 2rem;
     }
     .ct-page__content {
-      font-size: 1.2rem;
+      font-size: var(--fs-label);
       line-height: 1.7;
     }
     @media (max-width: 980px) {
@@ -625,7 +679,7 @@
       }
       .ct-v__btn {
         padding: 0 1rem;
-        font-size: 1.6rem;
+        font-size: var(--fs-body);
       }
       .ct-v__layers {
         flex: 0 0 auto;
@@ -639,7 +693,7 @@
         overflow: visible;
       }
       .ct-v__layers-title {
-        font-size: 1.5rem;
+        font-size: var(--fs-body);
         text-align: center;
       }
       .ct-v__chip {
@@ -650,7 +704,7 @@
       .ct-v__summary-title,
       .ct-v__saved-title,
       .ct-v__total {
-        font-size: 1.65rem;
+        font-size: var(--fs-subtitle);
       }
       .ct-v__count,
       .ct-v__empty-list,
@@ -660,13 +714,10 @@
       .ct-v__summary-price,
       .ct-v__saved-empty,
       .ct-v__chip-name {
-        font-size: 1.5rem;
-      }
-      .ct-v__chip-type {
-        font-size: 1.5rem;
+        font-size: var(--fs-body);
       }
       .ct-v__checkout {
-        font-size: 1.6rem;
+        font-size: var(--fs-body);
       }
     }
   </style>
@@ -760,6 +811,7 @@
           </svg>
         </div>
         <div class="ct-v__empty" data-canvas-empty>Elige prendas del panel izquierdo para probar combinaciones</div>
+        <div class="ct-v__reference-note">Imágenes referenciales</div>
       </div>
       <div class="ct-v__layers" data-layer-stack>
         <div class="ct-v__layers-title">Capas del look</div>
@@ -806,7 +858,7 @@
           </div>
           <div class="ct-v__help-card">
             <strong>Capas</strong>
-            <span>Usa el ojo para ocultar una prenda. Las flechas mueven tops y bottoms adelante o atrás entre sí.</span>
+            <span>Usa el ojo para ocultar una prenda. El orden de capas se acomoda automáticamente por tipo de prenda.</span>
           </div>
           <div class="ct-v__help-card">
             <strong>B / F</strong>
@@ -824,7 +876,8 @@
             <li>Agrega un top: polo, camisa, blusa, polera o sweater.</li>
             <li>Suma abrigo/blazer o outerwear cuando quieras probar volumen. Randomizar no combina sweater con abrigo.</li>
             <li>Solo puede haber una prenda por tipo: un top, un bottom, un abrigo y un outerwear.</li>
-            <li>Usa las flechas para decidir si el top va delante o detrás del bottom.</li>
+            <li>Las camisas y poleras van delante de pantalones/faldas. Las camisas van encima de polos.</li>
+            <li>Los sweaters van delante del pantalón y de las prendas internas.</li>
             <li>Usa el ojo para ocultar o mostrar una prenda sin sacarla del look.</li>
             <li>Si una prenda tiene espalda y frente, el vestidor coloca la espalda detrás y el frente encima.</li>
             <li>Guarda el look para verlo como miniatura y rearmarlo con un click.</li>
@@ -962,7 +1015,7 @@
               endif
               assign vestidor_key = product.handle | append: '-' | append: vestidor_color_slug
               assign vestidor_lookup_key = '|' | append: vestidor_key | append: '|'
-              assign thumb_asset_name = product.handle | append: '-' | append: thumb_color_slug | append: '.png'
+              assign thumb_asset_name = product.handle | append: '-' | append: thumb_color_slug | append: '.webp'
               assign has_vestidor_single = false
               assign has_vestidor_double = false
               if vestidor_single_keys contains vestidor_lookup_key
@@ -977,6 +1030,13 @@
               assign item_name = product.title | append: ' · ' | append: color_display
               assign variant_url = product.url
               assign variant_id = ''
+              assign size_option_position = 0
+              for option in product.options_with_values
+                assign option_name = option.name | downcase
+                if option_name contains 'talla' or option_name contains 'size'
+                  assign size_option_position = forloop.index
+                endif
+              endfor
               for variant in product.variants
                 assign variant_color = ''
                 case color_option_position
@@ -999,10 +1059,42 @@
               endfor
             %}
             {% if has_vestidor_single or has_vestidor_double %}
+              {% capture variant_options %}
+                [
+                  {% assign has_size_variant = false %}
+                  {% for variant in product.variants %}
+                    {% liquid
+                      assign variant_color = ''
+                      case color_option_position
+                        when 1
+                          assign variant_color = variant.option1
+                        when 2
+                          assign variant_color = variant.option2
+                        when 3
+                          assign variant_color = variant.option3
+                      endcase
+                      assign variant_size = variant.title
+                      if size_option_position == 1
+                        assign variant_size = variant.option1
+                      elsif size_option_position == 2
+                        assign variant_size = variant.option2
+                      elsif size_option_position == 3
+                        assign variant_size = variant.option3
+                      endif
+                    %}
+                    {% if variant_color == color_value %}
+                      {% if has_size_variant %},{% endif %}
+                      { "id": {{ variant.id | json }}, "size": {{ variant_size | json }}, "available": {{ variant.available | json }} }
+                      {% assign has_size_variant = true %}
+                    {% endif %}
+                  {% endfor %}
+                ]
+              {% endcapture %}
               catalog[{{ category_key | json }}].push({
                 id: {{ product.id | append: '-' | append: color_slug | json }},
                 productId: {{ product.id | json }},
                 variantId: {{ variant_id | json }},
+                variants: {{ variant_options | strip_newlines }},
                 handle: {{ product.handle | json }},
                 name: {{ item_name | json }},
                 productName: {{ product.title | json }},
@@ -1028,14 +1120,42 @@
             if vestidor_single_keys contains vestidor_lookup_key
               assign has_vestidor_single = true
               assign asset_name = 'vestidor-' | append: vestidor_key | append: '.webp'
-              assign thumb_asset_name = product.handle | append: '.png'
+              assign thumb_asset_name = product.handle | append: '.webp'
             endif
           %}
           {% if has_vestidor_single %}
+            {% capture variant_options %}
+              [
+                {% assign has_size_variant = false %}
+                {% assign size_option_position = 0 %}
+                {% for option in product.options_with_values %}
+                  {% assign option_name = option.name | downcase %}
+                  {% if option_name contains 'talla' or option_name contains 'size' %}
+                    {% assign size_option_position = forloop.index %}
+                  {% endif %}
+                {% endfor %}
+                {% for variant in product.variants %}
+                  {% liquid
+                    assign variant_size = variant.title
+                    if size_option_position == 1
+                      assign variant_size = variant.option1
+                    elsif size_option_position == 2
+                      assign variant_size = variant.option2
+                    elsif size_option_position == 3
+                      assign variant_size = variant.option3
+                    endif
+                  %}
+                  {% if has_size_variant %},{% endif %}
+                  { "id": {{ variant.id | json }}, "size": {{ variant_size | json }}, "available": {{ variant.available | json }} }
+                  {% assign has_size_variant = true %}
+                {% endfor %}
+              ]
+            {% endcapture %}
             catalog[{{ category_key | json }}].push({
               id: {{ product.id | json }},
               productId: {{ product.id | json }},
               variantId: {{ product.selected_or_first_available_variant.id | json }},
+              variants: {{ variant_options | strip_newlines }},
               handle: {{ product.handle | json }},
               name: {{ product.title | json }},
               productName: {{ product.title | json }},
@@ -1052,8 +1172,10 @@
 
       let layers = [];
       let uidCounter = 0;
-      let topOverBottom = false;
       const savedStorageKey = 'casa-trame-vestidor-looks-v1';
+      const favoriteStorageKey = 'casa-trame-favorites-v1';
+      const imageWarmCache = new Set();
+      const selectedVariants = new Map();
 
       const canvas = document.getElementById('ctVestidorCanvas');
       const empty = root.querySelector('[data-canvas-empty]');
@@ -1093,6 +1215,15 @@
         }
       }
 
+      function loadFavoriteIds() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(favoriteStorageKey) || '[]');
+          return Array.isArray(parsed) ? parsed.map(String) : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
       function formatMoney(value) {
         return 'S/ ' + Number(value || 0).toLocaleString('es-PE');
       }
@@ -1107,6 +1238,36 @@
         }[char]));
       }
 
+      function variantOptions(item) {
+        return Array.isArray(item?.variants) ? item.variants : [];
+      }
+
+      function defaultVariantForItem(item) {
+        const options = variantOptions(item);
+        if (!options.length) return null;
+        const available = options.filter((variant) => variant.available);
+        const pool = available.length ? available : options;
+        return pool.find((variant) => String(variant.size || '').trim().toLowerCase() === 'm') || pool[0] || null;
+      }
+
+      function itemSelectedVariantId(item) {
+        const selected = selectedVariants.get(String(item.id));
+        if (selected) return selected;
+        const options = variantOptions(item);
+        const defaultVariant = defaultVariantForItem(item);
+        if (defaultVariant) return String(defaultVariant.id);
+        return '';
+      }
+
+      function selectedVariantForItem(item) {
+        const selectedId = itemSelectedVariantId(item);
+        return variantOptions(item).find((variant) => String(variant.id) === String(selectedId)) || null;
+      }
+
+      function itemNeedsSize(item) {
+        return variantOptions(item).length > 1;
+      }
+
       function resolveImages(item, state) {
         if (!item) return {};
         if (item.states && state && item.states[state]) return item.states[state];
@@ -1118,27 +1279,73 @@
         return item.imgThumb || resolved.img || resolved.imgFront || item.img || '';
       }
 
+      function itemImageSources(item, state) {
+        const resolved = resolveImages(item, state);
+        return [resolved.imgBack, resolved.imgFront, resolved.img, item.img, item.imgThumb].filter(Boolean);
+      }
+
+      function warmImage(src) {
+        if (!src || imageWarmCache.has(src)) return;
+        imageWarmCache.add(src);
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = src;
+      }
+
+      function warmItemImages(item) {
+        if (!item) return;
+        itemImageSources(item, item.defaultState || null).forEach(warmImage);
+        if (item.states) {
+          Object.keys(item.states).forEach((state) => itemImageSources(item, state).forEach(warmImage));
+        }
+      }
+
+      function preloadCatalogImages() {
+        const items = allCatalogItems();
+        const run = () => items.forEach(warmItemImages);
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(run, { timeout: 2000 });
+        } else {
+          window.setTimeout(run, 500);
+        }
+      }
+
       function allCatalogItems() {
-        return Object.values(catalog).flat();
+        return Object.keys(catalog)
+          .filter((key) => key !== 'favoritos')
+          .flatMap((key) => catalog[key] || []);
       }
 
       function catalogItemById(id) {
         return allCatalogItems().find((item) => String(item.id) === String(id));
       }
 
+      function refreshFavoriteCatalog() {
+        const ids = new Set(loadFavoriteIds());
+        catalog.favoritos = allCatalogItems().filter((item) => ids.has(String(item.id)));
+      }
+
       function itemSlot(item) {
         const handle = String(item?.handle || '').toLowerCase();
         const category = String(item?.category || '').toLowerCase();
+        if (isSweaterItem(item)) return 'sweater';
         if (handle.includes('capa') || handle.includes('tapado')) return 'outerwear';
         if (handle.includes('abrigo') || handle.includes('blazer')) return 'abrigo';
         if (category === 'pantalones' || category === 'denim' || category === 'faldas') return 'bottom';
         if (category === 'camisas') return 'blusa';
-        if (category === 'polos' || category === 'poleras') return 'polo';
+        if (category === 'poleras') return 'polera';
+        if (category === 'polos') return 'polo';
         return category || handle;
       }
 
       function isSweaterItem(item) {
         return String(item?.handle || '').toLowerCase().includes('sweater');
+      }
+
+      function itemGroup(item) {
+        const slot = itemSlot(item);
+        if (slot === 'outerwear' || slot === 'abrigo') return 'abrigos';
+        return slot;
       }
 
       function layerOrderScore(layer) {
@@ -1147,14 +1354,18 @@
           outerwear: -200,
           abrigo: -190,
           bottom: -180,
-          blusa: -170,
-          polo: -170
+          polo: -170,
+          blusa: -165,
+          polera: -160,
+          sweater: -155
         };
         const slotOrder = {
-          polo: topOverBottom ? 20 : 10,
-          blusa: topOverBottom ? 20 : 10,
-          bottom: topOverBottom ? 10 : 20,
-          abrigo: 30,
+          polo: 10,
+          bottom: 20,
+          blusa: 30,
+          polera: 35,
+          sweater: 38,
+          abrigo: 39,
           outerwear: 40
         };
         if (layer.layerType === 'coat-back') return backSlotOrder[slot] ?? -210;
@@ -1169,9 +1380,9 @@
         });
       }
 
-      function removeSlot(slot) {
-        if (!slot) return;
-        layers = layers.filter((layer) => itemSlot(layer.item) !== slot);
+      function removeGroup(group) {
+        if (!group) return;
+        layers = layers.filter((layer) => itemGroup(layer.item) !== group);
       }
 
       function addItem(item) {
@@ -1182,7 +1393,7 @@
           return;
         }
 
-        removeSlot(itemSlot(item));
+        removeGroup(itemGroup(item));
         const state = item.defaultState || null;
         if (item.doubleLayer) {
           layers.push({ uid: ++uidCounter, item, layerType: 'coat-back', state });
@@ -1206,16 +1417,21 @@
           }
           itemsEl.innerHTML = items.map((item) => `
             <button class="ct-v__catalog-item" type="button" data-item-id="${item.id}" aria-label="Agregar ${escapeHtml(item.name)}">
-              <img src="${itemThumb(item)}" alt="${escapeHtml(item.name)}" loading="lazy">
+              <img src="${itemThumb(item)}" alt="${escapeHtml(item.name)}" loading="eager" decoding="async">
             </button>
           `).join('');
           itemsEl.querySelectorAll('[data-item-id]').forEach((button) => {
+            const id = button.dataset.itemId;
+            const item = items.find((entry) => String(entry.id) === id);
+            button.addEventListener('mouseenter', () => warmItemImages(item));
+            button.addEventListener('focus', () => warmItemImages(item));
+            button.addEventListener('touchstart', () => warmItemImages(item), { passive: true });
             button.addEventListener('click', () => {
-              const id = button.dataset.itemId;
-              addItem(items.find((item) => String(item.id) === id));
+              addItem(item);
             });
           });
         });
+        preloadCatalogImages();
       }
 
       function renderCanvas() {
@@ -1235,7 +1451,7 @@
           div.dataset.uid = layer.uid;
           div.dataset.layerType = layer.layerType;
           div.style.zIndex = String(index + 2);
-          div.innerHTML = `<img src="${imgSrc}" alt="${layer.item.name}">`;
+          div.innerHTML = `<img src="${imgSrc}" alt="${layer.item.name}" loading="eager" decoding="async">`;
           canvas.appendChild(div);
         });
       }
@@ -1250,14 +1466,7 @@
           chip.className = 'ct-v__chip';
           if (layer.hidden) chip.classList.add('is-hidden-layer');
           chip.dataset.uid = layer.uid;
-          const typeLabel = layer.layerType === 'coat-front' ? 'Frente' : 'Prenda';
           const thumb = itemThumb(layer.item, layer.state);
-          const slot = itemSlot(layer.item);
-          const canMoveAgainstBottom = slot === 'bottom' || slot === 'polo' || slot === 'blusa';
-          const moveButtons = canMoveAgainstBottom ? `
-              <button class="ct-v__chip-btn" type="button" data-move="1" title="Adelante"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg></button>
-              <button class="ct-v__chip-btn" type="button" data-move="-1" title="Atrás"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
-            ` : '';
           const eyeIcon = layer.hidden
             ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.94 10.94 0 0112 20C7 20 2.73 16.89 1 12a11.8 11.8 0 012.06-3.31"/><path d="M10.58 10.58a2 2 0 002.83 2.83"/><path d="M9.88 4.24A10.74 10.74 0 0112 4c5 0 9.27 3.11 11 8a11.79 11.79 0 01-4.22 5.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
             : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
@@ -1265,18 +1474,13 @@
             ${thumb ? `<img class="ct-v__chip-thumb" src="${thumb}" alt="">` : '<div class="ct-v__chip-thumb"></div>'}
             <div>
               <div class="ct-v__chip-name">${layer.item.name}</div>
-              <div class="ct-v__chip-type">${typeLabel}</div>
             </div>
             <div class="ct-v__chip-actions">
               <button class="ct-v__chip-btn" type="button" data-toggle-hidden title="${layer.hidden ? 'Mostrar capa' : 'Ocultar capa'}">${eyeIcon}</button>
-              ${moveButtons}
               <button class="ct-v__chip-btn" type="button" data-remove title="Quitar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
             </div>
           `;
           chip.querySelector('[data-toggle-hidden]').addEventListener('click', () => toggleLayerVisibility(layer.uid));
-          chip.querySelectorAll('[data-move]').forEach((button) => {
-            button.addEventListener('click', () => moveLayer(layer.uid, Number(button.dataset.move)));
-          });
           chip.querySelector('[data-remove]').addEventListener('click', () => removeLayer(layer.uid));
           stack.appendChild(chip);
         });
@@ -1292,19 +1496,45 @@
         } else {
           summaryList.innerHTML = unique.map((item) => {
             const thumb = itemThumb(item, item.defaultState);
+            const selectedVariantId = itemSelectedVariantId(item);
+            const options = variantOptions(item);
+            const availableOptions = options.filter((variant) => variant.available);
+            const selectOptions = availableOptions.length ? availableOptions : options;
+            const sizeControl = options.length ? `
+              <select class="ct-v__size-select" data-size-select="${escapeHtml(item.id)}" required aria-label="Seleccionar talla para ${escapeHtml(item.name)}">
+                ${selectOptions.map((variant) => `
+                  <option value="${escapeHtml(variant.id)}"${String(variant.id) === String(selectedVariantId) ? ' selected' : ''}${variant.available ? '' : ' disabled'}>
+                    ${escapeHtml(variant.size)}${variant.available ? '' : ' · Agotado'}
+                  </option>
+                `).join('')}
+              </select>
+            ` : '';
             return `
               <div class="ct-v__summary-item">
                 ${thumb ? `<img src="${thumb}" alt="">` : '<div></div>'}
-                <div class="ct-v__summary-name">${item.name}</div>
+                <div class="ct-v__summary-info">
+                  <div class="ct-v__summary-name">${item.name}</div>
+                  ${sizeControl}
+                </div>
                 <div class="ct-v__summary-price">${formatMoney(item.price)}</div>
               </div>
             `;
           }).join('');
+          summaryList.querySelectorAll('[data-size-select]').forEach((select) => {
+            select.addEventListener('change', () => {
+              if (select.value) {
+                selectedVariants.set(String(select.dataset.sizeSelect), select.value);
+              } else {
+                selectedVariants.delete(String(select.dataset.sizeSelect));
+              }
+              renderAll();
+            });
+          });
         }
         const total = unique.reduce((sum, item) => sum + Number(item.price || 0), 0);
         summaryTotal.textContent = formatMoney(total);
         if (saveBtn) saveBtn.disabled = !unique.length;
-        if (checkoutBtn) checkoutBtn.disabled = !unique.length || unique.some((item) => !item.variantId);
+        if (checkoutBtn) checkoutBtn.disabled = !unique.length || unique.some((item) => !itemSelectedVariantId(item));
       }
 
       function uniqueItemsFromLayerRefs(layerRefs) {
@@ -1319,10 +1549,12 @@
       function renderSavedLooks() {
         if (!savedList) return;
         if (!savedLooks.length) {
+          savedList.classList.add('is-empty');
           savedList.innerHTML = '<div class="ct-v__saved-empty">Aún no tienes looks guardados.</div>';
           return;
         }
 
+        savedList.classList.remove('is-empty');
         savedList.innerHTML = savedLooks.map((look, index) => {
           const items = uniqueItemsFromLayerRefs(look.layers || []);
           const fallbackThumb = items.map((item) => itemThumb(item, item.defaultState)).find(Boolean);
@@ -1395,15 +1627,6 @@
         return output.toDataURL('image/webp', 0.82);
       }
 
-      function moveLayer(uid, direction) {
-        const layer = layers.find((item) => item.uid === uid);
-        if (!layer) return;
-        const slot = itemSlot(layer.item);
-        if (slot === 'polo' || slot === 'blusa') topOverBottom = direction > 0;
-        if (slot === 'bottom') topOverBottom = direction < 0;
-        renderAll();
-      }
-
       function removeLayer(uid) {
         const layer = layers.find((item) => item.uid === uid);
         if (!layer) return;
@@ -1412,6 +1635,7 @@
         } else {
           layers = layers.filter((item) => item.uid !== uid);
         }
+        selectedVariants.delete(String(layer.item.id));
         renderAll();
       }
 
@@ -1443,8 +1667,8 @@
           state: layer.state || null,
           hidden: Boolean(layer.hidden)
         }));
-        const signature = JSON.stringify({ topOverBottom, layers: layerRefs });
-        if (savedLooks.some((look) => JSON.stringify({ topOverBottom: Boolean(look.topOverBottom), layers: look.layers || [] }) === signature)) {
+        const signature = JSON.stringify({ layers: layerRefs });
+        if (savedLooks.some((look) => JSON.stringify({ layers: look.layers || [] }) === signature)) {
           toast('Este look ya está guardado');
           if (saveBtn) saveBtn.disabled = false;
           return;
@@ -1461,7 +1685,6 @@
           id: `look-${Date.now()}`,
           createdAt: new Date().toISOString(),
           snapshot,
-          topOverBottom,
           layers: layerRefs
         });
         savedLooks = savedLooks.slice(0, 12);
@@ -1475,15 +1698,14 @@
         if (!look || !Array.isArray(look.layers)) return;
 
         const rebuilt = [];
-        topOverBottom = Boolean(look.topOverBottom);
         look.layers.forEach((layer) => {
           const item = catalogItemById(layer.itemId);
           if (!item) return;
-          const slot = itemSlot(item);
-          const slotHasOtherItem = rebuilt.some((entry) => itemSlot(entry.item) === slot && entry.item.id !== item.id);
-          if (slotHasOtherItem) {
+          const group = itemGroup(item);
+          const groupHasOtherItem = rebuilt.some((entry) => itemGroup(entry.item) === group && entry.item.id !== item.id);
+          if (groupHasOtherItem) {
             for (let index = rebuilt.length - 1; index >= 0; index -= 1) {
-              if (itemSlot(rebuilt[index].item) === slot) rebuilt.splice(index, 1);
+              if (itemGroup(rebuilt[index].item) === group) rebuilt.splice(index, 1);
             }
           }
           rebuilt.push({
@@ -1521,9 +1743,9 @@
           toast('Agrega prendas al outfit');
           return;
         }
-        const missingVariant = unique.find((item) => !item.variantId);
+        const missingVariant = unique.find((item) => !itemSelectedVariantId(item));
         if (missingVariant) {
-          toast('Falta variante para ' + missingVariant.productName);
+          toast('Selecciona talla para ' + missingVariant.productName);
           return;
         }
         if (checkoutBtn) checkoutBtn.disabled = true;
@@ -1537,11 +1759,12 @@
             },
             body: JSON.stringify({
               items: unique.map((item) => ({
-                id: Number(item.variantId),
+                id: Number(itemSelectedVariantId(item)),
                 quantity: 1,
                 properties: {
                   Vestidor: 'Outfit Casa Trame',
-                  Color: item.color || ''
+                  Color: item.color || '',
+                  Talla: selectedVariantForItem(item)?.size || ''
                 }
               }))
             })
@@ -1586,13 +1809,10 @@
 
       function randomizeLook() {
         layers = [];
-        topOverBottom = false;
-        const outer = randomItemBySlot('outerwear');
         const bottom = randomItemFrom(['pantalones', 'denim', 'faldas']);
         const top = randomItemFrom(['polos', 'camisas', 'poleras']);
-        const abrigo = isSweaterItem(top) ? null : randomItemBySlot('abrigo');
+        const abrigo = isSweaterItem(top) ? null : randomItem('abrigos');
 
-        pushRandomLayer(outer);
         pushRandomLayer(abrigo);
         pushRandomLayer(bottom);
         pushRandomLayer(top);
@@ -1633,7 +1853,6 @@
 
       root.querySelector('[data-clear]')?.addEventListener('click', () => {
         layers = [];
-        topOverBottom = false;
         renderAll();
         toast('Vestidor limpio');
       });
@@ -1650,10 +1869,474 @@
         if (event.key === 'Escape' && helpModal && !helpModal.hidden) closeHelpModal();
       });
 
+      refreshFavoriteCatalog();
       renderCatalog();
       renderAll();
+
+      window.addEventListener('storage', (event) => {
+        if (event.key !== favoriteStorageKey) return;
+        refreshFavoriteCatalog();
+        renderCatalog();
+      });
+      window.addEventListener('ct:favorites-changed', () => {
+        refreshFavoriteCatalog();
+        renderCatalog();
+      });
     })();
   </script>
+{% elsif page.handle == 'favoritos' %}
+  <style>
+    .ct-simple-page {
+      min-height: 100vh;
+      padding: calc(var(--nav-h) + 5rem) min(7vw, 8rem) 7rem;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .ct-simple-page__inner {
+      width: min(100%, 88rem);
+      margin: 0 auto;
+    }
+    .ct-simple-page__eyebrow {
+      margin-bottom: 1.2rem;
+      color: var(--text-light);
+      font-size: var(--fs-label);
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .ct-simple-page__title {
+      max-width: 12ch;
+      margin-bottom: 2rem;
+      font-family: var(--title-heading);
+      font-size: clamp(3.2rem, 7vw, 7rem);
+      font-weight: 400;
+      line-height: 0.98;
+    }
+    .ct-simple-page__text {
+      max-width: 42rem;
+      color: var(--text-mid);
+      font-size: var(--fs-body);
+      line-height: 1.65;
+    }
+    .ct-favorites-empty {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 2rem;
+      align-items: end;
+    }
+    .ct-favorites-empty__title {
+      margin-bottom: 0.8rem;
+      font-size: var(--fs-subtitle);
+      font-weight: 400;
+    }
+    .ct-favorites-empty__cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3.8rem;
+      padding: 0 2.4rem;
+      border: 1px solid var(--text);
+      color: var(--text);
+      font-size: var(--fs-label);
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .ct-favorites-empty__cta:hover {
+      background: var(--text);
+      color: #fff;
+    }
+    .ct-favorites-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 2rem 1rem;
+      margin-top: 4rem;
+    }
+    .ct-favorite-card {
+      position: relative;
+      min-width: 0;
+    }
+    .ct-favorite-card__image {
+      display: block;
+      aspect-ratio: 4 / 5;
+      background: #f4f2ef;
+    }
+    .ct-favorite-card__image img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .ct-favorite-card__meta {
+      display: block;
+      padding-top: 0.8rem;
+      color: var(--text);
+      font-size: var(--fs-body);
+      line-height: 1.35;
+    }
+    .ct-favorite-card__color,
+    .ct-favorite-card__price {
+      display: block;
+      color: var(--text-mid);
+      font-size: var(--fs-ui);
+    }
+    .ct-favorite-card__remove {
+      position: absolute;
+      top: 0.8rem;
+      right: 0.8rem;
+      width: 2.6rem;
+      height: 2.6rem;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.92);
+      color: var(--text);
+      font-size: 1.6rem;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ct-favorite-card__remove:hover {
+      background: #fff;
+    }
+    @media (max-width: 720px) {
+      .ct-simple-page {
+        padding: calc(var(--nav-h) + 3rem) 1.5rem 5rem;
+      }
+      .ct-favorites-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .ct-favorites-empty {
+        grid-template-columns: 1fr;
+        align-items: start;
+      }
+    }
+  </style>
+  {% render 'casa-trame-nav', active: 'favorites', collection_url: collection_url %}
+  <main class="ct-simple-page">
+    <div class="ct-simple-page__inner">
+      <div class="ct-simple-page__eyebrow">Favoritos</div>
+      <h1 class="ct-simple-page__title">Tus prendas guardadas</h1>
+      <p class="ct-simple-page__text">
+        Guarda las prendas que quieras volver a mirar y arma una selección propia antes de comprar.
+      </p>
+      <section class="ct-favorites-grid" data-favorites-grid aria-label="Favoritos guardados" hidden></section>
+      <section class="ct-favorites-empty" data-favorites-empty aria-label="Favoritos guardados">
+        <div>
+          <h2 class="ct-favorites-empty__title">Aún no tienes favoritos guardados.</h2>
+          <p class="ct-simple-page__text">Explora la colección y vuelve aquí cuando tengas prendas marcadas.</p>
+        </div>
+        <a class="ct-favorites-empty__cta" href="{{ collection_url }}">Ver colección</a>
+      </section>
+    </div>
+  </main>
+  <script>
+    (() => {
+      const favoriteStorageKey = 'casa-trame-favorites-v1';
+      const allFavorites = [
+        {% for product in vestidor_collection.products %}
+          {% liquid
+            assign color_option = blank
+            assign color_option_position = 0
+            for option in product.options_with_values
+              assign option_name = option.name | downcase
+              if option_name contains 'color' or option_name contains 'colour'
+                assign color_option = option
+                assign color_option_position = forloop.index
+              endif
+            endfor
+          %}
+          {% if color_option != blank %}
+            {% for color_value in color_option.values %}
+              {% liquid
+                assign color_slug = color_value | handleize
+                assign favorite_id = product.id | append: '-' | append: color_slug
+                assign color_display = color_value
+                if color_display == 'Black'
+                  assign color_display = 'Negro'
+                endif
+                assign thumb_color_slug = color_slug
+                if thumb_color_slug == 'black'
+                  assign thumb_color_slug = 'negro'
+                elsif thumb_color_slug == 'verde-pacay' or thumb_color_slug == 'verde-botella'
+                  assign thumb_color_slug = 'verde'
+                elsif thumb_color_slug == 'gris-oscuro'
+                  assign thumb_color_slug = 'gris'
+                elsif thumb_color_slug == 'azul-oscuro'
+                  assign thumb_color_slug = 'azul'
+                elsif thumb_color_slug == 'perla'
+                  assign thumb_color_slug = 'blanco'
+                endif
+                assign thumb_asset_name = product.handle | append: '-' | append: thumb_color_slug | append: '.webp'
+                assign variant_url = product.url
+                for variant in product.variants
+                  assign variant_color = ''
+                  case color_option_position
+                    when 1
+                      assign variant_color = variant.option1
+                    when 2
+                      assign variant_color = variant.option2
+                    when 3
+                      assign variant_color = variant.option3
+                  endcase
+                  if variant_color == color_value
+                    assign variant_url = product.url | append: '?variant=' | append: variant.id
+                    break
+                  endif
+                endfor
+              %}
+              {
+                id: {{ favorite_id | json }},
+                title: {{ product.title | json }},
+                color: {{ color_display | json }},
+                price: {{ product.price | money | json }},
+                url: {{ variant_url | json }},
+                image: {{ thumb_asset_name | asset_url | json }}
+              },
+            {% endfor %}
+          {% else %}
+            {% liquid
+              assign favorite_id = product.id
+              assign thumb_asset_name = product.handle | append: '.webp'
+            %}
+            {
+              id: {{ favorite_id | json }},
+              title: {{ product.title | json }},
+              color: '',
+              price: {{ product.price | money | json }},
+              url: {{ product.url | json }},
+              image: {{ thumb_asset_name | asset_url | json }}
+            },
+          {% endif %}
+        {% endfor %}
+      ];
+      const grid = document.querySelector('[data-favorites-grid]');
+      const empty = document.querySelector('[data-favorites-empty]');
+
+      function escapeHtml(value) {
+        return String(value || '').replace(/[&<>"']/g, (char) => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        }[char]));
+      }
+
+      function readFavorites() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(favoriteStorageKey) || '[]');
+          return Array.isArray(parsed) ? parsed.map(String) : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function writeFavorites(ids) {
+        localStorage.setItem(favoriteStorageKey, JSON.stringify(Array.from(new Set(ids.map(String)))));
+        window.dispatchEvent(new CustomEvent('ct:favorites-changed'));
+      }
+
+      function renderFavorites() {
+        if (!grid || !empty) return;
+        const ids = readFavorites();
+        const idSet = new Set(ids);
+        const items = allFavorites.filter((item) => idSet.has(String(item.id)));
+        grid.hidden = items.length === 0;
+        empty.hidden = items.length > 0;
+        grid.innerHTML = items.map((item) => `
+          <article class="ct-favorite-card">
+            <a class="ct-favorite-card__image" href="${item.url}">
+              <img src="${item.image}" alt="${escapeHtml(item.title)}" loading="lazy">
+            </a>
+            <a class="ct-favorite-card__meta" href="${item.url}">
+              <span>${escapeHtml(item.title)}</span>
+              ${item.color ? `<span class="ct-favorite-card__color">${escapeHtml(item.color)}</span>` : ''}
+              <span class="ct-favorite-card__price">${escapeHtml(item.price)}</span>
+            </a>
+            <button class="ct-favorite-card__remove" type="button" data-remove-favorite="${escapeHtml(item.id)}" aria-label="Quitar ${escapeHtml(item.title)} de favoritos">×</button>
+          </article>
+        `).join('');
+        grid.querySelectorAll('[data-remove-favorite]').forEach((button) => {
+          button.addEventListener('click', () => {
+            writeFavorites(readFavorites().filter((id) => id !== String(button.dataset.removeFavorite)));
+            renderFavorites();
+          });
+        });
+      }
+
+      renderFavorites();
+      window.addEventListener('storage', (event) => {
+        if (event.key === favoriteStorageKey) renderFavorites();
+      });
+      window.addEventListener('ct:favorites-changed', renderFavorites);
+    })();
+  </script>
+{% elsif page.handle == 'terminos-y-condiciones' %}
+  <style>
+    .ct-terms {
+      min-height: 100vh;
+      padding: calc(var(--nav-h) + 5rem) min(7vw, 8rem) 7rem;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .ct-terms__inner {
+      width: min(100%, 92rem);
+      margin: 0 auto;
+    }
+    .ct-terms__header {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(24rem, 0.7fr);
+      gap: 4rem;
+      align-items: end;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .ct-terms__eyebrow {
+      margin-bottom: 1.2rem;
+      color: var(--text-light);
+      font-size: var(--fs-label);
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .ct-terms h1 {
+      max-width: 12ch;
+      font-family: var(--title-heading);
+      font-size: clamp(3.2rem, 7vw, 7rem);
+      font-weight: 400;
+      line-height: 0.98;
+    }
+    .ct-terms__lead {
+      color: var(--text-mid);
+      font-size: var(--fs-body);
+      line-height: 1.65;
+    }
+    .ct-terms__content {
+      display: grid;
+      grid-template-columns: minmax(14rem, 0.35fr) minmax(0, 1fr);
+      gap: 4rem;
+      padding-top: 3rem;
+    }
+    .ct-terms__nav {
+      position: sticky;
+      top: calc(var(--nav-h) + 2rem);
+      align-self: start;
+      display: grid;
+      gap: 0.8rem;
+    }
+    .ct-terms__nav a {
+      color: var(--text-mid);
+      font-size: var(--fs-label);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .ct-terms__nav a:hover { color: var(--text); }
+    .ct-terms__body {
+      display: grid;
+      gap: 2.6rem;
+    }
+    .ct-terms__section {
+      padding-bottom: 2.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .ct-terms__section h2 {
+      margin-bottom: 1rem;
+      font-size: var(--fs-subtitle);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+    .ct-terms__section p,
+    .ct-terms__section li {
+      color: var(--text-mid);
+      font-size: var(--fs-body);
+      line-height: 1.7;
+    }
+    .ct-terms__section ul {
+      display: grid;
+      gap: 0.55rem;
+      margin-top: 0.8rem;
+      list-style: disc;
+      padding-left: 1.3rem;
+    }
+    .ct-terms__section a {
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    }
+    @media (max-width: 820px) {
+      .ct-terms {
+        padding: calc(var(--nav-h) + 3rem) 1.5rem 5rem;
+      }
+      .ct-terms__header,
+      .ct-terms__content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .ct-terms__nav {
+        position: static;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+  {% render 'casa-trame-nav', collection_url: collection_url %}
+  <main class="ct-terms">
+    <div class="ct-terms__inner">
+      <header class="ct-terms__header">
+        <div>
+          <div class="ct-terms__eyebrow">Información legal</div>
+          <h1>Términos y condiciones</h1>
+        </div>
+        <p class="ct-terms__lead">
+          Estas condiciones regulan el uso de la tienda online de Casa Tramé, las compras realizadas en el sitio, los envíos, cambios y devoluciones.
+        </p>
+      </header>
+      <div class="ct-terms__content">
+        <nav class="ct-terms__nav" aria-label="Secciones">
+          <a href="#compras">Compras</a>
+          <a href="#pagos">Pagos</a>
+          <a href="#envios">Envíos</a>
+          <a href="#cambios">Cambios</a>
+          <a href="#privacidad">Privacidad</a>
+          <a href="#contacto">Contacto</a>
+        </nav>
+        <div class="ct-terms__body">
+          <section class="ct-terms__section" id="compras">
+            <h2>Compras</h2>
+            <p>Al realizar una compra confirmas que la información entregada es correcta y que aceptas las condiciones publicadas en este sitio. La disponibilidad de prendas, tallas y colores puede variar hasta la confirmación final del pedido.</p>
+          </section>
+          <section class="ct-terms__section" id="pagos">
+            <h2>Pagos</h2>
+            <p>Los pagos se procesan mediante las pasarelas habilitadas en Shopify. Casa Tramé no almacena datos completos de tarjetas ni credenciales de pago.</p>
+          </section>
+          <section class="ct-terms__section" id="envios">
+            <h2>Envíos</h2>
+            <p>Los tiempos y costos de envío se confirman durante el proceso de compra o por los canales de atención disponibles. La entrega puede variar según destino, operador logístico y disponibilidad del pedido.</p>
+          </section>
+          <section class="ct-terms__section" id="cambios">
+            <h2>Cambios y devoluciones</h2>
+            <p>Los cambios y devoluciones se evaluarán según el estado de la prenda, el plazo desde la recepción y las condiciones informadas al momento de la compra.</p>
+            <ul>
+              <li>La prenda debe conservar etiquetas, empaque y condiciones originales.</li>
+              <li>No se aceptan prendas usadas, lavadas, alteradas o dañadas por uso indebido.</li>
+              <li>Productos en promoción o liquidación pueden tener condiciones especiales.</li>
+            </ul>
+          </section>
+          <section class="ct-terms__section" id="privacidad">
+            <h2>Privacidad</h2>
+            <p>La información entregada se usa para gestionar pedidos, atención al cliente y comunicaciones autorizadas. Puedes revisar la política de privacidad en <a href="/policies/privacy-policy">este enlace</a>.</p>
+          </section>
+          <section class="ct-terms__section" id="contacto">
+            <h2>Contacto</h2>
+            <p>Para consultas sobre pedidos, cambios o atención al cliente, escríbenos a <a href="mailto:atencionalcliente@casatrame.com">atencionalcliente@casatrame.com</a>.</p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
 {% else %}
   <main class="ct-page">
     <div class="ct-page__inner">
@@ -1665,7 +2348,9 @@
   </main>
 {% endif %}
 
-{% render 'casa-trame-footer' %}
+{% unless page.handle == 'vestidor' %}
+  {% render 'casa-trame-footer' %}
+{% endunless %}
 
 {% schema %}
 {

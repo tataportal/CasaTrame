@@ -135,6 +135,7 @@
     <h2 class="newsletter__title">{{ section.settings.newsletter_title | escape | newline_to_br }}</h2>
     {% form 'customer', class: 'newsletter__form' %}
       <input type="hidden" name="contact[tags]" value="newsletter">
+      <input type="hidden" name="contact[accepts_marketing]" value="true">
       <div class="newsletter__row">
         <input class="newsletter__input" type="email" name="contact[email]" placeholder="{{ section.settings.newsletter_placeholder }}" value="{{ form.email }}" required>
         <button class="newsletter__submit" type="submit">{{ section.settings.newsletter_button_label }}</button>
@@ -151,7 +152,6 @@
     {% endform %}
   </div>
   {% render 'casa-trame-footer',
-    brand_name: section.settings.footer_brand_name,
     brand_text: section.settings.footer_brand_text,
     bottom_text: section.settings.footer_bottom_text,
     social_heading: section.settings.social_heading,
@@ -309,12 +309,6 @@
       "default": "Gracias por suscribirte."
     },
     {
-      "type": "text",
-      "id": "footer_brand_name",
-      "label": "Nombre footer",
-      "default": "Casa Tramé"
-    },
-    {
       "type": "textarea",
       "id": "footer_brand_text",
       "label": "Texto footer",
@@ -385,7 +379,7 @@
           "type": "text",
           "id": "asset_fallback",
           "label": "Asset fallback",
-          "default": "abrigo-suede-pampa-verde.png",
+          "default": "abrigo-suede-pampa-verde.webp",
           "info": "Nombre de archivo en assets del theme si todavía no cargas una imagen en Shopify."
         },
         {
@@ -404,49 +398,49 @@
           "type": "card",
           "settings": {
             "title": "Abrigos",
-            "asset_fallback": "abrigo-suede-pampa-verde.png"
+            "asset_fallback": "abrigo-suede-pampa-verde.webp"
           }
         },
         {
           "type": "card",
           "settings": {
             "title": "Camisas",
-            "asset_fallback": "camisa-oversize-belgrano-blanco.png"
+            "asset_fallback": "camisa-oversize-belgrano-blanco.webp"
           }
         },
         {
           "type": "card",
           "settings": {
             "title": "Denim",
-            "asset_fallback": "jean-wide-leg-corrientes-denim-claro.png"
+            "asset_fallback": "jean-wide-leg-corrientes-denim-claro.webp"
           }
         },
         {
           "type": "card",
           "settings": {
             "title": "Poleras",
-            "asset_fallback": "polera-con-capucha-aconcagua-blanco.png"
+            "asset_fallback": "polera-con-capucha-aconcagua-blanco.webp"
           }
         },
         {
           "type": "card",
           "settings": {
             "title": "Polos",
-            "asset_fallback": "polo-basico-trenque-lauquen-blanco.png"
+            "asset_fallback": "polo-basico-trenque-lauquen-blanco.webp"
           }
         },
         {
           "type": "card",
           "settings": {
             "title": "Faldas",
-            "asset_fallback": "falda-suede-pampa-verde.png"
+            "asset_fallback": "falda-suede-pampa-verde.webp"
           }
         },
         {
           "type": "card",
           "settings": {
             "title": "Pantalones",
-            "asset_fallback": "pantalon-ancho-barolo-marron.png"
+            "asset_fallback": "pantalon-ancho-barolo-marron.webp"
           }
         }
       ]

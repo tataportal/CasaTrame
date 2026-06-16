@@ -1,0 +1,609 @@
+{% liquid
+  assign provider_name = section.settings.provider_name | default: 'DELCATEX S.A.C.'
+  assign provider_ruc = section.settings.provider_ruc | default: '20615110702'
+  assign provider_address = section.settings.provider_address | default: 'URB. SANTA CATALINA, PSJ. CAPRI 140 - LA VICTORIA - LIMA - PERÚ'
+  assign response_days = section.settings.response_days | default: 15
+  assign current_date = 'now' | date: '%d/%m/%Y'
+%}
+
+{% render 'casa-trame-nav' %}
+
+<style>
+  .ct-claims {
+    min-height: 100vh;
+    padding: calc(var(--nav-h) + 5rem) min(6vw, 7rem) 7rem;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .ct-claims__wrap {
+    width: min(100%, 96rem);
+    margin: 0 auto;
+  }
+  .ct-claims__header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 25rem);
+    gap: 3rem;
+    align-items: end;
+    padding-bottom: 2.4rem;
+    border-bottom: 1px solid var(--text);
+  }
+  .ct-claims__kicker,
+  .ct-claims__small-label,
+  .ct-claims__section-title,
+  .ct-claims__submit {
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .ct-claims__kicker {
+    margin-bottom: 0.9rem;
+    color: var(--text-light);
+  }
+  .ct-claims h1 {
+    max-width: 14ch;
+    font-family: var(--title-heading);
+    font-size: clamp(3.2rem, 7vw, 7rem);
+    font-weight: 400;
+    line-height: 0.96;
+  }
+  .ct-claims__intro {
+    margin-top: 1rem;
+    color: var(--text-mid);
+    font-size: var(--fs-ui);
+    line-height: 1.55;
+  }
+  .ct-claims__meta {
+    display: grid;
+    gap: 1rem;
+    padding-left: 2rem;
+    border-left: 1px solid var(--border);
+  }
+  .ct-claims__provider {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    margin: 2rem 0 2.6rem;
+    border: 1px solid var(--text);
+    border-bottom: 0;
+  }
+  .ct-claims__provider div {
+    min-width: 0;
+    padding: 1.2rem 1.4rem;
+    border-bottom: 1px solid var(--text);
+  }
+  .ct-claims__provider div + div {
+    border-left: 1px solid var(--text);
+  }
+  .ct-claims__provider span,
+  .ct-claims__meta span {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--text-light);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .ct-claims__provider strong,
+  .ct-claims__meta strong {
+    display: block;
+    font-size: var(--fs-ui);
+    font-weight: 400;
+    line-height: 1.35;
+  }
+  .ct-claims__status {
+    margin-bottom: 2rem;
+    padding: 1.2rem 1.4rem;
+    border: 1px solid #2f6d4f;
+    color: #22583f;
+    font-size: var(--fs-label);
+    line-height: 1.5;
+  }
+  .ct-claims__errors {
+    margin-bottom: 2rem;
+    padding: 1.2rem 1.4rem;
+    border: 1px solid #8f2e2e;
+    color: #7a2424;
+    font-size: var(--fs-label);
+    line-height: 1.5;
+  }
+  .ct-claims__form {
+    display: grid;
+    gap: 1.6rem;
+  }
+  .ct-claims__fieldset {
+    display: grid;
+    gap: 0;
+    border: 1px solid var(--text);
+  }
+  .ct-claims__section-title {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid var(--text);
+    background: #d7d3cd;
+    color: var(--text);
+  }
+  .ct-claims__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ct-claims__grid--thirds {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .ct-claims__grid--single {
+    grid-template-columns: 1fr;
+  }
+  .ct-claims__field {
+    min-width: 0;
+    padding: 1.2rem;
+    border-bottom: 1px solid var(--text);
+  }
+  .ct-claims__grid .ct-claims__field {
+    border-right: 1px solid var(--text);
+  }
+  .ct-claims__grid .ct-claims__field:nth-child(2n),
+  .ct-claims__grid--thirds .ct-claims__field:nth-child(3n),
+  .ct-claims__grid--single .ct-claims__field {
+    border-right: 0;
+  }
+  .ct-claims__grid:last-child .ct-claims__field:last-child,
+  .ct-claims__fieldset > .ct-claims__field:last-child {
+    border-bottom: 0;
+  }
+  .ct-claims__label {
+    display: block;
+    margin-bottom: 0.55rem;
+    color: var(--text);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .ct-claims__hint {
+    margin-top: 0.45rem;
+    color: var(--text-light);
+    font-size: var(--fs-label);
+    line-height: 1.4;
+  }
+  .ct-claims input,
+  .ct-claims textarea {
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: var(--fs-ui);
+    outline: 0;
+  }
+  .ct-claims input {
+    min-height: 3.1rem;
+  }
+  .ct-claims input[readonly] {
+    color: var(--text-mid);
+  }
+  .ct-claims textarea {
+    min-height: 11rem;
+    padding-top: 0.6rem;
+    resize: vertical;
+  }
+  .ct-claims input:focus,
+  .ct-claims textarea:focus {
+    border-bottom-color: var(--text);
+  }
+  .ct-claims__choices {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+  .ct-claims__choice {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    min-height: 3.6rem;
+    padding: 0.9rem;
+    border: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .ct-claims__choice input {
+    width: 1.1rem;
+    min-width: 1.1rem;
+    height: 1.1rem;
+    min-height: 1.1rem;
+    margin-top: 0.25rem;
+    accent-color: var(--text);
+  }
+  .ct-claims__choice strong {
+    display: block;
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .ct-claims__choice span {
+    display: block;
+    color: var(--text-light);
+    font-size: var(--fs-label);
+    line-height: 1.4;
+  }
+  .ct-claims__legal {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+    border: 1px solid var(--text);
+    border-top: 0;
+  }
+  .ct-claims__legal p {
+    padding: 1rem 1.2rem;
+    color: var(--text-mid);
+    font-size: var(--fs-label);
+    line-height: 1.45;
+  }
+  .ct-claims__legal p + p {
+    border-left: 1px solid var(--text);
+  }
+  .ct-claims__notice {
+    display: grid;
+    gap: 0.55rem;
+    margin-top: 1.4rem;
+    color: var(--text-mid);
+    font-size: var(--fs-label);
+    line-height: 1.5;
+  }
+  .ct-claims__signature {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.2rem;
+    align-items: end;
+    padding-top: 0.4rem;
+  }
+  .ct-claims__submit {
+    min-height: 4.4rem;
+    padding: 0 2.2rem;
+    border: 1px solid var(--text);
+    background: var(--text);
+    color: var(--bg);
+  }
+  .ct-claims__submit:hover {
+    background: transparent;
+    color: var(--text);
+  }
+  .ct-claims__internal {
+    margin-top: 1.6rem;
+    border: 1px solid var(--border);
+  }
+  .ct-claims__internal .ct-claims__section-title {
+    border-bottom-color: var(--border);
+    background: #ebe7e1;
+  }
+  .ct-claims__internal p {
+    padding: 1.2rem;
+    color: var(--text-light);
+    font-size: var(--fs-label);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 820px) {
+    .ct-claims {
+      padding: calc(var(--nav-h) + 3rem) 1.6rem 5rem;
+    }
+    .ct-claims__header,
+    .ct-claims__provider,
+    .ct-claims__grid,
+    .ct-claims__grid--thirds,
+    .ct-claims__legal,
+    .ct-claims__signature {
+      grid-template-columns: 1fr;
+    }
+    .ct-claims__meta {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .ct-claims__provider div + div,
+    .ct-claims__grid .ct-claims__field,
+    .ct-claims__legal p + p {
+      border-left: 0;
+      border-right: 0;
+    }
+    .ct-claims__provider div {
+      border-left: 0;
+    }
+    .ct-claims__choices {
+      grid-template-columns: 1fr;
+    }
+    .ct-claims__submit {
+      width: 100%;
+    }
+  }
+</style>
+
+<main class="ct-claims">
+  <div class="ct-claims__wrap">
+    <header class="ct-claims__header">
+      <div>
+        <p class="ct-claims__kicker">Hoja de reclamación virtual</p>
+        <h1>Libro de reclamaciones</h1>
+        <p class="ct-claims__intro">
+          Completa esta hoja si necesitas registrar un reclamo o queja sobre una compra, producto, servicio o atención recibida en Casa Tramé.
+        </p>
+      </div>
+      <div class="ct-claims__meta" aria-label="Datos de la hoja">
+        <div>
+          <span>Fecha</span>
+          <strong>{{ current_date }}</strong>
+        </div>
+        <div>
+          <span>N°</span>
+          <strong data-claim-number-label>Se generará al enviar</strong>
+        </div>
+      </div>
+    </header>
+
+    <section class="ct-claims__provider" aria-label="Datos del proveedor">
+      <div>
+        <span>Proveedor</span>
+        <strong>{{ provider_name }}</strong>
+      </div>
+      <div>
+        <span>RUC</span>
+        <strong>{{ provider_ruc }}</strong>
+      </div>
+      <div>
+        <span>Domicilio</span>
+        <strong>{{ provider_address }}</strong>
+      </div>
+    </section>
+
+    {% form 'contact', id: 'LibroReclamacionesForm', class: 'ct-claims__form' %}
+      <input type="hidden" name="contact[subject]" value="Libro de reclamaciones - Casa Trame">
+      <input type="hidden" name="contact[tags]" value="libro-reclamaciones,reclamo-web">
+      <input type="hidden" name="contact[Fecha]" value="{{ current_date }}">
+      <input type="hidden" name="contact[Proveedor]" value="{{ provider_name | escape }}">
+      <input type="hidden" name="contact[RUC proveedor]" value="{{ provider_ruc | escape }}">
+      <input type="hidden" name="contact[Domicilio proveedor]" value="{{ provider_address | escape }}">
+      <input type="hidden" name="contact[Numero de hoja]" value="" data-claim-number>
+      <textarea name="contact[Reporte completo]" data-claim-report hidden></textarea>
+
+      {% if form.posted_successfully? %}
+        <p class="ct-claims__status" role="status">
+          Tu hoja de reclamación fue enviada. Casa Tramé responderá por escrito dentro del plazo legal aplicable.
+        </p>
+      {% endif %}
+
+      {% if form.errors %}
+        <div class="ct-claims__errors">
+          {{ form.errors | default_errors }}
+        </div>
+      {% endif %}
+
+      <fieldset class="ct-claims__fieldset">
+        <legend class="ct-claims__section-title">1. Identificación del consumidor reclamante</legend>
+        <div class="ct-claims__grid">
+          <div class="ct-claims__field">
+            <label class="ct-claims__label" for="ClaimsName">Nombre</label>
+            <input id="ClaimsName" type="text" name="contact[name]" autocomplete="name" required>
+          </div>
+          <div class="ct-claims__field">
+            <label class="ct-claims__label" for="ClaimsDocument">DNI / CE</label>
+            <input id="ClaimsDocument" type="text" name="contact[Documento DNI CE]" inputmode="text" autocomplete="off" required>
+          </div>
+        </div>
+        <div class="ct-claims__grid">
+          <div class="ct-claims__field">
+            <label class="ct-claims__label" for="ClaimsAddress">Domicilio</label>
+            <input id="ClaimsAddress" type="text" name="contact[Domicilio consumidor]" autocomplete="street-address" required>
+          </div>
+          <div class="ct-claims__field">
+            <label class="ct-claims__label" for="ClaimsPhone">Teléfono</label>
+            <input id="ClaimsPhone" type="tel" name="contact[phone]" autocomplete="tel" required>
+          </div>
+        </div>
+        <div class="ct-claims__grid">
+          <div class="ct-claims__field">
+            <label class="ct-claims__label" for="ClaimsEmail">E-mail</label>
+            <input id="ClaimsEmail" type="email" name="contact[email]" autocomplete="email" value="{{ form.email }}" required>
+          </div>
+          <div class="ct-claims__field">
+            <label class="ct-claims__label" for="ClaimsGuardian">Si es menor de edad, padre, madre o apoderado</label>
+            <input id="ClaimsGuardian" type="text" name="contact[Padre madre o apoderado]" autocomplete="name">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="ct-claims__fieldset">
+        <legend class="ct-claims__section-title">2. Identificación del bien contratado</legend>
+        <div class="ct-claims__grid">
+          <div class="ct-claims__field">
+            <span class="ct-claims__label">Tipo</span>
+            <div class="ct-claims__choices">
+              <label class="ct-claims__choice">
+                <input type="radio" name="contact[Tipo de bien contratado]" value="Producto" required>
+                <span><strong>Producto</strong></span>
+              </label>
+              <label class="ct-claims__choice">
+                <input type="radio" name="contact[Tipo de bien contratado]" value="Servicio" required>
+                <span><strong>Servicio</strong></span>
+              </label>
+            </div>
+          </div>
+          <div class="ct-claims__field">
+            <label class="ct-claims__label" for="ClaimsAmount">Monto reclamado</label>
+            <input id="ClaimsAmount" type="text" name="contact[Monto reclamado]" inputmode="decimal" placeholder="S/." required>
+          </div>
+        </div>
+        <div class="ct-claims__field">
+          <label class="ct-claims__label" for="ClaimsDescription">Descripción</label>
+          <textarea id="ClaimsDescription" name="contact[Descripcion del bien o servicio]" required></textarea>
+        </div>
+      </fieldset>
+
+      <fieldset class="ct-claims__fieldset">
+        <legend class="ct-claims__section-title">3. Detalle de la reclamación y pedido del consumidor</legend>
+        <div class="ct-claims__field">
+          <span class="ct-claims__label">Tipo de comunicación</span>
+          <div class="ct-claims__choices">
+            <label class="ct-claims__choice">
+              <input type="radio" name="contact[Tipo de incidencia]" value="Reclamo" required>
+              <span>
+                <strong>Reclamo</strong>
+                <span>Disconformidad relacionada a los productos o servicios.</span>
+              </span>
+            </label>
+            <label class="ct-claims__choice">
+              <input type="radio" name="contact[Tipo de incidencia]" value="Queja" required>
+              <span>
+                <strong>Queja</strong>
+                <span>Disconformidad no relacionada a los productos o servicios, o malestar respecto a la atención.</span>
+              </span>
+            </label>
+          </div>
+        </div>
+        <div class="ct-claims__field">
+          <label class="ct-claims__label" for="ClaimsDetail">Detalle</label>
+          <textarea id="ClaimsDetail" name="contact[body]" required></textarea>
+        </div>
+        <div class="ct-claims__field">
+          <label class="ct-claims__label" for="ClaimsRequest">Pedido</label>
+          <textarea id="ClaimsRequest" name="contact[Pedido del consumidor]" required></textarea>
+        </div>
+      </fieldset>
+
+      <div class="ct-claims__legal">
+        <p><strong>Reclamo:</strong> disconformidad relacionada a los productos o servicios.</p>
+        <p><strong>Queja:</strong> disconformidad no relacionada a los productos o servicios, o malestar respecto a la atención al público.</p>
+      </div>
+
+      <section class="ct-claims__internal" aria-label="Observaciones del proveedor">
+        <h2 class="ct-claims__section-title">4. Observaciones y acciones adoptadas por el proveedor</h2>
+        <p>
+          Esta sección será completada por Casa Tramé al responder la hoja de reclamación por el canal indicado por el consumidor.
+        </p>
+      </section>
+
+      <div class="ct-claims__notice">
+        <p>* La formulación del reclamo no impide acudir a otras vías de solución de controversias ni es requisito previo para interponer una denuncia ante el INDECOPI.</p>
+        <p>* El proveedor debe dar respuesta al reclamo o queja en un plazo no mayor a {{ response_days }} días hábiles, el cual es improrrogable.</p>
+      </div>
+
+      <div class="ct-claims__signature">
+        <div>
+          <label class="ct-claims__label" for="ClaimsSignature">Firma del consumidor</label>
+          <input id="ClaimsSignature" type="text" name="contact[Firma del consumidor]" placeholder="Escribe tu nombre completo" autocomplete="name" required>
+          <p class="ct-claims__hint">Al enviar esta hoja, declaras que la información consignada es verdadera.</p>
+        </div>
+        <button class="ct-claims__submit" type="submit">Enviar hoja</button>
+      </div>
+    {% endform %}
+  </div>
+</main>
+
+<script>
+  (() => {
+    const form = document.getElementById('LibroReclamacionesForm');
+    if (!form) return;
+
+    const numberInput = form.querySelector('[data-claim-number]');
+    const numberLabel = document.querySelector('[data-claim-number-label]');
+    const reportInput = form.querySelector('[data-claim-report]');
+
+    function pad(value) {
+      return String(value).padStart(2, '0');
+    }
+
+    function makeClaimNumber() {
+      const now = new Date();
+      return [
+        'LR',
+        now.getFullYear(),
+        pad(now.getMonth() + 1),
+        pad(now.getDate()),
+        '-',
+        pad(now.getHours()),
+        pad(now.getMinutes()),
+        pad(now.getSeconds())
+      ].join('');
+    }
+
+    function field(name) {
+      const checked = form.querySelector('[name="' + name + '"]:checked');
+      if (checked) return checked.value;
+      const input = form.querySelector('[name="' + name + '"]');
+      return input ? input.value.trim() : '';
+    }
+
+    function setClaimNumber() {
+      if (!numberInput) return;
+      if (!numberInput.value) numberInput.value = makeClaimNumber();
+      if (numberLabel) numberLabel.textContent = numberInput.value;
+    }
+
+    function buildReport() {
+      if (!reportInput) return;
+      setClaimNumber();
+      const rows = [
+        ['Numero de hoja', field('contact[Numero de hoja]')],
+        ['Fecha', field('contact[Fecha]')],
+        ['Proveedor', field('contact[Proveedor]')],
+        ['RUC proveedor', field('contact[RUC proveedor]')],
+        ['Domicilio proveedor', field('contact[Domicilio proveedor]')],
+        ['Nombre', field('contact[name]')],
+        ['DNI / CE', field('contact[Documento DNI CE]')],
+        ['Domicilio consumidor', field('contact[Domicilio consumidor]')],
+        ['Telefono', field('contact[phone]')],
+        ['Email', field('contact[email]')],
+        ['Padre, madre o apoderado', field('contact[Padre madre o apoderado]')],
+        ['Tipo de bien contratado', field('contact[Tipo de bien contratado]')],
+        ['Monto reclamado', field('contact[Monto reclamado]')],
+        ['Descripcion', field('contact[Descripcion del bien o servicio]')],
+        ['Tipo de incidencia', field('contact[Tipo de incidencia]')],
+        ['Detalle', field('contact[body]')],
+        ['Pedido', field('contact[Pedido del consumidor]')],
+        ['Firma del consumidor', field('contact[Firma del consumidor]')]
+      ];
+      reportInput.value = rows.map((row) => row[0] + ': ' + (row[1] || '-')).join('\n');
+    }
+
+    setClaimNumber();
+    form.addEventListener('submit', buildReport);
+  })();
+</script>
+
+{% render 'casa-trame-footer' %}
+
+{% schema %}
+{
+  "name": "Libro reclamaciones",
+  "settings": [
+    {
+      "type": "text",
+      "id": "provider_name",
+      "label": "Proveedor",
+      "default": "DELCATEX S.A.C."
+    },
+    {
+      "type": "text",
+      "id": "provider_ruc",
+      "label": "RUC",
+      "default": "20615110702"
+    },
+    {
+      "type": "text",
+      "id": "provider_address",
+      "label": "Domicilio",
+      "default": "URB. SANTA CATALINA, PSJ. CAPRI 140 - LA VICTORIA - LIMA - PERÚ"
+    },
+    {
+      "type": "number",
+      "id": "response_days",
+      "label": "Plazo de respuesta en dias habiles",
+      "default": 15
+    }
+  ],
+  "presets": [
+    {
+      "name": "Libro reclamaciones"
+    }
+  ]
+}
+{% endschema %}

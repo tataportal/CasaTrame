@@ -266,10 +266,10 @@
                       assign primary_color_slug = 'blanco'
                   endif
                   assign primary_asset_base = product.handle | append: '-' | append: primary_color_slug
-                  assign primary_asset_name = primary_asset_base | append: '.png'
+                  assign primary_asset_name = primary_asset_base | append: '.webp'
                 else
                   assign primary_asset_base = product.handle
-                  assign primary_asset_name = primary_asset_base | append: '.png'
+                  assign primary_asset_name = primary_asset_base | append: '.webp'
                 endif
 
                 capture primary_model_gallery
@@ -302,8 +302,11 @@
                 endif
 
                 assign primary_color_display = ''
+                assign primary_favorite_id = product.id
                 if color_option != blank
                   assign primary_color_display = color_option.values.first
+                  assign primary_favorite_slug = color_option.values.first | handleize
+                  assign primary_favorite_id = product.id | append: '-' | append: primary_favorite_slug
                   if primary_color_display == 'Black'
                     assign primary_color_display = 'Negro'
                   endif
@@ -342,6 +345,7 @@
                 data-price="{{ product.price | money | escape }}"
                 data-url="{{ product.url }}"
                 data-variant-id="{{ primary_variant_id }}"
+                data-favorite-id="{{ primary_favorite_id }}"
                 data-current-color="{% if color_option != blank %}{{ color_option.values.first | escape }}{% endif %}"
                 data-current-color-display="{{ primary_color_display | escape }}"
               >
@@ -369,6 +373,9 @@
                   {% endif %}
                   <button class="catalog-card__quick" type="button" data-quick-view aria-label="Vista rápida de {{ product.title | escape }}">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                  <button class="catalog-card__favorite" type="button" data-favorite-toggle aria-label="Guardar en favoritos" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
                   </button>
                   <button class="catalog-card__gallery-arrow catalog-card__gallery-arrow--prev" type="button" data-card-gallery-prev aria-label="Foto anterior de {{ product.title | escape }}"{% unless primary_gallery_has_controls %} hidden{% endunless %}>
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg>
@@ -413,6 +420,8 @@
                           endfor
 
                           assign color_slug = color_value | handleize
+                          assign favorite_color_slug = color_slug
+                          assign favorite_id = product.id | append: '-' | append: favorite_color_slug
                           assign color_display = color_value
                           if color_value == 'Black'
                             assign color_display = 'Negro'
@@ -430,7 +439,7 @@
                           endif
 
                           assign color_asset_base = product.handle | append: '-' | append: color_slug
-                          assign color_asset_name = color_asset_base | append: '.png'
+                          assign color_asset_name = color_asset_base | append: '.webp'
                           assign color_image_url = color_asset_name | asset_url
                           assign color_modal_image_url = color_image_url
                           assign color_swatch_image_url = color_image_url
@@ -475,6 +484,7 @@
                           data-color-gallery="{{ color_model_gallery | escape }}"
                           data-color-url="{{ variant_url }}"
                           data-variant-id="{{ variant_id }}"
+                          data-favorite-id="{{ favorite_id }}"
                           aria-label="{{ product.title | escape }} — {{ color_display | escape }}"
                           title="{{ color_display | escape }}"
                         >
@@ -545,7 +555,7 @@
             >
           {% else %}
             <img
-              src="{{ 'abrigo-suede-pampa-verde.png' | asset_url }}"
+              src="{{ 'abrigo-suede-pampa-verde.webp' | asset_url }}"
               alt=""
               width="1200"
               height="1500"
@@ -570,7 +580,6 @@
 
     {% render 'casa-trame-footer',
       variant: 'light',
-      brand_name: section.settings.footer_brand_name,
       brand_text: section.settings.footer_brand_text,
       bottom_text: section.settings.footer_bottom_text,
       social_heading: section.settings.social_heading,
@@ -671,12 +680,6 @@
       "id": "empty_state_text",
       "label": "Texto colección vacía",
       "default": "Publica productos en esta colección y aparecerán aquí automáticamente con este layout."
-    },
-    {
-      "type": "text",
-      "id": "footer_brand_name",
-      "label": "Nombre footer",
-      "default": "Casa Tramé"
     },
     {
       "type": "textarea",
