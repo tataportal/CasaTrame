@@ -1,0 +1,202 @@
+{% liquid
+  assign collection_url = routes.collections_url | append: '/coleccion-otono-invierno-2026'
+  assign query = search.terms | default: ''
+%}
+
+{% render 'casa-trame-nav', active: '', collection_url: collection_url %}
+
+<main class="ct-search">
+  <header class="ct-search__header">
+    <p class="ct-search__eyebrow">Buscar</p>
+    <h1 class="ct-search__title">Búsqueda</h1>
+    <form class="ct-search__form" action="{{ routes.search_url }}" method="get" role="search">
+      <input type="hidden" name="type" value="product">
+      <input
+        class="ct-search__input"
+        type="search"
+        name="q"
+        value="{{ query | escape }}"
+        placeholder="Buscar prendas"
+        autocomplete="off"
+      >
+      <button class="ct-search__submit" type="submit">Buscar</button>
+    </form>
+    {% if search.performed %}
+      <p class="ct-search__meta">
+        {{ search.results_count }} resultado{% unless search.results_count == 1 %}s{% endunless %}
+        {% if query != blank %} para “{{ query | escape }}”{% endif %}
+      </p>
+    {% endif %}
+  </header>
+
+  {% if search.performed %}
+    {% paginate search.results by section.settings.products_per_page %}
+      {% assign product_count = 0 %}
+      <section class="ct-search__results catalog-product-grid" aria-label="Resultados de búsqueda">
+        {% for item in search.results %}
+          {% if item.object_type == 'product' %}
+            {% liquid
+              assign product = item
+              assign product_count = product_count | plus: 1
+              assign product_handle = product.handle
+              assign primary_media = product.featured_media.preview_image | default: product.featured_image
+
+              assign color_option = blank
+              for option in product.options_with_values
+                assign option_name = option.name | downcase
+                if option_name contains 'color' or option_name contains 'colour'
+                  assign color_option = option
+                endif
+              endfor
+
+              assign primary_asset_base = product_handle
+              assign primary_asset_name = product_handle | append: '.webp'
+              if color_option != blank
+                assign primary_color_slug = color_option.values.first | handleize
+                if primary_color_slug == 'black'
+                  assign primary_color_slug = 'negro'
+                elsif primary_color_slug == 'verde-pacay' or primary_color_slug == 'verde-botella'
+                  assign primary_color_slug = 'verde'
+                elsif primary_color_slug == 'gris-oscuro'
+                  assign primary_color_slug = 'gris'
+                elsif primary_color_slug == 'azul-oscuro'
+                  assign primary_color_slug = 'azul'
+                elsif primary_color_slug == 'perla'
+                  assign primary_color_slug = 'blanco'
+                endif
+                assign primary_asset_base = product_handle | append: '-' | append: primary_color_slug
+                assign primary_asset_name = primary_asset_base | append: '.webp'
+              endif
+
+              capture primary_model_gallery
+                render 'casa-trame-model-gallery', asset_base: primary_asset_base
+              endcapture
+              assign primary_model_gallery = primary_model_gallery | strip
+              assign primary_model_gallery_urls = primary_model_gallery | split: '|'
+
+              assign primary_display_url = primary_asset_name | asset_url
+              if primary_model_gallery != blank
+                assign primary_display_url = primary_model_gallery_urls.first
+              elsif primary_media != blank
+                assign primary_display_url = primary_media | image_url: width: 1000
+              endif
+            %}
+
+            <article class="catalog-card">
+              <div class="catalog-card__image">
+                <a href="{{ product.url }}" class="catalog-card__image-link" aria-label="Ver {{ product.title | escape }}"></a>
+                {% if primary_display_url != blank %}
+                  <img
+                    class="catalog-card__img catalog-card__img--primary"
+                    src="{{ primary_display_url }}"
+                    alt="{{ primary_media.alt | default: product.title | escape }}"
+                    width="1200"
+                    height="1500"
+                    loading="lazy"
+                  >
+                {% endif %}
+              </div>
+              <div class="catalog-card__info">
+                <div class="catalog-card__meta">
+                  <a href="{{ product.url }}" class="catalog-card__text">
+                    <div class="catalog-card__name">{{ product.title }}</div>
+                    <div class="catalog-card__price">{{ product.price | money }}</div>
+                  </a>
+                </div>
+                {% if color_option != blank and color_option.values.size > 1 %}
+                  <div class="catalog-card__swatches" aria-label="Colores de {{ product.title | escape }}">
+                    {% for color_value in color_option.values %}
+                      {% liquid
+                        assign color_slug = color_value | handleize
+                        assign color_display = color_value
+                        if color_value == 'Black'
+                          assign color_display = 'Negro'
+                        endif
+                        if color_slug == 'black'
+                          assign color_slug = 'negro'
+                        elsif color_slug == 'verde-pacay' or color_slug == 'verde-botella'
+                          assign color_slug = 'verde'
+                        elsif color_slug == 'gris-oscuro'
+                          assign color_slug = 'gris'
+                        elsif color_slug == 'azul-oscuro'
+                          assign color_slug = 'azul'
+                        elsif color_slug == 'perla'
+                          assign color_slug = 'blanco'
+                        endif
+                        assign color_asset_name = product.handle | append: '-' | append: color_slug | append: '.webp'
+                      %}
+                      <a class="catalog-card__swatch{% if forloop.first %} is-active{% endif %}" href="{{ product.url }}" title="{{ color_display | escape }}" aria-label="{{ product.title | escape }} — {{ color_display | escape }}">
+                        <img src="{{ color_asset_name | asset_url }}" alt="{{ color_display | escape }}" width="120" height="150" loading="lazy">
+                      </a>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </article>
+          {% endif %}
+        {% endfor %}
+      </section>
+
+      {% if product_count == 0 %}
+        <section class="catalog-empty-state catalog-empty-state--static">
+          <span class="catalog-empty-state__eyebrow">Búsqueda</span>
+          <h2 class="catalog-empty-state__title">{{ section.settings.empty_title }}</h2>
+          <p>{{ section.settings.empty_text }}</p>
+        </section>
+      {% endif %}
+
+      {% if paginate.pages > 1 %}
+        <nav class="catalog-pagination" aria-label="Paginación">
+          {% if paginate.previous %}
+            <a href="{{ paginate.previous.url }}">Anterior</a>
+          {% else %}
+            <span class="is-disabled">Anterior</span>
+          {% endif %}
+          <span>{{ paginate.current_page }} / {{ paginate.pages }}</span>
+          {% if paginate.next %}
+            <a href="{{ paginate.next.url }}">Siguiente</a>
+          {% else %}
+            <span class="is-disabled">Siguiente</span>
+          {% endif %}
+        </nav>
+      {% endif %}
+    {% endpaginate %}
+  {% else %}
+    <section class="catalog-empty-state catalog-empty-state--static">
+      <span class="catalog-empty-state__eyebrow">Búsqueda</span>
+      <h2 class="catalog-empty-state__title">Encuentra una prenda</h2>
+      <p>Busca por nombre, categoría o color.</p>
+    </section>
+  {% endif %}
+</main>
+
+{% render 'casa-trame-footer', variant: 'light' %}
+
+{% schema %}
+{
+  "name": "Casa Trame Search",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Productos por página",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "text",
+      "id": "empty_title",
+      "label": "Título sin resultados",
+      "default": "Sin resultados"
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Texto sin resultados",
+      "default": "Prueba con otra palabra o vuelve a la colección."
+    }
+  ]
+}
+{% endschema %}

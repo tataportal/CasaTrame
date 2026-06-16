@@ -895,6 +895,73 @@ body:has(.launch-home) .ct-v-nav,
 .nav--catalog .nav__right svg { stroke: var(--text); filter: none; }
 .nav--catalog .nav__logo img { filter: none; }
 
+.ct-search {
+  min-height: calc(100vh - var(--nav-h));
+  padding: calc(var(--nav-h) + 3rem) 3rem 4rem;
+  background: var(--bg);
+}
+.ct-search__header {
+  max-width: 74rem;
+  margin: 0 auto 3rem;
+}
+.ct-search__eyebrow {
+  margin-bottom: 0.8rem;
+  color: var(--text-light);
+  font-size: var(--fs-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.ct-search__title {
+  margin-bottom: 2rem;
+  font-family: var(--heading);
+  font-size: var(--fs-section);
+  font-style: italic;
+  font-weight: 200;
+  line-height: 1;
+}
+.ct-search__form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 1.2rem;
+  border-bottom: 1px solid var(--text);
+}
+.ct-search__input {
+  width: 100%;
+  min-height: 3.2rem;
+  padding: 0.4rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: var(--fs-subtitle);
+  outline: none;
+}
+.ct-search__input::placeholder {
+  color: var(--text-light);
+}
+.ct-search__submit {
+  min-height: 3.2rem;
+  padding: 0 0 0.2rem;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: var(--fs-btn);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.ct-search__meta {
+  margin-top: 1rem;
+  color: var(--text-mid);
+  font-size: var(--fs-ui);
+}
+.ct-search__results {
+  max-width: 92rem;
+  margin: 0 auto;
+}
+
 .catalog-page {
   padding-top: var(--nav-h);
   background: var(--bg);
@@ -2388,6 +2455,33 @@ body:has(.launch-home) .ct-v-nav,
   .newsletter__errors { font-size: var(--fs-body); }
   .footer { padding: 3rem 1.5rem 2rem; }
   .footer__grid { grid-template-columns: 1fr; gap: 2rem; }
+
+  .ct-search {
+    padding: calc(var(--nav-h) + 1.6rem) 1.2rem 3rem;
+  }
+  .ct-search__header {
+    margin-bottom: 2rem;
+  }
+  .ct-search__title {
+    font-size: var(--fs-page);
+    margin-bottom: 1.4rem;
+  }
+  .ct-search__form {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    padding-bottom: 0.6rem;
+  }
+  .ct-search__input {
+    min-height: 3rem;
+    font-size: var(--fs-subtitle);
+  }
+  .ct-search__submit {
+    justify-self: start;
+    min-height: 2.6rem;
+  }
+  .ct-search__results {
+    max-width: none;
+  }
 
   .catalog-main {
     grid-template-columns: 1fr;
