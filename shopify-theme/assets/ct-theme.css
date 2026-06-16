@@ -1334,8 +1334,8 @@ body:has(.launch-home) .ct-v-nav,
   max-width: none;
   height: 100%;
   aspect-ratio: unset;
-  object-fit: cover;
-  object-position: center 48%;
+  object-fit: contain;
+  object-position: center center;
   background-color: #f4f2ef;
   background-image: linear-gradient(rgba(244,242,239,0.75), rgba(244,242,239,0.75)), url('bg_3.png');
   background-size: cover;
