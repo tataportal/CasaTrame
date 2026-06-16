@@ -323,7 +323,9 @@
   const waitlistForm = pdp.querySelector('[data-pdp-waitlist-tags]')?.closest('form');
   const waitlistTags = pdp.querySelector('[data-pdp-waitlist-tags]');
   const waitlistStatus = pdp.querySelector('[data-pdp-waitlist-status]');
+  const vestidorLink = pdp.querySelector('[data-pdp-vestidor-link]');
   const productTitle = (document.querySelector('.pdp-info__title')?.textContent || '').trim();
+  const productId = pdp.dataset.productId || '';
   const productHandle = pdp.dataset.productHandle || normalizeText(productTitle);
   const colorPosition = Number(pdp.dataset.colorPosition || 0);
   const sizePosition = Number(pdp.dataset.sizePosition || 0);
@@ -360,6 +362,14 @@
   function colorAliases(color) {
     const slug = normalizeText(color);
     return slug ? [slug] : [];
+  }
+
+  function updateVestidorLink() {
+    if (!vestidorLink || !productId) return;
+    const itemId = selectedColor ? productId + '-' + normalizeText(selectedColor) : productId;
+    const url = new URL(vestidorLink.getAttribute('href') || '/pages/vestidor', window.location.origin);
+    url.searchParams.set('add', itemId);
+    vestidorLink.href = url.pathname + url.search + url.hash;
   }
 
   function fallbackImageForColor(color) {
@@ -726,6 +736,7 @@
       });
       renderGallery(selectedColor);
       updateVariant();
+      updateVestidorLink();
     });
   });
 
@@ -764,6 +775,7 @@
   }
 
   updateVariant();
+  updateVestidorLink();
   updateGallery();
 })();
 

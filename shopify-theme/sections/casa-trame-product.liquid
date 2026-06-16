@@ -70,7 +70,7 @@
 
 {% render 'casa-trame-nav', active: 'collection', collection_url: collection_url %}
 
-<main class="pdp" data-pdp data-product-handle="{{ product.handle }}" data-color-position="{{ color_option_position }}" data-size-position="{{ size_option_position }}">
+<main class="pdp" data-pdp data-product-id="{{ product.id }}" data-product-handle="{{ product.handle }}" data-color-position="{{ color_option_position }}" data-size-position="{{ size_option_position }}">
   <section class="pdp-gallery" id="pdpGallery">
     <div class="pdp-gallery__pair pdp-gallery__pair--single" data-pdp-gallery-track>
       {% if color_option != blank %}
@@ -222,7 +222,14 @@
       <p class="pdp-waitlist__status" role="status" data-pdp-waitlist-status hidden></p>
     </form>
 
-    <a class="pdp-stylewith" href="{{ vestidor_url }}">Añadir al Vestidor</a>
+    {% liquid
+      assign initial_vestidor_item_id = product.id
+      if color_option != blank
+        assign first_color_slug = color_option.values.first | handleize
+        assign initial_vestidor_item_id = product.id | append: '-' | append: first_color_slug
+      endif
+    %}
+    <a class="pdp-stylewith" href="{{ vestidor_url }}?add={{ initial_vestidor_item_id | url_encode }}" data-pdp-vestidor-link>Añadir al Vestidor</a>
 
     <details class="pdp-accordion">
       <summary>Composición</summary>

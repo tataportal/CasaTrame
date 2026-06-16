@@ -1325,6 +1325,15 @@
         }[char]));
       }
 
+      function normalizeText(value) {
+        return String(value || '')
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      }
+
       function variantOptions(item) {
         return Array.isArray(item?.variants) ? item.variants : [];
       }
@@ -1405,6 +1414,15 @@
 
       function catalogItemById(id) {
         return allCatalogItems().find((item) => String(item.id) === String(id));
+      }
+
+      function resolveCatalogItemByRequest(value) {
+        if (!value) return null;
+        const requested = String(value);
+        const direct = catalogItemById(requested);
+        if (direct) return direct;
+        const normalized = normalizeText(requested);
+        return allCatalogItems().find((item) => normalizeText(item.id) === normalized) || null;
       }
 
       function refreshFavoriteCatalog() {
@@ -1670,6 +1688,21 @@
         renderLayerStack();
         renderSummary();
         renderSavedLooks();
+      }
+
+      function addRequestedItemFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const requestedItemId = params.get('add');
+        if (!requestedItemId) return;
+
+        const item = resolveCatalogItemByRequest(requestedItemId);
+        if (!item) {
+          toast('Esa prenda aún no está disponible en el vestidor');
+          return;
+        }
+
+        addItem(item);
+        toast('Prenda agregada al vestidor');
       }
 
       function loadImage(src) {
@@ -1964,6 +1997,7 @@
       refreshFavoriteCatalog();
       renderCatalog();
       renderAll();
+      addRequestedItemFromUrl();
 
       window.addEventListener('storage', (event) => {
         if (event.key !== favoriteStorageKey) return;
