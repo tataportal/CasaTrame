@@ -10,8 +10,12 @@
       --line: #e4e0da;
       --text: #111;
       --muted: #6f6a61;
+      --v-title: clamp(20px, 1.4vw, 24px);
+      --v-body: clamp(17px, 1.08vw, 20px);
+      --v-small: clamp(16px, 0.98vw, 18px);
+      --v-action: clamp(15px, 1vw, 17px);
       display: grid;
-      grid-template-columns: minmax(18rem, 25vw) minmax(32rem, 1fr) minmax(20rem, 25vw);
+      grid-template-columns: minmax(250px, 24vw) minmax(390px, 1fr) minmax(340px, 28vw);
       height: 100vh;
       padding-top: var(--nav-h);
       background: #f7f7f7;
@@ -55,14 +59,14 @@
       cursor: pointer;
     }
     .ct-v__section-title {
-      font-size: var(--fs-body);
+      font-size: var(--v-title);
       font-weight: 700;
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
     .ct-v__count {
       color: var(--muted);
-      font-size: var(--fs-ui);
+      font-size: var(--v-small);
       letter-spacing: 0.06em;
       margin-left: 0.4rem;
     }
@@ -76,7 +80,7 @@
     .ct-v__empty-list {
       grid-column: 1 / -1;
       color: var(--muted);
-      font-size: var(--fs-ui);
+      font-size: var(--v-body);
       line-height: 1.45;
       padding: 1.333rem 0.333rem;
       font-style: italic;
@@ -106,7 +110,7 @@
     .ct-v__catalog-item span {
       display: block;
       padding-top: 0.333rem;
-      font-size: var(--fs-label);
+      font-size: var(--v-small);
       line-height: 1.2;
       color: var(--muted);
       white-space: nowrap;
@@ -148,7 +152,7 @@
       justify-content: center;
       padding: 2rem;
       color: var(--muted);
-      font-size: var(--fs-ui);
+      font-size: var(--v-body);
       text-align: center;
       pointer-events: none;
     }
@@ -160,7 +164,7 @@
       z-index: 40;
       max-width: 18rem;
       color: var(--muted);
-      font-size: var(--fs-label);
+      font-size: var(--v-small);
       line-height: 1.35;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -215,8 +219,8 @@
       border: 1px solid var(--line);
       background: rgba(255,255,255,0.92);
       color: var(--text);
-      font-size: var(--fs-ui);
-      letter-spacing: 0.16em;
+      font-size: var(--v-action);
+      letter-spacing: 0.13em;
       text-transform: uppercase;
       cursor: pointer;
     }
@@ -243,7 +247,7 @@
     }
     .ct-v__layers-title {
       color: var(--muted);
-      font-size: var(--fs-ui);
+      font-size: var(--v-small);
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
@@ -272,7 +276,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      font-size: var(--fs-ui);
+      font-size: var(--v-body);
     }
     .ct-v__chip-actions {
       display: flex;
@@ -300,29 +304,29 @@
     }
     .ct-v__summary {
       min-height: 100%;
-      padding: 2rem 1.733rem;
+      padding: clamp(1.2rem, 2.2vh, 2rem) 1.733rem;
       display: flex;
       flex-direction: column;
     }
     .ct-v__summary-title,
     .ct-v__saved-title {
-      font-size: var(--fs-body);
+      font-size: var(--v-title);
       font-weight: 700;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      margin-bottom: 2rem;
+      margin-bottom: clamp(1rem, 2vh, 2rem);
     }
     .ct-v__summary-list {
-      min-height: 14rem;
+      min-height: clamp(8rem, 19vh, 14rem);
       border-bottom: 1px solid var(--line);
       padding-bottom: 1.333rem;
     }
     .ct-v__summary-empty {
       color: var(--muted);
-      font-size: var(--fs-ui);
+      font-size: var(--v-body);
       font-style: italic;
       text-align: center;
-      padding-top: 2.5rem;
+      padding-top: clamp(1.2rem, 3vh, 2.5rem);
     }
     .ct-v__summary-item {
       display: grid;
@@ -348,7 +352,7 @@
       display: block;
     }
     .ct-v__summary-name {
-      font-size: var(--fs-ui);
+      font-size: var(--v-body);
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -363,7 +367,7 @@
       opacity: 0.66;
     }
     .ct-v__summary-price {
-      font-size: var(--fs-ui);
+      font-size: var(--v-body);
       color: var(--muted);
     }
     .ct-v__size-select {
@@ -375,7 +379,7 @@
       background: #fff;
       color: var(--text);
       font: inherit;
-      font-size: var(--fs-label);
+      font-size: var(--v-action);
       letter-spacing: 0.08em;
       text-transform: uppercase;
       padding: 0 1.8rem 0 0.55rem;
@@ -398,7 +402,7 @@
       align-items: center;
       gap: 1rem;
       padding: 1.333rem 0;
-      font-size: var(--fs-body);
+      font-size: var(--v-title);
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -408,20 +412,25 @@
       width: 100%;
       margin-top: 1.333rem;
       min-height: 44px;
+      padding: 0 1rem;
       border: 1px solid var(--text);
       background: var(--text);
       color: #fff;
-      font-size: var(--fs-ui);
-      letter-spacing: 0.16em;
+      font-size: var(--v-action);
+      letter-spacing: 0.1em;
       text-transform: uppercase;
+      white-space: nowrap;
       cursor: pointer;
+    }
+    .ct-v__total span:last-child {
+      white-space: nowrap;
     }
     .ct-v__checkout:disabled {
       opacity: 0.25;
       cursor: default;
     }
     .ct-v__saved {
-      padding-top: 2rem;
+      padding-top: clamp(1rem, 2vh, 2rem);
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -429,7 +438,7 @@
     }
     .ct-v__saved-empty {
       color: var(--muted);
-      font-size: var(--fs-ui);
+      font-size: var(--v-body);
       line-height: 1.5;
       text-align: center;
     }
@@ -444,7 +453,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 18rem;
+      min-height: clamp(9rem, 22vh, 18rem);
       padding-bottom: 2rem;
     }
     .ct-v__saved-look {
@@ -490,7 +499,7 @@
       background: rgba(255, 255, 255, 0.88);
       color: var(--text);
       cursor: pointer;
-      font-size: var(--fs-label);
+      font-size: var(--v-small);
       line-height: 1;
     }
     .ct-v__saved-remove:hover { background: #fff; }
@@ -506,7 +515,7 @@
       opacity: 0;
       pointer-events: none;
       transition: 0.2s ease;
-      font-size: var(--fs-label);
+      font-size: var(--v-small);
     }
     .ct-v__toast.show {
       opacity: 1;
@@ -543,13 +552,13 @@
     .ct-v__help-kicker {
       margin-bottom: 0.533rem;
       color: var(--muted);
-      font-size: var(--fs-label);
+      font-size: var(--v-small);
       letter-spacing: 0.18em;
       text-transform: uppercase;
     }
     .ct-v__help-title {
       margin: 0;
-      font-size: var(--fs-subtitle);
+      font-size: var(--v-title);
       font-weight: 500;
       letter-spacing: 0.06em;
       text-transform: uppercase;
@@ -562,7 +571,7 @@
       background: transparent;
       color: var(--text);
       cursor: pointer;
-      font-size: var(--fs-body);
+      font-size: var(--v-body);
       line-height: 1;
     }
     .ct-v__help-body { padding: 1.667rem 2rem 2rem; }
@@ -570,7 +579,7 @@
       margin: 0 0 1.6rem;
       max-width: 34rem;
       color: #4d4945;
-      font-size: var(--fs-ui);
+      font-size: var(--v-body);
       line-height: 1.55;
     }
     .ct-v__help-grid {
@@ -587,14 +596,14 @@
     .ct-v__help-card strong {
       display: block;
       margin-bottom: 0.333rem;
-      font-size: var(--fs-label);
+      font-size: var(--v-small);
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
     .ct-v__help-card span {
       display: block;
       color: #5e5954;
-      font-size: var(--fs-label);
+      font-size: var(--v-small);
       line-height: 1.45;
     }
     .ct-v__help-guide-btn {
@@ -604,7 +613,7 @@
       background: transparent;
       color: var(--text);
       cursor: pointer;
-      font-size: var(--fs-label);
+      font-size: var(--v-action);
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
@@ -622,7 +631,7 @@
     .ct-v__help-guide li {
       margin: 0.667rem 0;
       color: #4d4945;
-      font-size: var(--fs-label);
+      font-size: var(--v-small);
       line-height: 1.45;
     }
     .ct-page {
@@ -779,7 +788,7 @@
       }
       .ct-v__btn {
         padding: 0 1rem;
-        font-size: var(--fs-body);
+        font-size: var(--v-action);
       }
       .ct-v__layers {
         flex: 0 0 auto;
@@ -793,7 +802,7 @@
         overflow: visible;
       }
       .ct-v__layers-title {
-        font-size: var(--fs-body);
+        font-size: var(--v-small);
         text-align: center;
       }
       .ct-v__chip {
@@ -804,7 +813,7 @@
       .ct-v__summary-title,
       .ct-v__saved-title,
       .ct-v__total {
-        font-size: var(--fs-subtitle);
+        font-size: var(--v-title);
       }
       .ct-v__count,
       .ct-v__empty-list,
@@ -814,10 +823,46 @@
       .ct-v__summary-price,
       .ct-v__saved-empty,
       .ct-v__chip-name {
-        font-size: var(--fs-body);
+        font-size: var(--v-body);
       }
       .ct-v__checkout {
-        font-size: var(--fs-body);
+        font-size: var(--v-action);
+      }
+    }
+    @media (min-width: 981px) and (max-width: 1360px) {
+      .ct-v {
+        grid-template-columns: minmax(230px, 23vw) minmax(360px, 1fr) minmax(330px, 31vw);
+      }
+      .ct-v__section-head {
+        padding: 1rem 1.25rem;
+      }
+      .ct-v__items {
+        gap: 0.4rem;
+        padding: 0 0.8rem 1rem;
+        min-height: 5.8rem;
+      }
+      .ct-v__summary {
+        padding: 1.2rem 1.35rem;
+      }
+      .ct-v__summary-list {
+        min-height: 8.5rem;
+        padding-bottom: 1rem;
+      }
+      .ct-v__summary-empty {
+        padding-top: 1.2rem;
+      }
+      .ct-v__total {
+        padding: 1rem 0;
+      }
+      .ct-v__checkout {
+        margin-top: 1rem;
+      }
+      .ct-v__saved {
+        padding-top: 1.2rem;
+      }
+      .ct-v__saved-list.is-empty {
+        min-height: 10rem;
+        padding-bottom: 1rem;
       }
     }
   </style>
