@@ -1084,6 +1084,9 @@
               assign vestidor_key = product.handle | append: '-' | append: vestidor_color_slug
               assign vestidor_lookup_key = '|' | append: vestidor_key | append: '|'
               assign thumb_asset_name = product.handle | append: '-' | append: thumb_color_slug | append: '.webp'
+              if product.handle == 'polera-cuello-alto-calafate' and thumb_color_slug == 'verde'
+                assign thumb_asset_name = 'polera-cuello-alto-calafate-verde.png'
+              endif
               assign has_vestidor_single = false
               assign has_vestidor_double = false
               if vestidor_single_keys contains vestidor_lookup_key
@@ -2139,6 +2142,9 @@
                   assign thumb_color_slug = 'blanco'
                 endif
                 assign thumb_asset_name = product.handle | append: '-' | append: thumb_color_slug | append: '.webp'
+                if product.handle == 'polera-cuello-alto-calafate' and thumb_color_slug == 'verde'
+                  assign thumb_asset_name = 'polera-cuello-alto-calafate-verde.png'
+                endif
                 assign variant_url = product.url
                 for variant in product.variants
                   assign variant_color = ''
