@@ -32,7 +32,7 @@
   --heading: 'Goia Display', Georgia, serif;
   --title-heading: 'Playfair Display', Georgia, serif;
   --body: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --nav-h: clamp(72px, 6.667rem, 86px);
+  --nav-h: clamp(82px, 7.5rem, 98px);
   --fs-hero: 4.4rem;
   --fs-section: 3.6rem;
   --fs-page: 2.8rem;
@@ -99,13 +99,13 @@ ul { list-style: none; }
   align-items: center;
 }
 .nav__left { display: flex; gap: 3.2rem; align-items: center; }
-.nav__left a { font-size: clamp(17px, var(--fs-subtitle), 21px); letter-spacing: 0.03em; line-height: 1.2; transition: color 0.4s; }
+.nav__left a { font-size: clamp(20px, 1.75rem, 24px); font-weight: 400; letter-spacing: 0.02em; line-height: 1.2; transition: color 0.4s; }
 .nav__left a.underlined { text-decoration: underline; text-underline-offset: 0.333rem; }
 .nav__logo { display: flex; align-items: center; justify-content: center; }
-.nav__logo img { height: clamp(28px, 2.467rem, 34px); width: auto; transition: filter 0.4s; transform: translateY(-0.2rem); }
+.nav__logo img { height: clamp(34px, 3rem, 42px); width: auto; transition: filter 0.4s; transform: translateY(-0.2rem); }
 .nav__right { display: flex; gap: 2.4rem; align-items: center; justify-content: flex-end; }
-.nav__right a, .nav__right button { display: flex; align-items: center; justify-content: center; min-width: 48px; min-height: 48px; font-size: clamp(16px, var(--fs-ui), 19px); transition: color 0.4s; }
-.nav__right svg { width: clamp(28px, 2.4rem, 34px); height: clamp(28px, 2.4rem, 34px); transition: stroke 0.4s; }
+.nav__right a, .nav__right button { display: flex; align-items: center; justify-content: center; min-width: 56px; min-height: 56px; font-size: clamp(18px, 1.55rem, 22px); transition: color 0.4s; }
+.nav__right svg { width: clamp(34px, 3rem, 40px); height: clamp(34px, 3rem, 40px); transition: stroke 0.4s; }
 .nav__cart { position: relative; }
 .nav__cart-dot {
   position: absolute;
@@ -116,8 +116,8 @@ ul { list-style: none; }
   border-radius: 50%;
   background: currentColor;
 }
-.nav__hamburger { display: none; flex-direction: column; gap: 6px; min-width: 48px; min-height: 48px; align-items: center; justify-content: center; }
-.nav__hamburger span { display: block; width: 28px; height: 1.5px; background: var(--text); transition: all 0.3s ease; }
+.nav__hamburger { display: none; flex-direction: column; gap: 7px; min-width: 56px; min-height: 56px; align-items: center; justify-content: center; }
+.nav__hamburger span { display: block; width: 34px; height: 1.5px; background: var(--text); transition: all 0.3s ease; }
 .nav__hamburger.is-open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
 .nav__hamburger.is-open span:nth-child(2) { opacity: 0; }
 .nav__hamburger.is-open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
@@ -157,7 +157,8 @@ ul { list-style: none; }
 .ct-v-nav button {
   color: #111;
   font-family: inherit;
-  font-size: clamp(17px, var(--fs-body), 20px);
+  font-size: clamp(20px, 1.75rem, 24px);
+  font-weight: 400;
   line-height: 1.2;
   background: none;
   border: 0;
@@ -169,21 +170,21 @@ ul { list-style: none; }
 .ct-v-nav .underlined { border-bottom: 1px solid currentColor; }
 .ct-v-nav__logo img {
   display: block;
-  width: clamp(180px, 16rem, 216px);
+  width: clamp(230px, 20rem, 280px);
   height: auto;
   transition: filter 0.28s ease;
 }
 .ct-v-nav svg {
   display: block;
-  width: clamp(28px, 2.4rem, 34px);
-  height: clamp(28px, 2.4rem, 34px);
+  width: clamp(34px, 3rem, 40px);
+  height: clamp(34px, 3rem, 40px);
   stroke: currentColor;
   transition: filter 0.28s ease;
 }
 .ct-v-nav__right a,
 .ct-v-nav__right button {
-  min-width: 48px;
-  min-height: 48px;
+  min-width: 56px;
+  min-height: 56px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -197,14 +198,14 @@ ul { list-style: none; }
   align-items: center;
   justify-content: center;
   justify-self: end;
-  width: 48px;
-  height: 48px;
-  gap: 6px;
+  width: 56px;
+  height: 56px;
+  gap: 7px;
   color: #111;
 }
 .ct-v-nav__menu-toggle span {
   display: block;
-  width: 28px;
+  width: 34px;
   height: 1.5px;
   background: currentColor;
   transition: transform 0.22s ease, opacity 0.22s ease;
@@ -2269,7 +2270,7 @@ body:has(.launch-home) .ct-v-nav,
   }
 
   :root {
-    --nav-h: 72px;
+    --nav-h: 78px;
     --fs-hero: 3.4rem;
     --fs-section: 2.8rem;
     --fs-page: 2.35rem;
@@ -2327,7 +2328,7 @@ body:has(.launch-home) .ct-v-nav,
     grid-column: 2;
     justify-self: center;
   }
-  .ct-v-nav__logo img { width: clamp(148px, 13rem, 176px); }
+  .ct-v-nav__logo img { width: clamp(176px, 44vw, 220px); }
 
   .launch-home {
     padding: calc(var(--nav-h) + 2rem) 1.5rem 3rem;
