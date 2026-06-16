@@ -40,9 +40,9 @@
   --fs-body: 1.45rem;
   --fs-ui: 1.35rem;
   --fs-btn: 1.56rem;
-  --fs-label: 1.2rem;
+  --fs-label: 1.25rem;
 }
-html { font-size: clamp(8px, calc(2.33px + 0.5vw), 15px); }
+html { font-size: clamp(10px, calc(8px + 0.25vw), 13px); }
 body {
   font-family: var(--body);
   font-weight: 300;
@@ -104,7 +104,7 @@ ul { list-style: none; }
 .nav__logo { display: flex; align-items: center; justify-content: center; }
 .nav__logo img { height: 2.467rem; width: auto; transition: filter 0.4s; transform: translateY(-0.2rem); }
 .nav__right { display: flex; gap: 2.4rem; align-items: center; justify-content: flex-end; }
-.nav__right a, .nav__right button { display: flex; align-items: center; font-size: var(--fs-ui); transition: color 0.4s; }
+.nav__right a, .nav__right button { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; font-size: var(--fs-ui); transition: color 0.4s; }
 .nav__right svg { width: 2.333rem; height: 2.333rem; transition: stroke 0.4s; }
 .nav__cart { position: relative; }
 .nav__cart-dot {
@@ -178,6 +178,14 @@ ul { list-style: none; }
   height: 1.867rem;
   stroke: currentColor;
   transition: filter 0.28s ease;
+}
+.ct-v-nav__right a,
+.ct-v-nav__right button {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .ct-v-nav__menu-toggle,
 .ct-v-nav__mobile-menu {
@@ -1046,8 +1054,8 @@ body:has(.launch-home) .ct-v-nav,
   right: 0.933rem;
   bottom: 0.933rem;
   z-index: 3;
-  width: 2.533rem;
-  height: 2.533rem;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: rgba(255,255,255,0.9);
   backdrop-filter: blur(0.267rem);
@@ -1058,7 +1066,7 @@ body:has(.launch-home) .ct-v-nav,
   transition: opacity 0.25s ease, background 0.2s ease;
   color: var(--text);
 }
-.catalog-card__quick svg { width: 1.333rem; height: 1.333rem; }
+.catalog-card__quick svg { width: 20px; height: 20px; }
 .catalog-card:hover .catalog-card__quick { opacity: 1; }
 .catalog-card__quick:hover { background: #fff; }
 .catalog-card__favorite {
@@ -1066,8 +1074,8 @@ body:has(.launch-home) .ct-v-nav,
   top: 0.933rem;
   right: 0.933rem;
   z-index: 5;
-  width: 2.533rem;
-  height: 2.533rem;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: rgba(255,255,255,0.9);
   backdrop-filter: blur(0.267rem);
@@ -1079,8 +1087,8 @@ body:has(.launch-home) .ct-v-nav,
   transition: opacity 0.25s ease, background 0.2s ease, transform 0.2s ease;
 }
 .catalog-card__favorite svg {
-  width: 1.333rem;
-  height: 1.333rem;
+  width: 20px;
+  height: 20px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.5;
@@ -1102,8 +1110,8 @@ body:has(.launch-home) .ct-v-nav,
   position: absolute;
   top: 50%;
   z-index: 4;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 44px;
+  height: 44px;
   border: 0.067rem solid rgba(255,255,255,0.55);
   border-radius: 50%;
   background: rgba(255,255,255,0.72);
@@ -1121,8 +1129,8 @@ body:has(.launch-home) .ct-v-nav,
 .catalog-card__gallery-arrow--prev { left: 0.8rem; }
 .catalog-card__gallery-arrow--next { right: 0.8rem; }
 .catalog-card__gallery-arrow svg {
-  width: 1.333rem;
-  height: 1.333rem;
+  width: 20px;
+  height: 20px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.5;
@@ -1352,8 +1360,8 @@ body:has(.launch-home) .ct-v-nav,
   position: absolute;
   top: 50%;
   z-index: 5;
-  width: 3.2rem;
-  height: 3.2rem;
+  width: 44px;
+  height: 44px;
   transform: translateY(-50%);
   display: flex;
   align-items: center;
@@ -1372,7 +1380,7 @@ body:has(.launch-home) .ct-v-nav,
 }
 .pdp-gallery__control--prev { left: 2rem; }
 .pdp-gallery__control--next { right: 2rem; }
-.pdp-gallery__control svg { width: 1.2rem; height: 1.2rem; stroke-width: 2; }
+.pdp-gallery__control svg { width: 20px; height: 20px; stroke-width: 2; }
 .pdp-gallery__dots {
   position: absolute;
   left: 50%;
@@ -1383,8 +1391,8 @@ body:has(.launch-home) .ct-v-nav,
   transform: translateX(-50%);
 }
 .pdp-gallery__dot {
-  width: 0.533rem;
-  height: 0.533rem;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: rgba(17,17,17,0.38);
   transition: background 0.2s ease, transform 0.2s ease;
@@ -1455,6 +1463,7 @@ body:has(.launch-home) .ct-v-nav,
 }
 .pdp-size__combobox {
   width: 100%;
+  min-height: 44px;
   padding: 12px 0;
   font-size: var(--fs-body);
   color: var(--text);
@@ -1493,6 +1502,7 @@ body:has(.launch-home) .ct-v-nav,
 .pdp-size__select.open .pdp-size__listbox { display: block; }
 .pdp-size__option {
   width: 100%;
+  min-height: 44px;
   padding: 12px 16px;
   font-size: var(--fs-ui);
   cursor: pointer;
@@ -1540,6 +1550,7 @@ body:has(.launch-home) .ct-v-nav,
 }
 .pdp-waitlist__input {
   width: 100%;
+  min-height: 44px;
   padding: 13px 0;
   margin-bottom: 10px;
   border: 0;
@@ -2055,8 +2066,8 @@ body:has(.launch-home) .ct-v-nav,
   margin-bottom: 0.4rem;
 }
 .cart-item__qty input {
-  width: 3rem;
-  height: 2.8rem;
+  width: 44px;
+  height: 44px;
   border: 0;
   background: transparent;
   color: var(--text);
@@ -2072,11 +2083,11 @@ body:has(.launch-home) .ct-v-nav,
 .cart-item__qty-control {
   display: inline-flex;
   align-items: center;
-  height: 3rem;
+  height: 44px;
   border: 1px solid var(--border);
 }
 .cart-item__qty-button {
-  width: 3rem;
+  width: 44px;
   height: 100%;
   border: 0;
   background: transparent;
@@ -2179,14 +2190,14 @@ body:has(.launch-home) .ct-v-nav,
 
   :root {
     --nav-h: 6.667rem;
-    --fs-hero: 4rem;
-    --fs-section: 3.2rem;
-    --fs-page: 2.8rem;
-    --fs-subtitle: 2rem;
-    --fs-body: 1.9rem;
-    --fs-ui: 1.7rem;
-    --fs-btn: 1.65rem;
-    --fs-label: 1.55rem;
+    --fs-hero: 3.4rem;
+    --fs-section: 2.8rem;
+    --fs-page: 2.35rem;
+    --fs-subtitle: 1.65rem;
+    --fs-body: 1.55rem;
+    --fs-ui: 1.45rem;
+    --fs-btn: 1.45rem;
+    --fs-label: 1.3rem;
   }
   .nav__inner { padding: 0 2rem; display: flex; align-items: center; justify-content: center; position: relative; }
   .nav__left, .nav__right { display: none; }
@@ -2463,8 +2474,8 @@ body:has(.launch-home) .ct-v-nav,
     margin-bottom: 0.267rem;
   }
   .catalog-grid-view-btn {
-    width: 2.133rem;
-    height: 2.133rem;
+    width: 40px;
+    height: 40px;
     padding: 0.333rem;
     background: none;
     border: 1px solid var(--border);
