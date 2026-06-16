@@ -60,7 +60,18 @@
       {% if info_menu != blank %}
         <ul>
           {% for link in info_menu.links %}
-            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {% liquid
+              assign footer_link_title = link.title
+              assign footer_link_url = link.url
+              assign footer_link_title_key = link.title | downcase
+              assign footer_is_devoluciones = false
+              if footer_link_title_key contains 'términos' or footer_link_title_key contains 'terminos' or footer_link_title_key contains 'devoluciones' or link.url contains 'terminos-y-condiciones'
+                assign footer_is_devoluciones = true
+              endif
+            %}
+            {% unless footer_is_devoluciones %}
+              <li><a href="{{ footer_link_url }}">{{ footer_link_title }}</a></li>
+            {% endunless %}
           {% endfor %}
         </ul>
       {% else %}
@@ -75,12 +86,29 @@
       <ul>
         <li><a href="/librodereclamaciones">Libro de reclamaciones</a></li>
         {% if help_menu != blank %}
+          {% assign footer_devoluciones_rendered = false %}
           {% for link in help_menu.links %}
-            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {% liquid
+              assign footer_link_title = link.title
+              assign footer_link_url = link.url
+              assign footer_link_title_key = link.title | downcase
+              assign footer_is_devoluciones = false
+              if footer_link_title_key contains 'términos' or footer_link_title_key contains 'terminos' or footer_link_title_key contains 'devoluciones' or link.url contains 'terminos-y-condiciones'
+                assign footer_link_title = 'Devoluciones'
+                assign footer_link_url = '/pages/terminos-y-condiciones'
+                assign footer_is_devoluciones = true
+              endif
+            %}
+            {% unless footer_is_devoluciones and footer_devoluciones_rendered %}
+              <li><a href="{{ footer_link_url }}">{{ footer_link_title }}</a></li>
+            {% endunless %}
+            {% if footer_is_devoluciones %}
+              {% assign footer_devoluciones_rendered = true %}
+            {% endif %}
           {% endfor %}
         {% else %}
           <li><a href="{{ resolved_contact_url }}">Contacto</a></li>
-          <li><a href="/pages/terminos-y-condiciones">Términos</a></li>
+          <li><a href="/pages/terminos-y-condiciones">Devoluciones</a></li>
           <li><a href="/policies/privacy-policy">Privacidad</a></li>
         {% endif %}
       </ul>

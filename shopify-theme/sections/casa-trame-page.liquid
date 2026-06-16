@@ -2270,7 +2270,7 @@
       window.addEventListener('ct:favorites-changed', renderFavorites);
     })();
   </script>
-{% elsif page.handle == 'terminos-y-condiciones' %}
+{% elsif page.handle == 'terminos-y-condiciones' or page.handle == 'devoluciones' %}
   <style>
     .ct-terms {
       min-height: 100vh;
@@ -2382,51 +2382,49 @@
     <div class="ct-terms__inner">
       <header class="ct-terms__header">
         <div>
-          <div class="ct-terms__eyebrow">Información legal</div>
-          <h1>Términos y condiciones</h1>
+          <div class="ct-terms__eyebrow">Política de cambios</div>
+          <h1>Devoluciones</h1>
         </div>
         <p class="ct-terms__lead">
-          Estas condiciones regulan el uso de la tienda online de Casa Tramé, las compras realizadas en el sitio, los envíos, cambios y devoluciones.
+          Para garantizar la mejor experiencia de compra, Casa Tramé establece las siguientes condiciones para el ejercicio del derecho de cambio de sus productos, en cumplimiento de la normativa de protección al consumidor en el Perú.
         </p>
       </header>
       <div class="ct-terms__content">
         <nav class="ct-terms__nav" aria-label="Secciones">
-          <a href="#compras">Compras</a>
-          <a href="#pagos">Pagos</a>
-          <a href="#envios">Envíos</a>
-          <a href="#cambios">Cambios</a>
-          <a href="#privacidad">Privacidad</a>
-          <a href="#contacto">Contacto</a>
+          <a href="#plazo">Plazo</a>
+          <a href="#requisitos">Requisitos</a>
+          <a href="#atencion">Atención</a>
+          <a href="#reembolso">Reembolso</a>
+          <a href="#excepciones">Excepciones</a>
+          <a href="#envio">Envío</a>
         </nav>
         <div class="ct-terms__body">
-          <section class="ct-terms__section" id="compras">
-            <h2>Compras</h2>
-            <p>Al realizar una compra confirmas que la información entregada es correcta y que aceptas las condiciones publicadas en este sitio. La disponibilidad de prendas, tallas y colores puede variar hasta la confirmación final del pedido.</p>
+          <section class="ct-terms__section" id="plazo">
+            <h2>Plazo de vigencia</h2>
+            <p>El cliente cuenta con un plazo máximo de 7 días calendario contados a partir de la fecha de entrega del producto para solicitar un cambio.</p>
           </section>
-          <section class="ct-terms__section" id="pagos">
-            <h2>Pagos</h2>
-            <p>Los pagos se procesan mediante las pasarelas habilitadas en Shopify. Casa Tramé no almacena datos completos de tarjetas ni credenciales de pago.</p>
-          </section>
-          <section class="ct-terms__section" id="envios">
-            <h2>Envíos</h2>
-            <p>Los tiempos y costos de envío se confirman durante el proceso de compra o por los canales de atención disponibles. La entrega puede variar según destino, operador logístico y disponibilidad del pedido.</p>
-          </section>
-          <section class="ct-terms__section" id="cambios">
-            <h2>Cambios y devoluciones</h2>
-            <p>Los cambios y devoluciones se evaluarán según el estado de la prenda, el plazo desde la recepción y las condiciones informadas al momento de la compra.</p>
+          <section class="ct-terms__section" id="requisitos">
+            <h2>Requisitos obligatorios</h2>
             <ul>
-              <li>La prenda debe conservar etiquetas, empaque y condiciones originales.</li>
-              <li>No se aceptan prendas usadas, lavadas, alteradas o dañadas por uso indebido.</li>
-              <li>Productos en promoción o liquidación pueden tener condiciones especiales.</li>
+              <li>Presentar el comprobante de pago electrónico, boleta o factura.</li>
+              <li>El producto debe encontrarse en perfectas condiciones: no mostrar señales de uso, lavado ni modificaciones, y conservar las etiquetas y empaques originales.</li>
             </ul>
           </section>
-          <section class="ct-terms__section" id="privacidad">
-            <h2>Privacidad</h2>
-            <p>La información entregada se usa para gestionar pedidos, atención al cliente y comunicaciones autorizadas. Puedes revisar la política de privacidad en <a href="/policies/privacy-policy">este enlace</a>.</p>
+          <section class="ct-terms__section" id="atencion">
+            <h2>Canales de atención</h2>
+            <p>Las solicitudes se recibirán a través de nuestro correo electrónico <a href="mailto:atencionalcliente@casatrame.com">atencionalcliente@casatrame.com</a>.</p>
           </section>
-          <section class="ct-terms__section" id="contacto">
-            <h2>Contacto</h2>
-            <p>Para consultas sobre pedidos, cambios o atención al cliente, escríbenos a <a href="mailto:atencionalcliente@casatrame.com">atencionalcliente@casatrame.com</a>.</p>
+          <section class="ct-terms__section" id="reembolso">
+            <h2>Devoluciones de dinero</h2>
+            <p>Solo se aceptarán devoluciones de dinero en caso de fallas de fábrica demostradas que no puedan ser subsanadas con un cambio de producto. El reembolso se realizará al mismo medio de pago utilizado en la compra en un plazo de 10 a 15 días hábiles, dependiendo del banco emisor.</p>
+          </section>
+          <section class="ct-terms__section" id="excepciones">
+            <h2>Excepciones</h2>
+            <p>No se aceptan cambios ni devoluciones en productos adquiridos en campañas de descuento.</p>
+          </section>
+          <section class="ct-terms__section" id="envio">
+            <h2>Costo de envío</h2>
+            <p>Los costos de envío por cambio corren por cuenta del cliente, a menos que el producto haya llegado con alguna falla de fábrica.</p>
           </section>
         </div>
       </div>
