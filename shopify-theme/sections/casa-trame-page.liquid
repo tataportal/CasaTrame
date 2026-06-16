@@ -31,6 +31,16 @@
       border-left: 1px solid var(--line);
     }
     .ct-v__section { border-bottom: 1px solid var(--line); }
+    .ct-v__section.is-collapsed .ct-v__items {
+      display: none;
+    }
+    .ct-v__section-toggle-icon {
+      display: inline-block;
+      transition: transform 0.18s ease;
+    }
+    .ct-v__section.is-collapsed .ct-v__section-toggle-icon {
+      transform: rotate(-90deg);
+    }
     .ct-v__section-head {
       display: flex;
       align-items: center;
@@ -666,6 +676,9 @@
       .ct-v__panel:not(.ct-v__panel--right) .ct-v__items[hidden] {
         display: contents;
       }
+      .ct-v__panel:not(.ct-v__panel--right) .ct-v__section.is-collapsed .ct-v__items {
+        display: contents;
+      }
       .ct-v__catalog-item {
         flex: 0 0 max(8.8rem, calc(16svh - 1rem));
         height: 100%;
@@ -798,58 +811,58 @@
   <main class="ct-v" data-empty-vestidor>
     <aside class="ct-v__panel" aria-label="Prendas">
       <div class="ct-v__section" data-section="favoritos">
-        <button class="ct-v__section-head" type="button" data-toggle-section="favoritos">
+        <button class="ct-v__section-head" type="button" data-toggle-section="favoritos" aria-expanded="true">
           <span><span class="ct-v__section-title">Favoritos</span><span class="ct-v__count" data-count="favoritos"></span></span>
-          <span>▼</span>
+          <span class="ct-v__section-toggle-icon">▼</span>
         </button>
         <div class="ct-v__items" data-items="favoritos"></div>
       </div>
       <div class="ct-v__section" data-section="abrigos">
-        <button class="ct-v__section-head" type="button" data-toggle-section="abrigos">
+        <button class="ct-v__section-head" type="button" data-toggle-section="abrigos" aria-expanded="true">
           <span><span class="ct-v__section-title">Abrigos</span><span class="ct-v__count" data-count="abrigos"></span></span>
-          <span>▼</span>
+          <span class="ct-v__section-toggle-icon">▼</span>
         </button>
         <div class="ct-v__items" data-items="abrigos"></div>
       </div>
       <div class="ct-v__section" data-section="camisas">
-        <button class="ct-v__section-head" type="button" data-toggle-section="camisas">
+        <button class="ct-v__section-head" type="button" data-toggle-section="camisas" aria-expanded="true">
           <span><span class="ct-v__section-title">Camisas</span><span class="ct-v__count" data-count="camisas"></span></span>
-          <span>▼</span>
+          <span class="ct-v__section-toggle-icon">▼</span>
         </button>
         <div class="ct-v__items" data-items="camisas"></div>
       </div>
       <div class="ct-v__section" data-section="denim">
-        <button class="ct-v__section-head" type="button" data-toggle-section="denim">
+        <button class="ct-v__section-head" type="button" data-toggle-section="denim" aria-expanded="true">
           <span><span class="ct-v__section-title">Denim</span><span class="ct-v__count" data-count="denim"></span></span>
-          <span>▼</span>
+          <span class="ct-v__section-toggle-icon">▼</span>
         </button>
         <div class="ct-v__items" data-items="denim"></div>
       </div>
       <div class="ct-v__section" data-section="faldas">
-        <button class="ct-v__section-head" type="button" data-toggle-section="faldas">
+        <button class="ct-v__section-head" type="button" data-toggle-section="faldas" aria-expanded="true">
           <span><span class="ct-v__section-title">Faldas</span><span class="ct-v__count" data-count="faldas"></span></span>
-          <span>▼</span>
+          <span class="ct-v__section-toggle-icon">▼</span>
         </button>
         <div class="ct-v__items" data-items="faldas"></div>
       </div>
       <div class="ct-v__section" data-section="pantalones">
-        <button class="ct-v__section-head" type="button" data-toggle-section="pantalones">
+        <button class="ct-v__section-head" type="button" data-toggle-section="pantalones" aria-expanded="true">
           <span><span class="ct-v__section-title">Pantalones</span><span class="ct-v__count" data-count="pantalones"></span></span>
-          <span>▼</span>
+          <span class="ct-v__section-toggle-icon">▼</span>
         </button>
         <div class="ct-v__items" data-items="pantalones"></div>
       </div>
       <div class="ct-v__section" data-section="poleras">
-        <button class="ct-v__section-head" type="button" data-toggle-section="poleras">
+        <button class="ct-v__section-head" type="button" data-toggle-section="poleras" aria-expanded="true">
           <span><span class="ct-v__section-title">Poleras</span><span class="ct-v__count" data-count="poleras"></span></span>
-          <span>▼</span>
+          <span class="ct-v__section-toggle-icon">▼</span>
         </button>
         <div class="ct-v__items" data-items="poleras"></div>
       </div>
       <div class="ct-v__section" data-section="polos">
-        <button class="ct-v__section-head" type="button" data-toggle-section="polos">
+        <button class="ct-v__section-head" type="button" data-toggle-section="polos" aria-expanded="true">
           <span><span class="ct-v__section-title">Polos</span><span class="ct-v__count" data-count="polos"></span></span>
-          <span>▼</span>
+          <span class="ct-v__section-toggle-icon">▼</span>
         </button>
         <div class="ct-v__items" data-items="polos"></div>
       </div>
@@ -1921,7 +1934,12 @@
       root.querySelectorAll('[data-toggle-section]').forEach((button) => {
         button.addEventListener('click', () => {
           const items = root.querySelector(`[data-items="${button.dataset.toggleSection}"]`);
-          if (items) items.hidden = !items.hidden;
+          const section = button.closest('.ct-v__section');
+          if (!items || !section) return;
+          const shouldCollapse = !section.classList.contains('is-collapsed');
+          section.classList.toggle('is-collapsed', shouldCollapse);
+          items.hidden = shouldCollapse;
+          button.setAttribute('aria-expanded', shouldCollapse ? 'false' : 'true');
         });
       });
 
