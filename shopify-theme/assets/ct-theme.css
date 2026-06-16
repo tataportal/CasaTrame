@@ -514,7 +514,18 @@ body:has(.launch-home) .ct-v-nav,
   height: 100%;
   object-fit: cover;
 }
-.hero__overlay { position: absolute; inset: 0; z-index: 1; background: transparent; pointer-events: none; }
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.28) 0,
+    rgba(0, 0, 0, 0.14) var(--nav-h),
+    rgba(0, 0, 0, 0) calc(var(--nav-h) + 7rem)
+  );
+  pointer-events: none;
+}
 .hero__content { position: absolute; bottom: 8rem; left: 0; right: 0; text-align: center; z-index: 2; }
 .hero__cta {
   display: inline-flex;
