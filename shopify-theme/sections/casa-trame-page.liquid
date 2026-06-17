@@ -20,9 +20,13 @@
       padding-top: var(--nav-h);
       background: #f7f7f7;
       color: var(--text);
+      font-family: var(--body);
       overflow: hidden;
     }
-    .ct-v button { font-family: inherit; }
+    .ct-v button,
+    .ct-v select {
+      font-family: var(--body);
+    }
     .ct-v__panel {
       min-width: 0;
       height: calc(100vh - var(--nav-h));
@@ -59,14 +63,18 @@
       cursor: pointer;
     }
     .ct-v__section-title {
+      font-family: var(--body);
       font-size: var(--v-title);
       font-weight: 700;
+      font-style: normal;
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
     .ct-v__count {
       color: var(--muted);
       font-size: var(--v-small);
+      font-weight: 400;
+      font-style: normal;
       letter-spacing: 0.06em;
       margin-left: 0.4rem;
     }
@@ -81,9 +89,10 @@
       grid-column: 1 / -1;
       color: var(--muted);
       font-size: var(--v-body);
+      font-weight: 400;
       line-height: 1.45;
       padding: 1.333rem 0.333rem;
-      font-style: italic;
+      font-style: normal;
     }
     .ct-v__catalog-item {
       position: relative;
@@ -111,6 +120,8 @@
       display: block;
       padding-top: 0.333rem;
       font-size: var(--v-small);
+      font-weight: 400;
+      font-style: normal;
       line-height: 1.2;
       color: var(--muted);
       white-space: nowrap;
@@ -153,6 +164,8 @@
       padding: 2rem;
       color: var(--muted);
       font-size: var(--v-body);
+      font-weight: 400;
+      font-style: normal;
       text-align: center;
       pointer-events: none;
     }
@@ -165,6 +178,8 @@
       max-width: 18rem;
       color: var(--muted);
       font-size: var(--v-small);
+      font-weight: 500;
+      font-style: normal;
       line-height: 1.35;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -220,6 +235,8 @@
       background: rgba(255,255,255,0.92);
       color: var(--text);
       font-size: var(--v-action);
+      font-weight: 500;
+      font-style: normal;
       letter-spacing: 0.13em;
       text-transform: uppercase;
       cursor: pointer;
@@ -248,6 +265,8 @@
     .ct-v__layers-title {
       color: var(--muted);
       font-size: var(--v-small);
+      font-weight: 500;
+      font-style: normal;
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
@@ -277,6 +296,8 @@
       white-space: nowrap;
       text-overflow: ellipsis;
       font-size: var(--v-body);
+      font-weight: 400;
+      font-style: normal;
     }
     .ct-v__chip-actions {
       display: flex;
@@ -312,6 +333,7 @@
     .ct-v__saved-title {
       font-size: var(--v-title);
       font-weight: 700;
+      font-style: normal;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       margin-bottom: clamp(1rem, 2vh, 2rem);
@@ -324,7 +346,8 @@
     .ct-v__summary-empty {
       color: var(--muted);
       font-size: var(--v-body);
-      font-style: italic;
+      font-weight: 400;
+      font-style: normal;
       text-align: center;
       padding-top: clamp(1.2rem, 3vh, 2.5rem);
     }
@@ -356,6 +379,8 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+      font-weight: 400;
+      font-style: normal;
     }
     .ct-v__summary-name-link {
       display: block;
@@ -369,6 +394,8 @@
     .ct-v__summary-price {
       font-size: var(--v-body);
       color: var(--muted);
+      font-weight: 400;
+      font-style: normal;
     }
     .ct-v__size-select {
       width: min(12rem, 100%);
@@ -380,6 +407,8 @@
       color: var(--text);
       font: inherit;
       font-size: var(--v-action);
+      font-weight: 400;
+      font-style: normal;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       padding: 0 1.8rem 0 0.55rem;
@@ -404,6 +433,7 @@
       padding: 1.333rem 0;
       font-size: var(--v-title);
       font-weight: 700;
+      font-style: normal;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       border-bottom: 1px solid var(--line);
@@ -417,6 +447,8 @@
       background: var(--text);
       color: #fff;
       font-size: var(--v-action);
+      font-weight: 500;
+      font-style: normal;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       white-space: nowrap;
@@ -439,6 +471,8 @@
     .ct-v__saved-empty {
       color: var(--muted);
       font-size: var(--v-body);
+      font-weight: 400;
+      font-style: normal;
       line-height: 1.5;
       text-align: center;
     }
@@ -500,6 +534,8 @@
       color: var(--text);
       cursor: pointer;
       font-size: var(--v-small);
+      font-weight: 400;
+      font-style: normal;
       line-height: 1;
     }
     .ct-v__saved-remove:hover { background: #fff; }
@@ -516,6 +552,8 @@
       pointer-events: none;
       transition: 0.2s ease;
       font-size: var(--v-small);
+      font-weight: 400;
+      font-style: normal;
     }
     .ct-v__toast.show {
       opacity: 1;
@@ -553,6 +591,8 @@
       margin-bottom: 0.533rem;
       color: var(--muted);
       font-size: var(--v-small);
+      font-weight: 500;
+      font-style: normal;
       letter-spacing: 0.18em;
       text-transform: uppercase;
     }
@@ -560,6 +600,7 @@
       margin: 0;
       font-size: var(--v-title);
       font-weight: 500;
+      font-style: normal;
       letter-spacing: 0.06em;
       text-transform: uppercase;
     }
@@ -572,6 +613,8 @@
       color: var(--text);
       cursor: pointer;
       font-size: var(--v-body);
+      font-weight: 400;
+      font-style: normal;
       line-height: 1;
     }
     .ct-v__help-body { padding: 1.667rem 2rem 2rem; }
@@ -580,6 +623,8 @@
       max-width: 34rem;
       color: #4d4945;
       font-size: var(--v-body);
+      font-weight: 400;
+      font-style: normal;
       line-height: 1.55;
     }
     .ct-v__help-grid {
@@ -597,6 +642,8 @@
       display: block;
       margin-bottom: 0.333rem;
       font-size: var(--v-small);
+      font-weight: 700;
+      font-style: normal;
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
@@ -604,6 +651,8 @@
       display: block;
       color: #5e5954;
       font-size: var(--v-small);
+      font-weight: 400;
+      font-style: normal;
       line-height: 1.45;
     }
     .ct-v__help-guide-btn {
@@ -614,6 +663,8 @@
       color: var(--text);
       cursor: pointer;
       font-size: var(--v-action);
+      font-weight: 500;
+      font-style: normal;
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
@@ -632,6 +683,8 @@
       margin: 0.667rem 0;
       color: #4d4945;
       font-size: var(--v-small);
+      font-weight: 400;
+      font-style: normal;
       line-height: 1.45;
     }
     .ct-page {
