@@ -2116,7 +2116,7 @@ body:has(.launch-home) .ct-v-nav,
 }
 .cart-item__title {
   display: inline-block;
-  font-size: var(--fs-body);
+  font-size: clamp(18px, var(--fs-subtitle), 22px);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-bottom: 0.25rem;
@@ -2124,7 +2124,7 @@ body:has(.launch-home) .ct-v-nav,
 .cart-item__variant,
 .cart-item__properties,
 .cart-item__remove {
-  font-size: var(--fs-ui);
+  font-size: clamp(16px, var(--fs-body), 20px);
   color: var(--text-mid);
 }
 .cart-item__properties {
@@ -2147,7 +2147,7 @@ body:has(.launch-home) .ct-v-nav,
 }
 .cart-item__qty label {
   display: block;
-  font-size: var(--fs-label);
+  font-size: clamp(13px, var(--fs-label), 16px);
   color: var(--text-light);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -2160,6 +2160,7 @@ body:has(.launch-home) .ct-v-nav,
   background: transparent;
   color: var(--text);
   font: inherit;
+  font-size: clamp(16px, var(--fs-body), 20px);
   text-align: center;
   -moz-appearance: textfield;
 }
@@ -2181,7 +2182,7 @@ body:has(.launch-home) .ct-v-nav,
   background: transparent;
   color: var(--text);
   font: inherit;
-  font-size: var(--fs-body);
+  font-size: clamp(16px, var(--fs-body), 20px);
   line-height: 1;
   cursor: pointer;
 }
@@ -2195,11 +2196,11 @@ body:has(.launch-home) .ct-v-nav,
   flex-direction: column;
   align-items: flex-end;
   gap: 0.2rem;
-  font-size: var(--fs-body);
+  font-size: clamp(17px, var(--fs-subtitle), 22px);
 }
 .cart-item__price s {
   color: var(--text-light);
-  font-size: var(--fs-ui);
+  font-size: clamp(15px, var(--fs-ui), 18px);
 }
 .cart-page__summary {
   position: sticky;
@@ -2213,7 +2214,7 @@ body:has(.launch-home) .ct-v-nav,
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
-  font-size: var(--fs-subtitle);
+  font-size: clamp(19px, var(--fs-subtitle), 24px);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -2222,7 +2223,7 @@ body:has(.launch-home) .ct-v-nav,
 }
 .cart-page__summary p {
   color: var(--text-mid);
-  font-size: var(--fs-ui);
+  font-size: clamp(16px, var(--fs-body), 20px);
   line-height: 1.55;
   margin-bottom: 1.4rem;
 }
@@ -2235,7 +2236,7 @@ body:has(.launch-home) .ct-v-nav,
   justify-content: center;
   text-align: center;
   border: 1px solid var(--text);
-  font-size: var(--fs-label);
+  font-size: clamp(15px, var(--fs-btn), 18px);
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
