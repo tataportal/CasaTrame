@@ -920,30 +920,30 @@
     }
     @media (min-width: 1440px) {
       .ct-v {
-        --v-title: clamp(18px, calc(26px - 0.4167vw), 20px);
-        --v-body: clamp(16px, calc(20px - 0.2083vw), 17px);
-        --v-small: clamp(15px, calc(19px - 0.2083vw), 16px);
-        --v-action: clamp(14px, calc(18px - 0.2083vw), 15px);
+        --v-title: clamp(15px, calc(35px - 1.0417vw), 20px);
+        --v-body: clamp(13px, calc(29px - 0.8333vw), 17px);
+        --v-small: clamp(12px, calc(28px - 0.8333vw), 16px);
+        --v-action: clamp(12px, calc(24px - 0.625vw), 15px);
         grid-template-columns:
-          minmax(clamp(250px, calc(160px + 6.25vw), 280px), clamp(345px, calc(115px + 16vw), 422px))
-          minmax(clamp(390px, calc(-300px + 47.92vw), 620px), 1fr)
-          minmax(clamp(340px, calc(220px + 8.34vw), 380px), clamp(403px, calc(230px + 12vw), 461px));
+          minmax(clamp(210px, calc(370px - 8.3333vw), 250px), clamp(300px, calc(480px - 9.375vw), 345px))
+          minmax(clamp(292px, calc(684px - 20.4167vw), 390px), 1fr)
+          minmax(clamp(255px, calc(595px - 17.7083vw), 340px), clamp(302px, calc(706px - 21.0417vw), 403px));
       }
       .ct-v__section-head {
-        padding: 1.1rem 1.45rem;
+        padding: clamp(0.75rem, calc(2rem - 0.0651vw), 1.063rem) clamp(1rem, calc(2rem - 0.0521vw), 1.25rem);
       }
       .ct-v__items {
-        gap: 0.45rem;
-        padding: 0 0.9rem 1.1rem;
+        gap: clamp(0.3rem, calc(0.7rem - 0.0208vw), 0.4rem);
+        padding: 0 clamp(0.6rem, calc(1.4rem - 0.0417vw), 0.8rem) clamp(0.75rem, calc(1.75rem - 0.0521vw), 1rem);
       }
       .ct-v__summary {
-        padding: 1.35rem 1.5rem;
+        padding: clamp(0.9rem, calc(2.1rem - 0.0625vw), 1.2rem) clamp(1rem, calc(2.4rem - 0.0729vw), 1.35rem);
       }
       .ct-v__summary-list {
-        min-height: 9.5rem;
+        min-height: clamp(6.375rem, calc(14.875rem - 0.4427vw), 8.5rem);
       }
       .ct-v__saved-list.is-empty {
-        min-height: 11rem;
+        min-height: clamp(7.5rem, calc(17.5rem - 0.5208vw), 10rem);
       }
     }
   </style>
