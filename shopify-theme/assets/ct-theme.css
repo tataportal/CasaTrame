@@ -2570,6 +2570,57 @@ body:has(.launch-home) .ct-v-nav,
   }
 }
 
+@media (min-width: 1366px) and (max-width: 1799px) and (max-height: 850px) {
+  .catalog-main {
+    grid-template-columns: minmax(13rem, 0.64fr) minmax(0, 4fr);
+  }
+  .catalog-sidebar {
+    padding: 1.35rem 1.05rem 1.4rem 1.55rem;
+  }
+  .catalog-sidebar__subtitle {
+    margin-bottom: 1.35rem;
+  }
+  .catalog-sidebar__section-title {
+    margin-top: 0.95rem;
+  }
+  .catalog-sidebar__filters button,
+  .catalog-sidebar__sort-toggle {
+    padding: 0.32rem 0;
+  }
+  .catalog-grid-area {
+    padding: 1.25rem 1rem 2.3rem 0;
+  }
+  .catalog-product-grid {
+    gap: 0.95rem 0.85rem;
+  }
+  .catalog-card__image {
+    aspect-ratio: 4 / 4.55;
+  }
+  .catalog-card__info {
+    padding: 0.52rem 0.75rem 0.8rem;
+  }
+  .catalog-card__swatches {
+    gap: 0.4rem;
+    margin-top: 0.45rem;
+  }
+  .catalog-card__swatch {
+    width: 2.25rem;
+    height: 2.8rem;
+  }
+  .catalog-card__quick,
+  .catalog-card__favorite,
+  .catalog-card__gallery-arrow {
+    width: 40px;
+    height: 40px;
+  }
+  .catalog-card__quick svg,
+  .catalog-card__favorite svg,
+  .catalog-card__gallery-arrow svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
 @media (max-width: 768px) {
   .hero__video {
     background-image: url('trame_home_lookbook_poster_vertical.jpg');
