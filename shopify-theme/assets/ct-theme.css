@@ -284,12 +284,13 @@ body:has(.ct-v) {
   --vestidor-zoom: 1;
 }
 
-@media (min-width: 1440px) {
-  body:has(.ct-v) {
-    --vestidor-zoom: clamp(0.75, calc(1.75 - 0.052083vw), 1);
-    zoom: var(--vestidor-zoom);
-  }
-}
+@media (min-width: 981px) and (max-width: 1199px) { body:has(.ct-v) { --vestidor-zoom: 0.82; zoom: var(--vestidor-zoom); } }
+@media (min-width: 1200px) and (max-width: 1365px) { body:has(.ct-v) { --vestidor-zoom: 0.9; zoom: var(--vestidor-zoom); } }
+@media (min-width: 1366px) and (max-width: 1439px) { body:has(.ct-v) { --vestidor-zoom: 0.96; zoom: var(--vestidor-zoom); } }
+@media (min-width: 1440px) and (max-width: 1599px) { body:has(.ct-v) { --vestidor-zoom: 1; zoom: var(--vestidor-zoom); } }
+@media (min-width: 1600px) and (max-width: 1759px) { body:has(.ct-v) { --vestidor-zoom: 0.92; zoom: var(--vestidor-zoom); } }
+@media (min-width: 1760px) and (max-width: 1919px) { body:has(.ct-v) { --vestidor-zoom: 0.84; zoom: var(--vestidor-zoom); } }
+@media (min-width: 1920px) { body:has(.ct-v) { --vestidor-zoom: 0.75; zoom: var(--vestidor-zoom); } }
 
 .btn-outline {
   display: inline-flex;
