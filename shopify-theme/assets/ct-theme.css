@@ -280,18 +280,6 @@ ul { list-style: none; }
   filter: brightness(0) invert(1) drop-shadow(0 0.133rem 0.4rem rgba(0,0,0,0.5));
 }
 
-body:has(.ct-v) {
-  --vestidor-zoom: 1;
-}
-
-@media (min-width: 981px) and (max-width: 1199px) { body:has(.ct-v) { --vestidor-zoom: 0.82; zoom: var(--vestidor-zoom); } }
-@media (min-width: 1200px) and (max-width: 1365px) { body:has(.ct-v) { --vestidor-zoom: 0.9; zoom: var(--vestidor-zoom); } }
-@media (min-width: 1366px) and (max-width: 1439px) { body:has(.ct-v) { --vestidor-zoom: 0.96; zoom: var(--vestidor-zoom); } }
-@media (min-width: 1440px) and (max-width: 1599px) { body:has(.ct-v) { --vestidor-zoom: 1; zoom: var(--vestidor-zoom); } }
-@media (min-width: 1600px) and (max-width: 1759px) { body:has(.ct-v) { --vestidor-zoom: 0.92; zoom: var(--vestidor-zoom); } }
-@media (min-width: 1760px) and (max-width: 1919px) { body:has(.ct-v) { --vestidor-zoom: 0.84; zoom: var(--vestidor-zoom); } }
-@media (min-width: 1920px) { body:has(.ct-v) { --vestidor-zoom: 0.75; zoom: var(--vestidor-zoom); } }
-
 .btn-outline {
   display: inline-flex;
   align-items: center;
@@ -2283,6 +2271,97 @@ body:has(.launch-home) .ct-v-nav,
   .ct-v-nav__left,
   .ct-v-nav__right { gap: 1.2rem; }
 }
+
+@media (min-width: 981px) and (max-width: 1365px) {
+  :root {
+    --nav-h: 74px;
+    --fs-hero: 3.8rem;
+    --fs-section: 3rem;
+    --fs-page: 2.35rem;
+    --fs-subtitle: 1.55rem;
+    --fs-body: 1.28rem;
+    --fs-ui: 1.18rem;
+    --fs-btn: 1.28rem;
+    --fs-label: 1.08rem;
+  }
+  html { font-size: 12px; }
+  .nav__inner,
+  .ct-v-nav__inner {
+    padding-inline: 2.4rem;
+  }
+  .nav__left,
+  .ct-v-nav__left {
+    gap: 2.2rem;
+  }
+  .nav__right,
+  .ct-v-nav__right {
+    gap: 1.6rem;
+  }
+  .nav__left a,
+  .ct-v-nav a,
+  .ct-v-nav button {
+    font-size: 18px;
+  }
+  .nav__logo img {
+    height: 32px;
+  }
+  .ct-v-nav__logo img {
+    width: 220px;
+  }
+  .nav__right a,
+  .nav__right button,
+  .ct-v-nav__right a,
+  .ct-v-nav__right button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .nav__right svg,
+  .ct-v-nav svg {
+    width: 23px;
+    height: 23px;
+  }
+  .collection-section {
+    padding-block: 2.2rem;
+    margin-bottom: 7rem;
+  }
+  .collection-grid {
+    height: 58vh;
+  }
+  .collection-card {
+    flex-basis: calc(58vh * 0.75);
+  }
+  .vestidor {
+    padding: 3rem 2rem 4rem;
+    margin-bottom: 4rem;
+  }
+  .vestidor__mockup img {
+    max-width: 60%;
+    max-height: 46vh;
+  }
+  .catalog-main {
+    grid-template-columns: minmax(14rem, 0.78fr) minmax(0, 3.4fr);
+  }
+  .catalog-sidebar {
+    padding: 2rem 1.4rem 2rem 2rem;
+  }
+  .catalog-sidebar__subtitle {
+    margin-bottom: 2rem;
+  }
+  .catalog-sidebar__section-title {
+    margin-top: 1.4rem;
+  }
+  .catalog-sidebar__filters button,
+  .catalog-sidebar__sort-toggle {
+    padding: 0.48rem 0;
+  }
+  .catalog-grid-area {
+    padding: 2rem 1.2rem 3rem 0;
+  }
+  .catalog-product-grid {
+    gap: 1.5rem 1.1rem;
+  }
+}
+
 @media (max-width: 768px) {
   .hero__video {
     background-image: url('trame_home_lookbook_poster_vertical.jpg');
