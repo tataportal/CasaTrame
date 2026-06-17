@@ -597,10 +597,14 @@
     event.stopPropagation();
 
     const emailInput = waitlistForm.querySelector('input[type="email"]');
-    if (emailInput && !emailInput.checkValidity()) {
-      emailInput.reportValidity();
+    const emailValue = emailInput ? String(emailInput.value || '').trim() : '';
+    if (emailInput && (!emailValue || !emailInput.checkValidity())) {
+      emailInput.classList.add('is-invalid');
+      setWaitlistStatus('Ingresa un email válido para avisarte cuando vuelva a estar disponible.', true);
+      emailInput.focus();
       return;
     }
+    if (emailInput) emailInput.classList.remove('is-invalid');
 
     const submitButton = waitlistForm.querySelector('button[type="submit"]');
     const previousText = submitButton ? submitButton.textContent : '';

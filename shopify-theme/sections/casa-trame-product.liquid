@@ -216,7 +216,7 @@
         <input type="hidden" name="contact[email]" value="{{ customer.email | escape }}">
         <p class="pdp-waitlist__note">Te avisaremos a {{ customer.email }} cuando vuelva a estar disponible.</p>
       {% else %}
-        <input class="pdp-waitlist__input" type="email" name="contact[email]" placeholder="Tu email" required>
+        <input class="pdp-waitlist__input" type="email" name="contact[email]" placeholder="Tu email">
       {% endif %}
       <button class="pdp-cta pdp-cta--waitlist" type="submit">Anotarme en lista de espera</button>
       <p class="pdp-waitlist__status" role="status" data-pdp-waitlist-status hidden></p>
