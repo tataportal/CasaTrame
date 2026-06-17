@@ -1075,7 +1075,7 @@ body:has(.launch-home) .ct-v-nav,
 .catalog-grid-view-toggle { display: none; }
 .catalog-product-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 2.133rem clamp(0.267rem, 2%, 1.6rem);
 }
 .catalog-card {
