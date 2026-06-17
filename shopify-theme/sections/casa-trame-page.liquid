@@ -15,8 +15,9 @@
       --v-small: 16px;
       --v-action: 15px;
       --v-canvas-ui-space: 5.9rem;
+      --v-columns: minmax(0, 25%) minmax(0, 50%) minmax(0, 25%);
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: var(--v-columns);
       height: 100vh;
       padding-top: var(--nav-h);
       background: #f7f7f7;
@@ -888,7 +889,7 @@
         --v-small: 12px;
         --v-action: 11.5px;
         --v-canvas-ui-space: 4.6rem;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: var(--v-columns);
       }
       .ct-v__section-head {
         padding: 0.65rem 0.85rem;
@@ -946,7 +947,7 @@
         --v-small: 13px;
         --v-action: 12.5px;
         --v-canvas-ui-space: 4.9rem;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: var(--v-columns);
       }
       .ct-v__section-head {
         padding: 0.75rem 0.95rem;
@@ -1004,7 +1005,7 @@
         --v-small: 12.5px;
         --v-action: 12px;
         --v-canvas-ui-space: 4.8rem;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: var(--v-columns);
       }
       .ct-v__section-head {
         padding: 0.68rem 0.95rem;
@@ -1075,7 +1076,7 @@
         --v-small: 12px;
         --v-action: 11.5px;
         --v-canvas-ui-space: 4.45rem;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: var(--v-columns);
       }
       .ct-v__section-head { padding: 0.56rem 0.85rem; }
       .ct-v__items {
