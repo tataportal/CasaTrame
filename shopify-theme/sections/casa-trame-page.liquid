@@ -1838,7 +1838,10 @@
           if (countEl) countEl.textContent = items.length ? `(${items.length})` : '';
           if (!itemsEl) return;
           if (!items.length) {
-            itemsEl.innerHTML = '<div class="ct-v__empty-list">Sin prendas cargadas.</div>';
+            const emptyText = cat === 'favoritos'
+              ? 'Marca prendas con el corazón para tener tus favoritas a mano.'
+              : 'Sin prendas disponibles.';
+            itemsEl.innerHTML = `<div class="ct-v__empty-list">${emptyText}</div>`;
             return;
           }
           itemsEl.innerHTML = items.map((item) => `
