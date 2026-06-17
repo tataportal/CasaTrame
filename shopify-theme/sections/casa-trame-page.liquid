@@ -10,10 +10,10 @@
       --line: #e4e0da;
       --text: #111;
       --muted: #6f6a61;
-      --v-title: clamp(20px, 1.4vw, 24px);
-      --v-body: clamp(17px, 1.08vw, 20px);
-      --v-small: clamp(16px, 0.98vw, 18px);
-      --v-action: clamp(15px, 1vw, 17px);
+      --v-title: 20px;
+      --v-body: 17px;
+      --v-small: 16px;
+      --v-action: 15px;
       display: grid;
       grid-template-columns: minmax(250px, 24vw) minmax(390px, 1fr) minmax(340px, 28vw);
       height: 100vh;
@@ -916,6 +916,34 @@
       .ct-v__saved-list.is-empty {
         min-height: 10rem;
         padding-bottom: 1rem;
+      }
+    }
+    @media (min-width: 1440px) {
+      .ct-v {
+        --v-title: clamp(18px, calc(26px - 0.4167vw), 20px);
+        --v-body: clamp(16px, calc(20px - 0.2083vw), 17px);
+        --v-small: clamp(15px, calc(19px - 0.2083vw), 16px);
+        --v-action: clamp(14px, calc(18px - 0.2083vw), 15px);
+        grid-template-columns:
+          minmax(clamp(250px, calc(160px + 6.25vw), 280px), clamp(345px, calc(115px + 16vw), 422px))
+          minmax(clamp(390px, calc(-300px + 47.92vw), 620px), 1fr)
+          minmax(clamp(340px, calc(220px + 8.34vw), 380px), clamp(403px, calc(230px + 12vw), 461px));
+      }
+      .ct-v__section-head {
+        padding: 1.1rem 1.45rem;
+      }
+      .ct-v__items {
+        gap: 0.45rem;
+        padding: 0 0.9rem 1.1rem;
+      }
+      .ct-v__summary {
+        padding: 1.35rem 1.5rem;
+      }
+      .ct-v__summary-list {
+        min-height: 9.5rem;
+      }
+      .ct-v__saved-list.is-empty {
+        min-height: 11rem;
       }
     }
   </style>
