@@ -193,6 +193,7 @@
 
   const arrowL = grid.querySelector('.carousel-arrow--left');
   const arrowR = grid.querySelector('.carousel-arrow--right');
+  const mobileCarouselMq = window.matchMedia('(max-width: 900px)');
   let pos = 0;
   let dragging = false;
   let startX = 0;
@@ -202,19 +203,27 @@
   let didDrag = false;
 
   function maxPos() {
-    return Math.max(0, track.scrollWidth - grid.clientWidth);
+    const viewport = mobileCarouselMq.matches ? track : grid;
+    return Math.max(0, track.scrollWidth - viewport.clientWidth);
   }
   function clampPos() {
     pos = Math.max(0, Math.min(pos, maxPos()));
   }
   function updateArrows() {
     if (!arrowL || !arrowR) return;
-    arrowL.style.opacity = pos <= 5 ? '0' : '';
-    arrowL.style.pointerEvents = pos <= 5 ? 'none' : '';
-    arrowR.style.opacity = pos >= maxPos() - 5 ? '0' : '';
-    arrowR.style.pointerEvents = pos >= maxPos() - 5 ? 'none' : '';
+    const current = mobileCarouselMq.matches ? track.scrollLeft : pos;
+    arrowL.style.opacity = current <= 5 ? '0' : '';
+    arrowL.style.pointerEvents = current <= 5 ? 'none' : '';
+    arrowR.style.opacity = current >= maxPos() - 5 ? '0' : '';
+    arrowR.style.pointerEvents = current >= maxPos() - 5 ? 'none' : '';
   }
   function loop() {
+    if (mobileCarouselMq.matches) {
+      track.style.transform = '';
+      updateArrows();
+      requestAnimationFrame(loop);
+      return;
+    }
     if (!dragging && Math.abs(dragVelocity) > 0.5) {
       pos -= dragVelocity;
       dragVelocity *= 0.95;
@@ -231,6 +240,11 @@
     return card ? card.offsetWidth + 2 : 300;
   }
   function smoothScroll(delta) {
+    if (mobileCarouselMq.matches) {
+      track.scrollBy({ left: delta, behavior: 'smooth' });
+      window.setTimeout(updateArrows, 320);
+      return;
+    }
     const target = Math.max(0, Math.min(pos + delta, maxPos()));
     const start = pos;
     const duration = 400;
@@ -248,6 +262,7 @@
   if (arrowR) arrowR.addEventListener('click', function (e) { e.stopPropagation(); smoothScroll(getCardWidth()); });
 
   grid.addEventListener('mousedown', function (e) {
+    if (mobileCarouselMq.matches) return;
     if (e.target.closest('.carousel-arrow')) return;
     dragging = true;
     didDrag = false;
@@ -271,6 +286,7 @@
     grid.classList.remove('is-dragging');
   });
   grid.addEventListener('touchstart', function (e) {
+    if (mobileCarouselMq.matches) return;
     dragging = true;
     didDrag = false;
     startX = e.touches[0].clientX;
@@ -279,6 +295,7 @@
     dragVelocity = 0;
   }, { passive: true });
   grid.addEventListener('touchmove', function (e) {
+    if (mobileCarouselMq.matches) return;
     if (!dragging) return;
     didDrag = true;
     dragVelocity = e.touches[0].clientX - lastDragX;
@@ -290,11 +307,26 @@
     if (didDrag) e.preventDefault();
   }, true);
   grid.addEventListener('wheel', function (e) {
+    if (mobileCarouselMq.matches) return;
     if (Math.abs(e.deltaX) < 2) return;
     pos += e.deltaX;
     dragVelocity = 0;
     e.preventDefault();
   }, { passive: false });
+
+  track.addEventListener('scroll', function () {
+    if (!mobileCarouselMq.matches) return;
+    updateArrows();
+  }, { passive: true });
+  if (mobileCarouselMq.addEventListener) {
+    mobileCarouselMq.addEventListener('change', function () {
+      dragging = false;
+      dragVelocity = 0;
+      pos = 0;
+      track.style.transform = '';
+      updateArrows();
+    });
+  }
 
   requestAnimationFrame(loop);
 })();
@@ -680,6 +712,7 @@
 
     track.addEventListener('pointerdown', function (event) {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
+      if (event.pointerType !== 'mouse') return;
       pointerDown = true;
       dragging = false;
       startX = event.clientX;
