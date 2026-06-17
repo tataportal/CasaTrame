@@ -996,6 +996,63 @@
         padding-bottom: 0.65rem;
       }
     }
+    @media (min-width: 1361px) and (max-width: 1599px) {
+      .ct-v {
+        --nav-h: 74px;
+        --v-title: 18px;
+        --v-body: 15px;
+        --v-small: 13.5px;
+        --v-action: 13px;
+        grid-template-columns: minmax(220px, 22vw) minmax(320px, 1fr) minmax(300px, 28vw);
+      }
+      .ct-v__section-head {
+        padding: 0.82rem 1.05rem;
+      }
+      .ct-v__items {
+        gap: 0.36rem;
+        padding: 0 0.72rem 0.82rem;
+        min-height: 5.4rem;
+      }
+      .ct-v__center { grid-template-rows: minmax(0, 1fr) 11rem; }
+      .ct-v__canvas { min-height: 0; }
+      .ct-v__reference-note { bottom: 5.15rem; }
+      .ct-v__toolbar { left: 0.78rem; right: 0.78rem; bottom: 0.78rem; gap: 0.68rem; }
+      .ct-v__toolbar-group { gap: 0.48rem; }
+      .ct-v__btn { min-height: 38px; padding: 0 1.18rem; }
+      .ct-v__layers { flex-basis: 12.8rem; padding: 0.62rem; }
+      .ct-v__chip {
+        grid-template-columns: 2.2rem minmax(0, 1fr) auto;
+        gap: 0.45rem;
+        padding: 0.45rem 0.52rem;
+      }
+      .ct-v__chip-thumb { width: 2.2rem; height: 2.75rem; }
+      .ct-v__chip-btn { width: 36px; height: 36px; }
+      .ct-v__chip-btn svg { width: 18px; height: 18px; }
+      .ct-v__summary {
+        padding: 0.95rem 1.08rem;
+      }
+      .ct-v__summary-list {
+        min-height: 6.8rem;
+        padding-bottom: 0.72rem;
+      }
+      .ct-v__summary-empty {
+        padding-top: 0.9rem;
+      }
+      .ct-v__total {
+        padding: 0.8rem 0;
+      }
+      .ct-v__checkout {
+        min-height: 38px;
+        margin-top: 0.8rem;
+      }
+      .ct-v__saved {
+        padding-top: 0.95rem;
+      }
+      .ct-v__saved-list.is-empty {
+        min-height: 7.6rem;
+        padding-bottom: 0.72rem;
+      }
+    }
   </style>
 
   {% render 'casa-trame-nav', active: 'vestidor', collection_url: collection_url %}

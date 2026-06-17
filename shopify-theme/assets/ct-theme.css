@@ -2466,6 +2466,109 @@ body:has(.launch-home) .ct-v-nav,
   }
 }
 
+@media (min-width: 1366px) and (max-width: 1599px) {
+  :root {
+    --nav-h: 74px;
+    --fs-hero: 3.72rem;
+    --fs-section: 2.95rem;
+    --fs-page: 2.32rem;
+    --fs-subtitle: 1.48rem;
+    --fs-body: 1.28rem;
+    --fs-ui: 1.18rem;
+    --fs-btn: 1.24rem;
+    --fs-label: 1.06rem;
+  }
+  html { font-size: 12px; }
+  .nav__inner,
+  .ct-v-nav__inner {
+    padding-inline: 2.35rem;
+  }
+  .nav__left,
+  .ct-v-nav__left {
+    gap: 2.05rem;
+  }
+  .nav__right,
+  .ct-v-nav__right {
+    gap: 1.45rem;
+  }
+  .nav__left a,
+  .ct-v-nav a,
+  .ct-v-nav button {
+    font-size: 18px;
+  }
+  .nav__logo img {
+    height: 32px;
+  }
+  .ct-v-nav__logo img {
+    width: 220px;
+  }
+  .nav__right a,
+  .nav__right button,
+  .ct-v-nav__right a,
+  .ct-v-nav__right button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .nav__right svg,
+  .ct-v-nav svg {
+    width: 22px;
+    height: 22px;
+  }
+  .hero__content {
+    bottom: 5.8rem;
+  }
+  .hero__cta {
+    gap: 0.9rem;
+    min-width: 34rem;
+    padding: 1.15rem 3.1rem;
+  }
+  .hero__cta svg {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+  .collection-section {
+    padding-block: 2.2rem;
+    margin-bottom: 5.8rem;
+  }
+  .collection-grid {
+    height: 56vh;
+  }
+  .collection-card {
+    flex-basis: calc(56vh * 0.75);
+  }
+  .vestidor {
+    padding: 2.8rem 1.9rem 3.8rem;
+    margin-bottom: 3.8rem;
+  }
+  .vestidor__mockup img {
+    max-width: 60%;
+    max-height: 46vh;
+  }
+  .catalog-main {
+    grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 3.8fr);
+  }
+  .catalog-sidebar {
+    padding: 1.8rem 1.35rem 1.8rem 1.9rem;
+  }
+  .catalog-sidebar__subtitle {
+    margin-bottom: 1.8rem;
+  }
+  .catalog-sidebar__section-title {
+    margin-top: 1.35rem;
+  }
+  .catalog-sidebar__filters button,
+  .catalog-sidebar__sort-toggle {
+    padding: 0.45rem 0;
+  }
+  .catalog-grid-area {
+    padding: 1.8rem 1.15rem 3rem 0;
+  }
+  .catalog-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.35rem 0.95rem;
+  }
+}
+
 @media (max-width: 768px) {
   .hero__video {
     background-image: url('trame_home_lookbook_poster_vertical.jpg');
