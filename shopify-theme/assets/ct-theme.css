@@ -2466,7 +2466,7 @@ body:has(.launch-home) .ct-v-nav,
   }
 }
 
-@media (min-width: 1366px) and (max-width: 1599px) {
+@media (min-width: 1366px) and (max-width: 1799px) {
   :root {
     --nav-h: 74px;
     --fs-hero: 3.72rem;
