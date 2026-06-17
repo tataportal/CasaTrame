@@ -933,12 +933,28 @@
     const images = gallery || parseCardGallery(card.dataset.gallery);
     const hasGallery = images.length > 0;
     const hasControls = images.length > 1;
+    const currentIndex = Math.min(
+      Math.max(Number.parseInt(card.dataset.galleryIndex || '0', 10) || 0, 0),
+      Math.max(images.length - 1, 0)
+    );
 
     card.classList.toggle('catalog-card--has-gallery', hasGallery);
-    card.querySelectorAll('[data-card-gallery-prev], [data-card-gallery-next]').forEach(function (control) {
-      control.hidden = !hasControls;
-      control.disabled = !hasControls;
-    });
+    card.dataset.galleryIndex = String(currentIndex);
+
+    const prev = card.querySelector('[data-card-gallery-prev]');
+    const next = card.querySelector('[data-card-gallery-next]');
+
+    if (prev) {
+      const hidePrev = !hasControls || currentIndex <= 0;
+      prev.hidden = hidePrev;
+      prev.disabled = hidePrev;
+    }
+
+    if (next) {
+      const hideNext = !hasControls || currentIndex >= images.length - 1;
+      next.hidden = hideNext;
+      next.disabled = hideNext;
+    }
   }
 
   function setCardGalleryIndex(card, index) {
@@ -947,7 +963,7 @@
     const gallery = parseCardGallery(card.dataset.gallery);
     if (!gallery.length) return;
 
-    const nextIndex = ((index % gallery.length) + gallery.length) % gallery.length;
+    const nextIndex = Math.min(Math.max(index, 0), gallery.length - 1);
     const nextImage = gallery[nextIndex];
     const primaryImage = card.querySelector('.catalog-card__img--primary');
     const secondaryImage = card.querySelector('.catalog-card__img--secondary');
