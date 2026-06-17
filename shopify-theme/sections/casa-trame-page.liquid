@@ -5,6 +5,15 @@
 
 {% if page.handle == 'vestidor' %}
   <style>
+    body:has(.ct-v) {
+      --vestidor-zoom: 1;
+    }
+    @media (min-width: 1440px) {
+      body:has(.ct-v) {
+        --vestidor-zoom: clamp(0.75, calc(1.75 - 0.052083vw), 1);
+        zoom: var(--vestidor-zoom);
+      }
+    }
     .ct-v {
       --nav-h: 6.667rem;
       --line: #e4e0da;

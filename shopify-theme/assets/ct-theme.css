@@ -280,6 +280,17 @@ ul { list-style: none; }
   filter: brightness(0) invert(1) drop-shadow(0 0.133rem 0.4rem rgba(0,0,0,0.5));
 }
 
+body:has(.ct-v) {
+  --vestidor-zoom: 1;
+}
+
+@media (min-width: 1440px) {
+  body:has(.ct-v) {
+    --vestidor-zoom: clamp(0.75, calc(1.75 - 0.052083vw), 1);
+    zoom: var(--vestidor-zoom);
+  }
+}
+
 .btn-outline {
   display: inline-flex;
   align-items: center;
