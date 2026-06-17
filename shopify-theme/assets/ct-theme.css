@@ -2272,93 +2272,185 @@ body:has(.launch-home) .ct-v-nav,
   .ct-v-nav__right { gap: 1.2rem; }
 }
 
-@media (min-width: 981px) and (max-width: 1365px) {
+@media (min-width: 981px) and (max-width: 1199px) {
   :root {
-    --nav-h: 74px;
-    --fs-hero: 3.8rem;
-    --fs-section: 3rem;
-    --fs-page: 2.35rem;
-    --fs-subtitle: 1.55rem;
-    --fs-body: 1.28rem;
-    --fs-ui: 1.18rem;
-    --fs-btn: 1.28rem;
-    --fs-label: 1.08rem;
+    --nav-h: 62px;
+    --fs-hero: 3.2rem;
+    --fs-section: 2.5rem;
+    --fs-page: 2rem;
+    --fs-subtitle: 1.35rem;
+    --fs-body: 1.12rem;
+    --fs-ui: 1.05rem;
+    --fs-btn: 1.12rem;
+    --fs-label: 0.98rem;
   }
   html { font-size: 12px; }
   .nav__inner,
   .ct-v-nav__inner {
-    padding-inline: 2.4rem;
+    padding-inline: 1.6rem;
   }
   .nav__left,
   .ct-v-nav__left {
-    gap: 2.2rem;
+    gap: 1.55rem;
   }
   .nav__right,
   .ct-v-nav__right {
-    gap: 1.6rem;
+    gap: 1rem;
   }
   .nav__left a,
   .ct-v-nav a,
   .ct-v-nav button {
-    font-size: 18px;
+    font-size: 16px;
   }
   .nav__logo img {
-    height: 32px;
+    height: 28px;
   }
   .ct-v-nav__logo img {
-    width: 220px;
+    width: 188px;
   }
   .nav__right a,
   .nav__right button,
   .ct-v-nav__right a,
   .ct-v-nav__right button {
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 40px;
+    min-height: 40px;
   }
   .nav__right svg,
   .ct-v-nav svg {
-    width: 23px;
-    height: 23px;
+    width: 20px;
+    height: 20px;
   }
   .collection-section {
-    padding-block: 2.2rem;
-    margin-bottom: 7rem;
-  }
-  .collection-grid {
-    height: 58vh;
-  }
-  .collection-card {
-    flex-basis: calc(58vh * 0.75);
-  }
-  .vestidor {
-    padding: 3rem 2rem 4rem;
+    padding-block: 1.7rem;
     margin-bottom: 4rem;
   }
+  .collection-grid {
+    height: 48vh;
+  }
+  .collection-card {
+    flex-basis: calc(48vh * 0.75);
+  }
+  .vestidor {
+    padding: 2.2rem 1.4rem 3rem;
+    margin-bottom: 2.6rem;
+  }
   .vestidor__mockup img {
-    max-width: 60%;
-    max-height: 46vh;
+    max-width: 52%;
+    max-height: 38vh;
   }
   .catalog-main {
-    grid-template-columns: minmax(14rem, 0.78fr) minmax(0, 3.4fr);
+    grid-template-columns: minmax(11.5rem, 0.62fr) minmax(0, 3.8fr);
   }
   .catalog-sidebar {
-    padding: 2rem 1.4rem 2rem 2rem;
+    padding: 1.4rem 1rem 1.4rem 1.4rem;
   }
   .catalog-sidebar__subtitle {
-    margin-bottom: 2rem;
+    margin-bottom: 1.4rem;
   }
   .catalog-sidebar__section-title {
-    margin-top: 1.4rem;
+    margin-top: 1rem;
   }
   .catalog-sidebar__filters button,
   .catalog-sidebar__sort-toggle {
-    padding: 0.48rem 0;
+    padding: 0.34rem 0;
   }
   .catalog-grid-area {
-    padding: 2rem 1.2rem 3rem 0;
+    padding: 1.4rem 1rem 2.4rem 0;
   }
   .catalog-product-grid {
-    gap: 1.5rem 1.1rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.1rem 0.8rem;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1365px) {
+  :root {
+    --nav-h: 68px;
+    --fs-hero: 3.45rem;
+    --fs-section: 2.7rem;
+    --fs-page: 2.15rem;
+    --fs-subtitle: 1.42rem;
+    --fs-body: 1.2rem;
+    --fs-ui: 1.1rem;
+    --fs-btn: 1.18rem;
+    --fs-label: 1rem;
+  }
+  html { font-size: 12px; }
+  .nav__inner,
+  .ct-v-nav__inner {
+    padding-inline: 2rem;
+  }
+  .nav__left,
+  .ct-v-nav__left {
+    gap: 1.9rem;
+  }
+  .nav__right,
+  .ct-v-nav__right {
+    gap: 1.25rem;
+  }
+  .nav__left a,
+  .ct-v-nav a,
+  .ct-v-nav button {
+    font-size: 17px;
+  }
+  .nav__logo img {
+    height: 30px;
+  }
+  .ct-v-nav__logo img {
+    width: 205px;
+  }
+  .nav__right a,
+  .nav__right button,
+  .ct-v-nav__right a,
+  .ct-v-nav__right button {
+    min-width: 42px;
+    min-height: 42px;
+  }
+  .nav__right svg,
+  .ct-v-nav svg {
+    width: 21px;
+    height: 21px;
+  }
+  .collection-section {
+    padding-block: 1.9rem;
+    margin-bottom: 5rem;
+  }
+  .collection-grid {
+    height: 52vh;
+  }
+  .collection-card {
+    flex-basis: calc(52vh * 0.75);
+  }
+  .vestidor {
+    padding: 2.5rem 1.6rem 3.4rem;
+    margin-bottom: 3.2rem;
+  }
+  .vestidor__mockup img {
+    max-width: 56%;
+    max-height: 42vh;
+  }
+  .catalog-main {
+    grid-template-columns: minmax(12.5rem, 0.66fr) minmax(0, 3.8fr);
+  }
+  .catalog-sidebar {
+    padding: 1.6rem 1.15rem 1.6rem 1.6rem;
+  }
+  .catalog-sidebar__subtitle {
+    margin-bottom: 1.6rem;
+  }
+  .catalog-sidebar__section-title {
+    margin-top: 1.15rem;
+  }
+  .catalog-sidebar__filters button,
+  .catalog-sidebar__sort-toggle {
+    padding: 0.4rem 0;
+  }
+  .catalog-grid-area {
+    padding: 1.6rem 1rem 2.6rem 0;
+  }
+  .catalog-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.2rem 0.85rem;
   }
 }
 
