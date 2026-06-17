@@ -2055,7 +2055,7 @@ body:has(.launch-home) .ct-v-nav,
   border-bottom: 1px solid var(--border);
 }
 .cart-page__kicker {
-  font-size: var(--fs-label);
+  font-size: clamp(14px, var(--fs-label), 18px);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-light);
@@ -2116,7 +2116,7 @@ body:has(.launch-home) .ct-v-nav,
 }
 .cart-item__title {
   display: inline-block;
-  font-size: clamp(18px, var(--fs-subtitle), 22px);
+  font-size: clamp(20px, var(--fs-subtitle), 25px);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-bottom: 0.25rem;
@@ -2124,7 +2124,7 @@ body:has(.launch-home) .ct-v-nav,
 .cart-item__variant,
 .cart-item__properties,
 .cart-item__remove {
-  font-size: clamp(16px, var(--fs-body), 20px);
+  font-size: clamp(17px, var(--fs-body), 21px);
   color: var(--text-mid);
 }
 .cart-item__properties {
@@ -2147,20 +2147,20 @@ body:has(.launch-home) .ct-v-nav,
 }
 .cart-item__qty label {
   display: block;
-  font-size: clamp(13px, var(--fs-label), 16px);
+  font-size: clamp(14px, var(--fs-label), 17px);
   color: var(--text-light);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   margin-bottom: 0.4rem;
 }
 .cart-item__qty input {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border: 0;
   background: transparent;
   color: var(--text);
   font: inherit;
-  font-size: clamp(16px, var(--fs-body), 20px);
+  font-size: clamp(18px, var(--fs-body), 22px);
   text-align: center;
   -moz-appearance: textfield;
 }
@@ -2172,17 +2172,17 @@ body:has(.launch-home) .ct-v-nav,
 .cart-item__qty-control {
   display: inline-flex;
   align-items: center;
-  height: 44px;
+  height: 48px;
   border: 1px solid var(--border);
 }
 .cart-item__qty-button {
-  width: 44px;
+  width: 48px;
   height: 100%;
   border: 0;
   background: transparent;
   color: var(--text);
   font: inherit;
-  font-size: clamp(16px, var(--fs-body), 20px);
+  font-size: clamp(18px, var(--fs-body), 22px);
   line-height: 1;
   cursor: pointer;
 }
@@ -2196,11 +2196,11 @@ body:has(.launch-home) .ct-v-nav,
   flex-direction: column;
   align-items: flex-end;
   gap: 0.2rem;
-  font-size: clamp(17px, var(--fs-subtitle), 22px);
+  font-size: clamp(20px, var(--fs-subtitle), 25px);
 }
 .cart-item__price s {
   color: var(--text-light);
-  font-size: clamp(15px, var(--fs-ui), 18px);
+  font-size: clamp(16px, var(--fs-ui), 20px);
 }
 .cart-page__summary {
   position: sticky;
@@ -2214,7 +2214,7 @@ body:has(.launch-home) .ct-v-nav,
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
-  font-size: clamp(19px, var(--fs-subtitle), 24px);
+  font-size: clamp(23px, var(--fs-subtitle), 29px);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -2223,7 +2223,7 @@ body:has(.launch-home) .ct-v-nav,
 }
 .cart-page__summary p {
   color: var(--text-mid);
-  font-size: clamp(16px, var(--fs-body), 20px);
+  font-size: clamp(17px, var(--fs-body), 21px);
   line-height: 1.55;
   margin-bottom: 1.4rem;
 }
@@ -2231,12 +2231,12 @@ body:has(.launch-home) .ct-v-nav,
 .cart-page__continue {
   display: flex;
   width: 100%;
-  min-height: 3.8rem;
+  min-height: 4.4rem;
   align-items: center;
   justify-content: center;
   text-align: center;
   border: 1px solid var(--text);
-  font-size: clamp(15px, var(--fs-btn), 18px);
+  font-size: clamp(17px, var(--fs-btn), 21px);
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
