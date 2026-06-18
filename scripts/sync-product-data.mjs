@@ -182,7 +182,7 @@ const products = [
     care: 'Ciclo de lavado delicado con agua fría / No usar cloro / No usar secadora / Planchar a temperatura media / Lavar con colores similares / Lavar por el revés'
   },
   {
-    title: 'Polo Cuello Cuadrado Ombú',
+    title: 'Polo Ombú Cuello Cuadrado',
     category: 'Polos',
     colors: ['Blanco', 'Negro', 'Guinda', 'Azul oscuro'],
     sizes: ['S', 'M', 'L', 'XL'],
@@ -202,7 +202,7 @@ const products = [
     care: 'Lavado a máquina con agua fría / No usar cloro / No usar secadora / Planchar a temperatura media / Lavar con colores similares / Lavar de revés'
   },
   {
-    title: 'Polo Cuello Alto Ushuaia',
+    title: 'Polo Ushuaia Cuello Alto',
     category: 'Polos',
     colors: ['Blanco', 'Negro', 'Guinda', 'Azul oscuro'],
     sizes: ['S', 'M', 'L', 'XL'],
@@ -214,7 +214,10 @@ const products = [
 ];
 
 const manualHandles = new Map([
-  ['Polo Cuello Cuadrado Ombú', 'polo-cuello-cuadrado-ombu']
+  ['Polo Cuello Cuadrado Ombú', 'polo-cuello-cuadrado-ombu'],
+  ['Polo Ombú Cuello Cuadrado', 'polo-cuello-cuadrado-ombu'],
+  ['Polo Cuello Alto Ushuaia', 'polo-cuello-alto-ushuaia'],
+  ['Polo Ushuaia Cuello Alto', 'polo-cuello-alto-ushuaia']
 ]);
 
 const catalogAssetAliases = new Map([
