@@ -10,6 +10,12 @@
     minimumFractionDigits: 2
   });
   let pendingChange = Promise.resolve();
+  const checkoutPrefill = {
+    'checkout[shipping_address][country]': 'Peru',
+    'checkout[shipping_address][province]': 'Lima',
+    'checkout[shipping_address][city]': 'Lima',
+    'checkout[shipping_address][zip]': '15001'
+  };
 
   function formatMoney(cents) {
     return moneyFormat.format(Number(cents || 0) / 100).replace('PEN', 'S/.').replace('S/', 'S/.');
@@ -78,7 +84,11 @@
     if (!submitter || submitter.name !== 'checkout') return;
     event.preventDefault();
     pendingChange.finally(function () {
-      window.location.href = '/checkout';
+      const checkoutUrl = new URL('/checkout', window.location.origin);
+      Object.entries(checkoutPrefill).forEach(function ([key, value]) {
+        checkoutUrl.searchParams.set(key, value);
+      });
+      window.location.href = checkoutUrl.pathname + checkoutUrl.search;
     });
   });
 })();
