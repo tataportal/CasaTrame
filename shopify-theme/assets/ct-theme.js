@@ -13,8 +13,7 @@
   const checkoutPrefill = {
     'checkout[shipping_address][country]': 'Peru',
     'checkout[shipping_address][province]': 'Lima',
-    'checkout[shipping_address][city]': 'Lima',
-    'checkout[shipping_address][zip]': '15001'
+    'checkout[shipping_address][city]': 'Lima'
   };
 
   function formatMoney(cents) {
