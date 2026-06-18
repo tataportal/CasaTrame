@@ -554,12 +554,93 @@
     return variant['option' + position] || '';
   }
 
+  function variantIsAvailable(variant) {
+    return Boolean(variant && (variant.available || variant.available_for_sale));
+  }
+
+  function variantMatchesColor(variant, color) {
+    return !colorPosition || !color || optionValue(variant, colorPosition) === color;
+  }
+
+  function variantMatchesSize(variant, size) {
+    return !sizePosition || !size || optionValue(variant, sizePosition) === size;
+  }
+
+  function variantById(id) {
+    if (!id) return null;
+    return variants.find(function (variant) {
+      return String(variant.id) === String(id);
+    }) || null;
+  }
+
+  function variantsForColor(color) {
+    return variants.filter(function (variant) {
+      return variantMatchesColor(variant, color);
+    });
+  }
+
+  function preferredVariantForColor(color, preferredSize) {
+    const colorVariants = variantsForColor(color);
+    if (!colorVariants.length) return null;
+
+    const preferredAvailable = colorVariants.find(function (variant) {
+      return variantIsAvailable(variant) && variantMatchesSize(variant, preferredSize);
+    });
+    if (preferredAvailable) return preferredAvailable;
+
+    return colorVariants.find(variantIsAvailable) || colorVariants[0] || null;
+  }
+
+  function syncColorUi() {
+    const activeColor = colorButtons.find(function (button) {
+      return button.dataset.pdpColor === selectedColor;
+    }) || colorButtons[0];
+    if (!activeColor) return;
+
+    selectedColor = activeColor.dataset.pdpColor || selectedColor;
+    if (colorLabel) colorLabel.textContent = activeColor.dataset.pdpColorDisplay || selectedColor;
+    colorButtons.forEach(function (button) {
+      button.classList.toggle('active', button === activeColor);
+    });
+  }
+
+  function syncSizeUi() {
+    if (sizeLabel) sizeLabel.textContent = selectedSize ? 'Talla ' + selectedSize : 'Selecciona una talla';
+    if (sizeError) sizeError.classList.remove('show');
+    sizeButtons.forEach(function (button) {
+      button.classList.toggle('is-active', Boolean(selectedSize) && button.dataset.pdpSize === selectedSize);
+    });
+  }
+
+  function selectBestInitialVariant() {
+    const currentVariant = variantById(variantInput ? variantInput.value : '');
+    const availableVariant = variants.find(variantIsAvailable) || null;
+    const baseVariant = currentVariant || availableVariant || variants[0] || null;
+    if (!baseVariant) return null;
+
+    if (colorPosition) selectedColor = optionValue(baseVariant, colorPosition) || selectedColor;
+    const preferredSize = sizePosition && currentVariant ? optionValue(currentVariant, sizePosition) : '';
+    const colorVariant = preferredVariantForColor(selectedColor, preferredSize);
+
+    if (colorVariant && sizePosition) selectedSize = optionValue(colorVariant, sizePosition);
+    return colorVariant || baseVariant;
+  }
+
+  function promptWaitlistIfNeeded(variant) {
+    if (variantIsAvailable(variant) || !waitlistForm) return;
+    setWaitlistStatus('Déjanos tu email y te avisaremos cuando vuelva a estar disponible.', false);
+    const emailInput = waitlistForm.querySelector('input[type="email"]');
+    if (emailInput) {
+      window.requestAnimationFrame(function () {
+        emailInput.focus({ preventScroll: true });
+      });
+    }
+  }
+
   function updateVariant() {
     if (!variantInput || !variants.length) return null;
     const match = variants.find(function (variant) {
-      const colorMatches = !colorPosition || !selectedColor || optionValue(variant, colorPosition) === selectedColor;
-      const sizeMatches = !sizePosition || !selectedSize || optionValue(variant, sizePosition) === selectedSize;
-      return colorMatches && sizeMatches;
+      return variantMatchesColor(variant, selectedColor) && variantMatchesSize(variant, selectedSize);
     });
     if (match) variantInput.value = match.id;
     updatePurchaseState(match);
@@ -568,7 +649,7 @@
 
   function updatePurchaseState(variant) {
     const waitingForSize = Boolean(sizeButtons.length && !selectedSize);
-    const isAvailable = Boolean(variant && (variant.available || variant.available_for_sale));
+    const isAvailable = variantIsAvailable(variant);
 
     if (addCta) {
       addCta.hidden = !waitingForSize && !isAvailable;
@@ -577,6 +658,9 @@
     }
 
     if (waitlistForm) {
+      if ((waitingForSize || isAvailable) && waitlistStatus && waitlistStatus.textContent.trim()) {
+        setWaitlistStatus('', false);
+      }
       const hasFeedback = Boolean(waitlistStatus && !waitlistStatus.hidden && waitlistStatus.textContent.trim());
       const shouldHideWaitlist = !hasFeedback && (waitingForSize || isAvailable);
       waitlistForm.hidden = shouldHideWaitlist;
@@ -770,6 +854,9 @@
     });
   });
 
+  selectBestInitialVariant();
+  syncColorUi();
+  syncSizeUi();
   renderGallery(selectedColor);
   enableDragScroll();
 
@@ -780,8 +867,11 @@
       colorButtons.forEach(function (item) {
         item.classList.toggle('active', item === button);
       });
+      const preferredVariant = preferredVariantForColor(selectedColor, selectedSize);
+      selectedSize = preferredVariant && sizePosition ? optionValue(preferredVariant, sizePosition) : '';
+      syncSizeUi();
       renderGallery(selectedColor);
-      updateVariant();
+      promptWaitlistIfNeeded(updateVariant());
       updateVestidorLink();
     });
   });
@@ -796,14 +886,10 @@
   sizeButtons.forEach(function (button) {
     button.addEventListener('click', function () {
       selectedSize = button.dataset.pdpSize || '';
-      if (sizeLabel) sizeLabel.textContent = 'Talla ' + selectedSize;
-      if (sizeError) sizeError.classList.remove('show');
       if (sizeSelect) sizeSelect.classList.remove('open');
       if (sizeToggle) sizeToggle.setAttribute('aria-expanded', 'false');
-      sizeButtons.forEach(function (item) {
-        item.classList.toggle('is-active', item === button);
-      });
-      updateVariant();
+      syncSizeUi();
+      promptWaitlistIfNeeded(updateVariant());
     });
   });
 
@@ -820,7 +906,7 @@
     waitlistForm.addEventListener('submit', submitWaitlist, true);
   }
 
-  updateVariant();
+  promptWaitlistIfNeeded(updateVariant());
   updateVestidorLink();
   updateGallery();
 })();
