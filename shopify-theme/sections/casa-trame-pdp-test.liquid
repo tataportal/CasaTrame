@@ -3,6 +3,12 @@
   assign product_title = section.settings.product_title | default: 'Abrigo Suede Pampa'
   assign product_price = section.settings.product_price | default: 'S/ 259'
   assign product_handle = 'abrigo-suede-pampa'
+  assign pdp_product = all_products[product_handle]
+  assign product_is_available = false
+  assign size_labels = 'S,M,L,XL' | split: ','
+  if pdp_product != blank and pdp_product.available
+    assign product_is_available = true
+  endif
 %}
 
 {% render 'casa-trame-nav', active: 'collection', collection_url: collection_url %}
@@ -98,17 +104,47 @@
           <select class="ct-mm-select" aria-label="Color" data-ct-mobile-color>
             <option value="Verde Pacay">Verde Pacay</option>
           </select>
-          <select class="ct-mm-select" aria-label="Talla" data-ct-size-select>
-            <option value="">Talla</option>
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-          </select>
-          <a class="ct-mm-add" href="/products/{{ product_handle }}">Añadir al carrito</a>
+          <div class="ct-mm-size-options" role="radiogroup" aria-label="Talla" data-ct-size-group>
+            {% for size_label in size_labels %}
+              {% liquid
+                assign size_available = false
+                assign size_variant_id = ''
+                if pdp_product != blank
+                  for variant in pdp_product.variants
+                    if variant.option2 == size_label
+                      assign size_variant_id = variant.id
+                      if variant.available
+                        assign size_available = true
+                      endif
+                    endif
+                  endfor
+                endif
+              %}
+              <button
+                class="ct-mm-size-option{% unless size_available %} is-disabled{% endunless %}"
+                type="button"
+                role="radio"
+                aria-checked="false"
+                aria-label="{{ size_label }}{% unless size_available %} agotado{% endunless %}"
+                data-ct-size-option="{{ size_label }}"
+                {% if size_variant_id != blank %}data-ct-variant-id="{{ size_variant_id }}"{% endif %}
+                {% unless size_available %}disabled{% endunless %}
+              >
+                {{ size_label }}
+              </button>
+            {% endfor %}
+          </div>
+          <a
+            class="ct-mm-add{% unless product_is_available %} is-disabled{% endunless %}"
+            href="{% if product_is_available %}/products/{{ product_handle }}{% else %}#{% endif %}"
+            data-ct-product-url="/products/{{ product_handle }}"
+            {% unless product_is_available %}aria-disabled="true"{% endunless %}
+          >
+            {% if product_is_available %}Añadir al carrito{% else %}Agotado{% endif %}
+          </a>
         </div>
 
-        <p class="ct-mm-size-error" hidden data-ct-size-error>Por favor selecciona una talla</p>
+        <p class="ct-mm-size-error" hidden data-ct-size-error>{% if product_is_available %}Por favor selecciona una talla disponible{% else %}No hay tallas disponibles por ahora{% endif %}</p>
 
         <div class="ct-mm-description">
           <p data-ct-description>
@@ -454,6 +490,53 @@
     display: none;
   }
 
+  #shopify-section-{{ section.id }} .ct-mm-size-options {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-size-option {
+    position: relative;
+    aspect-ratio: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid #d1d1cc;
+    border-radius: 0;
+    background: #fff;
+    color: #1a1a1a;
+    font: inherit;
+    font-size: 0.96rem;
+    line-height: 1;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-size-option.is-active {
+    border-color: #1a1a1a;
+    background: #1a1a1a;
+    color: #fff;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-size-option:disabled {
+    border-color: rgba(26, 26, 26, 0.16);
+    background: rgba(26, 26, 26, 0.035);
+    color: rgba(26, 26, 26, 0.32);
+    cursor: not-allowed;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-size-option:disabled::after {
+    content: "";
+    position: absolute;
+    left: -18%;
+    top: 50%;
+    width: 136%;
+    height: 1px;
+    background: rgba(26, 26, 26, 0.36);
+    transform: rotate(-38deg);
+    pointer-events: none;
+  }
+
   #shopify-section-{{ section.id }} .ct-mm-select,
   #shopify-section-{{ section.id }} .ct-mm-add {
     width: 100%;
@@ -483,6 +566,13 @@
     background: #1a1a1a;
     color: #fff;
     text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-add.is-disabled {
+    border-color: #bdbdb8;
+    background: #bdbdb8;
+    color: #fff;
+    cursor: not-allowed;
   }
 
   #shopify-section-{{ section.id }} .ct-mm-size-error {
@@ -878,7 +968,7 @@
     const colorButtons = Array.from(root.querySelectorAll('[data-ct-gallery]'));
     const colorLabel = root.querySelector('[data-ct-color-label]');
     const mobileColor = root.querySelector('[data-ct-mobile-color]');
-    const sizeSelect = root.querySelector('[data-ct-size-select]');
+    const sizeButtons = Array.from(root.querySelectorAll('[data-ct-size-option]'));
     const addButton = root.querySelector('.ct-mm-add');
     const sizeError = root.querySelector('[data-ct-size-error]');
     const description = root.querySelector('.ct-mm-description');
@@ -937,15 +1027,39 @@
       });
     }
 
-    if (addButton && sizeSelect) {
+    let selectedSize = '';
+    let selectedVariantId = '';
+
+    sizeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (button.disabled) return;
+        selectedSize = button.dataset.ctSizeOption || '';
+        selectedVariantId = button.dataset.ctVariantId || '';
+        sizeButtons.forEach((item) => {
+          const isActive = item === button;
+          item.classList.toggle('is-active', isActive);
+          item.setAttribute('aria-checked', isActive ? 'true' : 'false');
+        });
+        if (addButton) {
+          const productUrl = addButton.dataset.ctProductUrl || addButton.href;
+          addButton.href = selectedVariantId ? productUrl + '?variant=' + selectedVariantId : productUrl;
+        }
+        if (sizeError) sizeError.hidden = true;
+      });
+    });
+
+    if (addButton && sizeButtons.length) {
       addButton.addEventListener('click', (event) => {
-        if (sizeSelect.value) return;
+        if (addButton.getAttribute('aria-disabled') === 'true') {
+          event.preventDefault();
+          if (sizeError) sizeError.hidden = false;
+          return;
+        }
+        if (selectedSize) return;
         event.preventDefault();
         if (sizeError) sizeError.hidden = false;
-        sizeSelect.focus();
-      });
-      sizeSelect.addEventListener('change', () => {
-        if (sizeError) sizeError.hidden = Boolean(sizeSelect.value);
+        const firstAvailable = sizeButtons.find((button) => !button.disabled);
+        if (firstAvailable) firstAvailable.focus();
       });
     }
 
