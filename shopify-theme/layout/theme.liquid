@@ -10,8 +10,13 @@
     assign ct_is_public_claims = true
   endif
 
+  assign ct_is_public_producto2 = false
+  if request.path == '/producto2' or request.path == '/pages/producto2'
+    assign ct_is_public_producto2 = true
+  endif
+
   assign ct_route_locked = true
-  if ct_is_public_launch or ct_is_public_claims or request.design_mode or request.visual_preview_mode
+  if ct_is_public_launch or ct_is_public_claims or ct_is_public_producto2 or request.design_mode or request.visual_preview_mode
     assign ct_route_locked = false
   endif
 %}
