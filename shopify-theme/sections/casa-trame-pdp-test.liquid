@@ -362,6 +362,8 @@
     display: grid;
     justify-items: center;
     align-items: start;
+    overscroll-behavior: contain;
+    touch-action: none;
   }
 
   #shopify-section-{{ section.id }} .ct-mm-gallery__track {
@@ -370,6 +372,8 @@
     position: relative;
     background: #f7f7f2;
     overflow: hidden;
+    overscroll-behavior: contain;
+    touch-action: none;
   }
 
   #shopify-section-{{ section.id }} .ct-mm-slide {
@@ -384,6 +388,17 @@
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.22s ease, visibility 0.22s ease;
+    overscroll-behavior: contain;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-slide img {
+    touch-action: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
   }
 
   #shopify-section-{{ section.id }} .ct-mm-slide.is-active {
@@ -924,7 +939,7 @@
       width: 100%;
       aspect-ratio: auto;
       display: flex;
-      overflow-x: auto;
+      overflow: hidden;
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
       background: #fff;
@@ -1094,6 +1109,7 @@
       let touchLastX = 0;
       let touchLastY = 0;
       let isImageSwipe = false;
+      let wheelLocked = false;
 
       galleryTrack.addEventListener('touchstart', (event) => {
         const touch = event.touches[0];
@@ -1103,11 +1119,12 @@
         touchLastX = touchStartX;
         touchLastY = touchStartY;
         isImageSwipe = false;
-      }, { passive: true });
+      }, { passive: false, capture: true });
 
       galleryTrack.addEventListener('touchmove', (event) => {
         const touch = event.touches[0];
         if (!touch) return;
+        if (event.cancelable) event.preventDefault();
         touchLastX = touch.clientX;
         touchLastY = touch.clientY;
 
@@ -1115,12 +1132,12 @@
         const deltaY = touchLastY - touchStartY;
         if (Math.abs(deltaY) > 8 || Math.abs(deltaX) > 8) {
           isImageSwipe = true;
-          event.preventDefault();
         }
-      }, { passive: false });
+      }, { passive: false, capture: true });
 
-      galleryTrack.addEventListener('touchend', () => {
+      galleryTrack.addEventListener('touchend', (event) => {
         if (!isImageSwipe) return;
+        if (event.cancelable) event.preventDefault();
         const deltaX = touchLastX - touchStartX;
         const deltaY = touchLastY - touchStartY;
         const isVertical = Math.abs(deltaY) >= Math.abs(deltaX);
@@ -1131,7 +1148,21 @@
           const direction = swipeAmount < 0 ? 1 : -1;
           setActiveImage(activeImageIndex + direction);
         }
-      });
+      }, { passive: false, capture: true });
+
+      galleryTrack.addEventListener('wheel', (event) => {
+        const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+        if (Math.abs(delta) < 2) return;
+        if (event.cancelable) event.preventDefault();
+        suppressZoomUntil = Date.now() + 450;
+
+        if (wheelLocked) return;
+        wheelLocked = true;
+        setActiveImage(activeImageIndex + (delta > 0 ? 1 : -1));
+        window.setTimeout(() => {
+          wheelLocked = false;
+        }, 520);
+      }, { passive: false });
 
       galleryTrack.addEventListener('scroll', () => {
         if (!isMobileGallery() || !galleryTrack.clientWidth) return;
