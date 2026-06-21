@@ -1,0 +1,679 @@
+{% liquid
+  assign collection_url = routes.collections_url | append: '/coleccion-otono-invierno-2026'
+  assign product_title = section.settings.product_title | default: 'Polo Ombú Cuello Cuadrado'
+  assign product_price = section.settings.product_price | default: 'S/ 99'
+  assign product_handle = 'polo-cuello-cuadrado-ombu'
+%}
+
+{% render 'casa-trame-nav', active: 'collection', collection_url: collection_url %}
+
+<main class="ct-mm-pdp" data-ct-mm-pdp="{{ section.id }}">
+  <div class="ct-mm-pdp__shell">
+    <section class="ct-mm-gallery" aria-label="Galería de {{ product_title | escape }}">
+      <button class="ct-mm-gallery__item" type="button" data-ct-zoom-image>
+        <img src="{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-01.webp' | asset_url }}" alt="{{ product_title | escape }} en guinda, vista 1" width="1200" height="1500" data-ct-gallery-image>
+      </button>
+      <button class="ct-mm-gallery__item" type="button" data-ct-zoom-image>
+        <img src="{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-02.webp' | asset_url }}" alt="{{ product_title | escape }} en guinda, vista 2" width="1200" height="1500" data-ct-gallery-image>
+      </button>
+      <button class="ct-mm-gallery__item" type="button" data-ct-zoom-image>
+        <img src="{{ 'polo-cuello-cuadrado-ombu-guinda.webp' | asset_url }}" alt="{{ product_title | escape }} en guinda, prenda" width="1200" height="1500" data-ct-gallery-image>
+      </button>
+      <button class="ct-mm-gallery__item" type="button" data-ct-zoom-image>
+        <img src="{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-03.webp' | asset_url }}" alt="{{ product_title | escape }} en guinda, vista 3" width="1200" height="1500" data-ct-gallery-image>
+      </button>
+      <button class="ct-mm-gallery__item" type="button" data-ct-zoom-image>
+        <img src="{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-04.webp' | asset_url }}" alt="{{ product_title | escape }} en guinda, vista 4" width="1200" height="1500" data-ct-gallery-image>
+      </button>
+      <button class="ct-mm-gallery__item" type="button" data-ct-zoom-image>
+        <img src="{{ 'polo-cuello-cuadrado-ombu-guinda.png' | asset_url }}" alt="{{ product_title | escape }} en guinda, detalle" width="1200" height="1500" data-ct-gallery-image>
+      </button>
+    </section>
+
+    <aside class="ct-mm-info" aria-labelledby="ct-mm-title-{{ section.id }}">
+      <nav class="ct-mm-crumbs" aria-label="Breadcrumb">
+        <a href="{{ routes.root_url }}">Inicio</a>
+        <span>/</span>
+        <a href="{{ collection_url }}">Colección</a>
+        <span>/</span>
+        <a href="{{ collection_url }}">Polos</a>
+      </nav>
+
+      <p class="ct-mm-info__eyebrow">Polos</p>
+      <h1 class="ct-mm-info__title" id="ct-mm-title-{{ section.id }}">{{ product_title }}</h1>
+      <p class="ct-mm-info__price">{{ product_price }}</p>
+      <p class="ct-mm-info__status">Disponible</p>
+
+      <div class="ct-mm-field">
+        <div class="ct-mm-field__row">
+          <span>Color</span>
+          <span data-ct-color-label>Guinda</span>
+        </div>
+        <div class="ct-mm-swatches" aria-label="Seleccionar color">
+          <button
+            class="ct-mm-swatch is-active"
+            type="button"
+            aria-pressed="true"
+            data-ct-color-label-value="Guinda"
+            data-ct-gallery="{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-01.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-02.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-guinda.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-03.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-04.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-guinda.png' | asset_url }}"
+          >
+            <span class="ct-mm-swatch__color ct-mm-swatch__color--guinda"></span>
+            <span>Guinda</span>
+          </button>
+          <button
+            class="ct-mm-swatch"
+            type="button"
+            aria-pressed="false"
+            data-ct-color-label-value="Negro"
+            data-ct-gallery="{{ 'polo-cuello-cuadrado-ombu-negro-modelo-01.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-negro-modelo-02.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-negro.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-negro-modelo-03.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-negro-modelo-04.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-negro.png' | asset_url }}"
+          >
+            <span class="ct-mm-swatch__color ct-mm-swatch__color--negro"></span>
+            <span>Negro</span>
+          </button>
+          <button
+            class="ct-mm-swatch"
+            type="button"
+            aria-pressed="false"
+            data-ct-color-label-value="Blanco"
+            data-ct-gallery="{{ 'polo-cuello-cuadrado-ombu-blanco-modelo-01.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-blanco-modelo-02.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-blanco.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-blanco-modelo-03.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-blanco-modelo-04.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-blanco.png' | asset_url }}"
+          >
+            <span class="ct-mm-swatch__color ct-mm-swatch__color--blanco"></span>
+            <span>Blanco</span>
+          </button>
+          <button
+            class="ct-mm-swatch"
+            type="button"
+            aria-pressed="false"
+            data-ct-color-label-value="Azul oscuro"
+            data-ct-gallery="{{ 'polo-cuello-cuadrado-ombu-azul-modelo-01.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-azul-modelo-02.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-azul.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-azul-modelo-03.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-azul-modelo-04.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-azul.png' | asset_url }}"
+          >
+            <span class="ct-mm-swatch__color ct-mm-swatch__color--azul"></span>
+            <span>Azul oscuro</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="ct-mm-field">
+        <div class="ct-mm-field__row">
+          <span>Talla</span>
+          <a href="#ct-mm-size-guide-{{ section.id }}">Guía de tallas</a>
+        </div>
+        <div class="ct-mm-sizes" aria-label="Seleccionar talla">
+          <button type="button" data-ct-size>S</button>
+          <button type="button" data-ct-size>M</button>
+          <button type="button" data-ct-size>L</button>
+          <button type="button" data-ct-size>XL</button>
+        </div>
+      </div>
+
+      <a class="ct-mm-cta" href="/products/{{ product_handle }}">Ver producto</a>
+      <a class="ct-mm-secondary" href="/pages/vestidor?add={{ product_handle }}">Añadir al Vestidor</a>
+
+      <p class="ct-mm-copy">
+        Polo entallado con escote cuadrado y mangas largas. Tejido en algodón con spandex para un calce al cuerpo, suave y flexible.
+      </p>
+
+      <div class="ct-mm-accordions">
+        <details open>
+          <summary>Detalles del producto</summary>
+          <div>
+            <p>Corte entallado. Escote cuadrado. Manga larga. Terminación limpia en cuello y puños.</p>
+            <p>Código de prueba: CT-PDP-OMBÚ-001</p>
+          </div>
+        </details>
+        <details>
+          <summary>Composición y cuidados</summary>
+          <div>
+            <p>93% algodón / 7% spandex.</p>
+            <p>Ciclo delicado con agua fría. No usar cloro. No usar secadora. Planchar a temperatura baja por el revés.</p>
+          </div>
+        </details>
+        <details id="ct-mm-size-guide-{{ section.id }}">
+          <summary>Guía de tallas</summary>
+          <div class="ct-mm-size-guide">
+            {% render 'casa-trame-size-guide', product_handle: product_handle %}
+          </div>
+        </details>
+        <details>
+          <summary>Envíos y devoluciones</summary>
+          <div>
+            <p>Despachos a Perú. Cambios y devoluciones según la política vigente de Casa Tramé.</p>
+          </div>
+        </details>
+      </div>
+    </aside>
+  </div>
+
+  <section class="ct-mm-related" aria-labelledby="ct-mm-related-title-{{ section.id }}">
+    <div class="ct-mm-related__header">
+      <h2 id="ct-mm-related-title-{{ section.id }}">También te puede gustar</h2>
+      <a href="{{ collection_url }}">Ver colección</a>
+    </div>
+    <div class="ct-mm-related__grid">
+      <a class="ct-mm-product" href="/products/polo-basico-trenque-lauquen">
+        <img src="{{ 'polo-basico-trenque-lauquen-blanco-modelo-01.webp' | asset_url }}" alt="Polo Básico Trenque Lauquen" width="1200" height="1500" loading="lazy">
+        <span>Polo Básico Trenque Lauquen</span>
+        <span>S/ 109</span>
+      </a>
+      <a class="ct-mm-product" href="/products/polo-cuello-alto-ushuaia">
+        <img src="{{ 'polo-cuello-alto-ushuaia-negro-modelo-01.webp' | asset_url }}" alt="Polo Ushuaia Cuello Alto" width="1200" height="1500" loading="lazy">
+        <span>Polo Ushuaia Cuello Alto</span>
+        <span>S/ 119</span>
+      </a>
+      <a class="ct-mm-product" href="/products/polera-cuello-alto-calafate">
+        <img src="{{ 'polera-cuello-alto-calafate-verde-modelo-01.webp' | asset_url }}" alt="Polera Cuello Alto Calafate" width="1200" height="1500" loading="lazy">
+        <span>Polera Cuello Alto Calafate</span>
+        <span>S/ 159</span>
+      </a>
+      <a class="ct-mm-product" href="/products/jean-wide-leg-corrientes">
+        <img src="{{ 'jean-wide-leg-corrientes-denim-claro-modelo-01.webp' | asset_url }}" alt="Jean Wide Leg Corrientes" width="1200" height="1500" loading="lazy">
+        <span>Jean Wide Leg Corrientes</span>
+        <span>S/ 239</span>
+      </a>
+    </div>
+  </section>
+
+  <dialog class="ct-mm-zoom" data-ct-mm-dialog>
+    <button class="ct-mm-zoom__close" type="button" data-ct-mm-close>Cerrar</button>
+    <img src="{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-01.webp' | asset_url }}" alt="" width="1200" height="1500" data-ct-mm-zoomed>
+  </dialog>
+</main>
+
+<style>
+  #shopify-section-{{ section.id }} .ct-mm-pdp {
+    min-height: 100vh;
+    padding-top: var(--nav-h);
+    background: #f7f7f7;
+    color: #111;
+    letter-spacing: 0;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-pdp *,
+  #shopify-section-{{ section.id }} .ct-mm-pdp *::before,
+  #shopify-section-{{ section.id }} .ct-mm-pdp *::after {
+    letter-spacing: 0;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-pdp__shell {
+    width: min(100%, 1720px);
+    margin: 0 auto;
+    padding: 1.4rem 2rem 4rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(340px, 430px);
+    gap: 3rem;
+    align-items: start;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-gallery__item {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #e7e5df;
+    border: 0;
+    border-radius: 0;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-gallery__item img,
+  #shopify-section-{{ section.id }} .ct-mm-product img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-info {
+    position: sticky;
+    top: calc(var(--nav-h) + 1.4rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 0.4rem 0 2rem;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    align-items: center;
+    color: #5f5b55;
+    font-size: 0.88rem;
+    line-height: 1.35;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-crumbs a {
+    text-decoration: underline;
+    text-underline-offset: 0.18rem;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-info__eyebrow,
+  #shopify-section-{{ section.id }} .ct-mm-info__status {
+    color: #5b5751;
+    font-size: 0.98rem;
+    line-height: 1.35;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-info__title {
+    margin: 0;
+    color: #111;
+    font-family: var(--heading);
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1.05;
+    text-transform: uppercase;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-info__price {
+    color: #111;
+    font-size: 1.1rem;
+    line-height: 1.35;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-top: 0.55rem;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-field__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: #111;
+    font-size: 0.98rem;
+    line-height: 1.4;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-field__row a {
+    color: #5f5b55;
+    text-decoration: underline;
+    text-underline-offset: 0.18rem;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-swatches {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-swatch,
+  #shopify-section-{{ section.id }} .ct-mm-sizes button {
+    min-height: 2.8rem;
+    border: 1px solid #d1cec7;
+    border-radius: 0;
+    background: transparent;
+    color: #111;
+    font-size: 0.96rem;
+    line-height: 1.1;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-swatch {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0 0.85rem;
+    text-align: left;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-swatch.is-active,
+  #shopify-section-{{ section.id }} .ct-mm-sizes button.is-active {
+    border-color: #111;
+    box-shadow: inset 0 0 0 1px #111;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-swatch__color {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 1rem;
+    border: 1px solid #b8b3ac;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-swatch__color--guinda { background: #5a1722; }
+  #shopify-section-{{ section.id }} .ct-mm-swatch__color--negro { background: #111; }
+  #shopify-section-{{ section.id }} .ct-mm-swatch__color--blanco { background: #f6f1ea; }
+  #shopify-section-{{ section.id }} .ct-mm-swatch__color--azul { background: #18253b; }
+
+  #shopify-section-{{ section.id }} .ct-mm-sizes {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.55rem;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-cta,
+  #shopify-section-{{ section.id }} .ct-mm-secondary {
+    min-height: 3.4rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+    font-size: 1rem;
+    line-height: 1.1;
+    text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-cta {
+    margin-top: 0.25rem;
+    background: #111;
+    color: #fff;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-secondary {
+    border: 1px solid #111;
+    color: #111;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-copy {
+    max-width: 34rem;
+    color: #34312d;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-accordions {
+    border-top: 1px solid #d7d4ce;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-accordions details {
+    border-bottom: 1px solid #d7d4ce;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-accordions summary {
+    min-height: 3.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    color: #111;
+    font-size: 1rem;
+    line-height: 1.25;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-accordions summary::-webkit-details-marker {
+    display: none;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-accordions summary::after {
+    content: "+";
+    font-size: 1.2rem;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-accordions details[open] summary::after {
+    content: "-";
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-accordions details > div {
+    display: grid;
+    gap: 0.7rem;
+    padding: 0 0 1.2rem;
+    color: #3d3933;
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-size-guide .pdp-size-guide__title {
+    margin-bottom: 0.7rem;
+    font-size: 1rem;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-size-guide table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-size-guide th,
+  #shopify-section-{{ section.id }} .ct-mm-size-guide td {
+    padding: 0.45rem;
+    border: 1px solid #d7d4ce;
+    text-align: left;
+    font-weight: 300;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-related {
+    width: min(100%, 1720px);
+    margin: 0 auto;
+    padding: 0 2rem 5rem;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-related__header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 2.5rem 0 1.2rem;
+    border-top: 1px solid #d7d4ce;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-related__header h2 {
+    margin: 0;
+    font-family: var(--heading);
+    font-size: 1.65rem;
+    font-weight: 300;
+    line-height: 1.1;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-related__header a {
+    color: #5f5b55;
+    font-size: 0.98rem;
+    text-decoration: underline;
+    text-underline-offset: 0.18rem;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-related__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-product {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.35rem 1rem;
+    color: #111;
+    font-size: 0.98rem;
+    line-height: 1.25;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-product img {
+    grid-column: 1 / -1;
+    aspect-ratio: 4 / 5;
+    background: #e7e5df;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-product span:first-of-type {
+    min-width: 0;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-zoom {
+    width: min(92vw, 920px);
+    max-height: 92vh;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: #f7f7f7;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-zoom::backdrop {
+    background: rgba(17, 17, 17, 0.72);
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-zoom__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 2;
+    padding: 0.55rem 0.75rem;
+    background: rgba(247, 247, 247, 0.86);
+    color: #111;
+    font-size: 0.95rem;
+    line-height: 1;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-zoom img {
+    width: 100%;
+    max-height: 92vh;
+    display: block;
+    object-fit: contain;
+  }
+
+  @media (max-width: 980px) {
+    #shopify-section-{{ section.id }} .ct-mm-pdp__shell {
+      grid-template-columns: 1fr;
+      padding: 1rem 1rem 3rem;
+      gap: 1.4rem;
+    }
+
+    #shopify-section-{{ section.id }} .ct-mm-gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.55rem;
+    }
+
+    #shopify-section-{{ section.id }} .ct-mm-info {
+      position: static;
+      padding: 0;
+    }
+
+    #shopify-section-{{ section.id }} .ct-mm-related {
+      padding: 0 1rem 4rem;
+    }
+
+    #shopify-section-{{ section.id }} .ct-mm-related__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
+  }
+
+  @media (max-width: 560px) {
+    #shopify-section-{{ section.id }} .ct-mm-pdp__shell {
+      padding-inline: 0.8rem;
+    }
+
+    #shopify-section-{{ section.id }} .ct-mm-gallery {
+      display: flex;
+      gap: 0.55rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 0.35rem;
+    }
+
+    #shopify-section-{{ section.id }} .ct-mm-gallery__item {
+      flex: 0 0 84%;
+      scroll-snap-align: start;
+    }
+
+    #shopify-section-{{ section.id }} .ct-mm-info__title {
+      font-size: 1.7rem;
+    }
+
+    #shopify-section-{{ section.id }} .ct-mm-swatches,
+    #shopify-section-{{ section.id }} .ct-mm-related__grid {
+      grid-template-columns: 1fr;
+    }
+
+    #shopify-section-{{ section.id }} .ct-mm-related__header {
+      align-items: start;
+      flex-direction: column;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    const root = document.querySelector('[data-ct-mm-pdp="{{ section.id }}"]');
+    if (!root) return;
+
+    const galleryImages = Array.from(root.querySelectorAll('[data-ct-gallery-image]'));
+    const colorLabel = root.querySelector('[data-ct-color-label]');
+    const colorButtons = Array.from(root.querySelectorAll('[data-ct-gallery]'));
+    const sizeButtons = Array.from(root.querySelectorAll('[data-ct-size]'));
+    const dialog = root.querySelector('[data-ct-mm-dialog]');
+    const zoomedImage = root.querySelector('[data-ct-mm-zoomed]');
+    const closeButton = root.querySelector('[data-ct-mm-close]');
+    const productTitle = {{ product_title | json }};
+
+    colorButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const urls = button.dataset.ctGallery.split('|').filter(Boolean);
+        const label = button.dataset.ctColorLabelValue || '';
+
+        colorButtons.forEach((item) => {
+          const isActive = item === button;
+          item.classList.toggle('is-active', isActive);
+          item.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+
+        if (colorLabel) colorLabel.textContent = label;
+
+        galleryImages.forEach((image, index) => {
+          const nextUrl = urls[index] || urls[0];
+          if (!nextUrl) return;
+          image.src = nextUrl;
+          image.alt = productTitle + ' en ' + label.toLowerCase() + ', vista ' + String(index + 1);
+        });
+      });
+    });
+
+    sizeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        sizeButtons.forEach((item) => {
+          item.classList.toggle('is-active', item === button);
+          item.setAttribute('aria-pressed', item === button ? 'true' : 'false');
+        });
+      });
+    });
+
+    root.querySelectorAll('[data-ct-zoom-image]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const image = button.querySelector('img');
+        if (!image || !dialog || !zoomedImage || typeof dialog.showModal !== 'function') return;
+        zoomedImage.src = image.src;
+        zoomedImage.alt = image.alt;
+        dialog.showModal();
+      });
+    });
+
+    if (closeButton && dialog) {
+      closeButton.addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) dialog.close();
+      });
+    }
+  })();
+</script>
+
+{% render 'casa-trame-footer' %}
+
+{% schema %}
+{
+  "name": "Casa Trame PDP Test",
+  "settings": [
+    {
+      "type": "text",
+      "id": "product_title",
+      "label": "Product title",
+      "default": "Polo Ombú Cuello Cuadrado"
+    },
+    {
+      "type": "text",
+      "id": "product_price",
+      "label": "Product price",
+      "default": "S/ 99"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Casa Trame PDP Test"
+    }
+  ]
+}
+{% endschema %}
