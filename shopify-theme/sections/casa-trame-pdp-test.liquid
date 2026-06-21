@@ -1,8 +1,8 @@
 {% liquid
   assign collection_url = routes.collections_url | append: '/coleccion-otono-invierno-2026'
-  assign product_title = section.settings.product_title | default: 'Polo Ombú Cuello Cuadrado'
-  assign product_price = section.settings.product_price | default: 'S/ 99'
-  assign product_handle = 'polo-cuello-cuadrado-ombu'
+  assign product_title = section.settings.product_title | default: 'Abrigo Suede Pampa'
+  assign product_price = section.settings.product_price | default: 'S/ 259'
+  assign product_handle = 'abrigo-suede-pampa'
 %}
 
 {% render 'casa-trame-nav', active: 'collection', collection_url: collection_url %}
@@ -12,22 +12,22 @@
     <div class="ct-mm-thumbs" aria-label="Fotos del producto">
       <span class="ct-mm-thumbs__marker"></span>
       <button class="ct-mm-thumb is-active" type="button" aria-label="Ver foto 1" data-ct-image-index="0">
-        <img src="{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-01.webp' | asset_url }}" alt="" width="120" height="150">
+        <img src="{{ 'abrigo-suede-pampa-verde-modelo-01.webp' | asset_url }}" alt="" width="120" height="150">
       </button>
       <button class="ct-mm-thumb" type="button" aria-label="Ver foto 2" data-ct-image-index="1">
-        <img src="{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-02.webp' | asset_url }}" alt="" width="120" height="150">
+        <img src="{{ 'abrigo-suede-pampa-verde-modelo-02.webp' | asset_url }}" alt="" width="120" height="150">
       </button>
       <button class="ct-mm-thumb" type="button" aria-label="Ver foto 3" data-ct-image-index="2">
-        <img src="{{ 'polo-cuello-cuadrado-ombu-guinda.webp' | asset_url }}" alt="" width="120" height="150">
+        <img src="{{ 'abrigo-suede-pampa-verde-modelo-03.webp' | asset_url }}" alt="" width="120" height="150">
       </button>
       <button class="ct-mm-thumb" type="button" aria-label="Ver foto 4" data-ct-image-index="3">
-        <img src="{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-03.webp' | asset_url }}" alt="" width="120" height="150">
+        <img src="{{ 'abrigo-suede-pampa-verde-modelo-04.webp' | asset_url }}" alt="" width="120" height="150">
       </button>
       <button class="ct-mm-thumb" type="button" aria-label="Ver foto 5" data-ct-image-index="4">
-        <img src="{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-04.webp' | asset_url }}" alt="" width="120" height="150">
+        <img src="{{ 'abrigo-suede-pampa-verde-modelo-05.webp' | asset_url }}" alt="" width="120" height="150">
       </button>
       <button class="ct-mm-thumb" type="button" aria-label="Ver foto 6" data-ct-image-index="5">
-        <img src="{{ 'polo-cuello-cuadrado-ombu-guinda.png' | asset_url }}" alt="" width="120" height="150">
+        <img src="{{ 'abrigo-suede-pampa-verde-modelo-06.webp' | asset_url }}" alt="" width="120" height="150">
       </button>
       <span class="ct-mm-thumbs__marker"></span>
     </div>
@@ -35,22 +35,22 @@
     <div class="ct-mm-gallery" aria-live="polite">
       <div class="ct-mm-gallery__track" data-ct-gallery-track>
         <button class="ct-mm-slide is-active" type="button" data-ct-zoom-image>
-          <img src="{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-01.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 1" width="1200" height="1500" data-ct-gallery-image>
+          <img src="{{ 'abrigo-suede-pampa-verde-modelo-01.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 1" width="1200" height="1500" data-ct-gallery-image>
         </button>
         <button class="ct-mm-slide" type="button" data-ct-zoom-image>
-          <img src="{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-02.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 2" width="1200" height="1500" data-ct-gallery-image>
+          <img src="{{ 'abrigo-suede-pampa-verde-modelo-02.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 2" width="1200" height="1500" data-ct-gallery-image>
         </button>
         <button class="ct-mm-slide" type="button" data-ct-zoom-image>
-          <img src="{{ 'polo-cuello-cuadrado-ombu-guinda.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 3" width="1200" height="1500" data-ct-gallery-image>
+          <img src="{{ 'abrigo-suede-pampa-verde-modelo-03.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 3" width="1200" height="1500" data-ct-gallery-image>
         </button>
         <button class="ct-mm-slide" type="button" data-ct-zoom-image>
-          <img src="{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-03.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 4" width="1200" height="1500" data-ct-gallery-image>
+          <img src="{{ 'abrigo-suede-pampa-verde-modelo-04.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 4" width="1200" height="1500" data-ct-gallery-image>
         </button>
         <button class="ct-mm-slide" type="button" data-ct-zoom-image>
-          <img src="{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-04.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 5" width="1200" height="1500" data-ct-gallery-image>
+          <img src="{{ 'abrigo-suede-pampa-verde-modelo-05.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 5" width="1200" height="1500" data-ct-gallery-image>
         </button>
         <button class="ct-mm-slide" type="button" data-ct-zoom-image>
-          <img src="{{ 'polo-cuello-cuadrado-ombu-guinda.png' | asset_url }}" alt="{{ product_title | escape }} - Imagen 6" width="1200" height="1500" data-ct-gallery-image>
+          <img src="{{ 'abrigo-suede-pampa-verde-modelo-06.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 6" width="1200" height="1500" data-ct-gallery-image>
         </button>
       </div>
       <div class="ct-mm-pagination" aria-label="Fotos">
@@ -66,7 +66,7 @@
     <aside class="ct-mm-details" aria-labelledby="ct-mm-title-{{ section.id }}">
       <div class="ct-mm-details__inner">
         <nav class="ct-mm-breadcrumb" aria-label="Breadcrumb">
-          <a href="{{ collection_url }}">Polos</a>
+          <a href="{{ collection_url }}">Abrigos</a>
         </nav>
 
         <h1 class="ct-mm-title" id="ct-mm-title-{{ section.id }}">{{ product_title }}</h1>
@@ -83,47 +83,20 @@
             <button
               class="ct-mm-swatch is-active"
               type="button"
-              aria-label="Guinda"
+              aria-label="Verde Pacay"
               aria-pressed="true"
-              data-ct-color-label-value="Guinda"
-              data-ct-gallery="{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-01.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-02.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-guinda.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-03.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-04.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-guinda.png' | asset_url }}"
-            ><span style="background:#5a1722"></span></button>
-            <button
-              class="ct-mm-swatch"
-              type="button"
-              aria-label="Negro"
-              aria-pressed="false"
-              data-ct-color-label-value="Negro"
-              data-ct-gallery="{{ 'polo-cuello-cuadrado-ombu-negro-modelo-01.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-negro-modelo-02.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-negro.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-negro-modelo-03.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-negro-modelo-04.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-negro.png' | asset_url }}"
-            ><span style="background:#111"></span></button>
-            <button
-              class="ct-mm-swatch"
-              type="button"
-              aria-label="Blanco"
-              aria-pressed="false"
-              data-ct-color-label-value="Blanco"
-              data-ct-gallery="{{ 'polo-cuello-cuadrado-ombu-blanco-modelo-01.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-blanco-modelo-02.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-blanco.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-blanco-modelo-03.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-blanco-modelo-04.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-blanco.png' | asset_url }}"
-            ><span style="background:#f4efe8"></span></button>
-            <button
-              class="ct-mm-swatch"
-              type="button"
-              aria-label="Azul oscuro"
-              aria-pressed="false"
-              data-ct-color-label-value="Azul oscuro"
-              data-ct-gallery="{{ 'polo-cuello-cuadrado-ombu-azul-modelo-01.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-azul-modelo-02.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-azul.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-azul-modelo-03.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-azul-modelo-04.webp' | asset_url }}|{{ 'polo-cuello-cuadrado-ombu-azul.png' | asset_url }}"
-            ><span style="background:#192640"></span></button>
+              data-ct-color-label-value="Verde Pacay"
+              data-ct-gallery="{{ 'abrigo-suede-pampa-verde-modelo-01.webp' | asset_url }}|{{ 'abrigo-suede-pampa-verde-modelo-02.webp' | asset_url }}|{{ 'abrigo-suede-pampa-verde-modelo-03.webp' | asset_url }}|{{ 'abrigo-suede-pampa-verde-modelo-04.webp' | asset_url }}|{{ 'abrigo-suede-pampa-verde-modelo-05.webp' | asset_url }}|{{ 'abrigo-suede-pampa-verde-modelo-06.webp' | asset_url }}"
+            ><span style="background:#58614b"></span></button>
           </div>
-          <p class="ct-mm-color__label" data-ct-color-label>Guinda</p>
+          <p class="ct-mm-color__label" data-ct-color-label>Verde Pacay</p>
         </div>
 
         <button class="ct-mm-size-guide" type="button" data-ct-open-size>Guía de tallas</button>
 
         <div class="ct-mm-buybox">
           <select class="ct-mm-select" aria-label="Color" data-ct-mobile-color>
-            <option value="Guinda">Guinda</option>
-            <option value="Negro">Negro</option>
-            <option value="Blanco">Blanco</option>
-            <option value="Azul oscuro">Azul oscuro</option>
+            <option value="Verde Pacay">Verde Pacay</option>
           </select>
           <select class="ct-mm-select" aria-label="Talla" data-ct-size-select>
             <option value="">Talla</option>
@@ -139,7 +112,7 @@
 
         <div class="ct-mm-description">
           <p data-ct-description>
-            Polo entallado con escote cuadrado y mangas largas. Tejido en algodón con spandex para un calce al cuerpo, suave y flexible. Terminación limpia en cuello y puños.
+            Abrigo suede verde con forro interno y un botón de bronce en el cuello. Cuenta con bolsillos laterales.
           </p>
           <button type="button" data-ct-description-toggle aria-expanded="false">
             <span>... Más</span>
@@ -155,8 +128,8 @@
             </summary>
             <div>
               <p>Código de artículo</p>
-              <button class="ct-mm-copy" type="button" data-ct-copy="CT-OMB-0002">CT-OMB-0002</button>
-              <p>93% algodón / 7% spandex. Consulta la guía de tallas para más información.</p>
+              <button class="ct-mm-copy" type="button" data-ct-copy="CT-ABR-SUEDE-PAMPA">CT-ABR-SUEDE-PAMPA</button>
+              <p>96% policotton / 4% spandex. Forro: 100% poliéster. Lavar en seco, no usar cloro, no usar secadora y no planchar.</p>
             </div>
           </details>
           <details>
@@ -203,20 +176,20 @@
   <section class="ct-mm-recommendations" aria-labelledby="ct-mm-recs-title-{{ section.id }}">
     <h2 id="ct-mm-recs-title-{{ section.id }}">También te puede gustar</h2>
     <div class="ct-mm-recs__grid">
-      <a class="ct-mm-rec" href="/products/polo-basico-trenque-lauquen">
-        <img src="{{ 'polo-basico-trenque-lauquen-blanco-modelo-01.webp' | asset_url }}" alt="Polo Básico Trenque Lauquen" width="1200" height="1500" loading="lazy">
-        <span>Polo Básico Trenque Lauquen</span>
-        <span>S/ 109</span>
+      <a class="ct-mm-rec" href="/products/blazer-palermo">
+        <img src="{{ 'blazer-palermo-beige-modelo-01.webp' | asset_url }}" alt="Blazer Palermo" width="1200" height="1500" loading="lazy">
+        <span>Blazer Palermo</span>
+        <span>S/ 289</span>
       </a>
-      <a class="ct-mm-rec" href="/products/polo-cuello-alto-ushuaia">
-        <img src="{{ 'polo-cuello-alto-ushuaia-negro-modelo-01.webp' | asset_url }}" alt="Polo Ushuaia Cuello Alto" width="1200" height="1500" loading="lazy">
-        <span>Polo Ushuaia Cuello Alto</span>
-        <span>S/ 119</span>
+      <a class="ct-mm-rec" href="/products/capa-patagonica">
+        <img src="{{ 'capa-patagonica-camel-modelo-01.webp' | asset_url }}" alt="Capa Patagónica" width="1200" height="1500" loading="lazy">
+        <span>Capa Patagónica</span>
+        <span>S/ 477</span>
       </a>
-      <a class="ct-mm-rec" href="/products/polera-cuello-alto-calafate">
-        <img src="{{ 'polera-cuello-alto-calafate-verde-modelo-01.webp' | asset_url }}" alt="Polera Cuello Alto Calafate" width="1200" height="1500" loading="lazy">
-        <span>Polera Cuello Alto Calafate</span>
-        <span>S/ 159</span>
+      <a class="ct-mm-rec" href="/products/falda-suede-pampa">
+        <img src="{{ 'falda-suede-pampa-verde-modelo-01.webp' | asset_url }}" alt="Falda Suede Pampa" width="1200" height="1500" loading="lazy">
+        <span>Falda Suede Pampa</span>
+        <span>S/ 139</span>
       </a>
     </div>
   </section>
@@ -225,13 +198,26 @@
     <button class="ct-mm-modal__close" type="button" data-ct-close-size aria-label="Cerrar">Cerrar</button>
     <div class="ct-mm-modal__body">
       <h2>Encuentra tu talla</h2>
-      {% render 'casa-trame-size-guide', product_handle: product_handle %}
+      <table>
+        <thead>
+          <tr>
+            <th>Prenda</th>
+            <th>Tallas disponibles</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ product_title }}</td>
+            <td>S / M / L / XL</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </dialog>
 
   <dialog class="ct-mm-zoom" data-ct-mm-dialog>
     <button class="ct-mm-modal__close" type="button" data-ct-mm-close aria-label="Cerrar">Cerrar</button>
-    <img src="{{ 'polo-cuello-cuadrado-ombu-guinda-modelo-01.webp' | asset_url }}" alt="" width="1200" height="1500" data-ct-mm-zoomed>
+    <img src="{{ 'abrigo-suede-pampa-verde-modelo-01.webp' | asset_url }}" alt="" width="1200" height="1500" data-ct-mm-zoomed>
   </dialog>
 </main>
 
@@ -1012,13 +998,13 @@
       "type": "text",
       "id": "product_title",
       "label": "Product title",
-      "default": "Polo Ombú Cuello Cuadrado"
+      "default": "Abrigo Suede Pampa"
     },
     {
       "type": "text",
       "id": "product_price",
       "label": "Product price",
-      "default": "S/ 99"
+      "default": "S/ 259"
     }
   ],
   "presets": [
