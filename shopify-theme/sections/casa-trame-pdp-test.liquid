@@ -140,17 +140,47 @@
             data-ct-product-url="/products/{{ product_handle }}"
             {% unless product_is_available %}aria-disabled="true"{% endunless %}
           >
-            {% if product_is_available %}Añadir al carrito{% else %}Agotado{% endif %}
+            {% if product_is_available %}Añadir al carrito{% else %}Avísame cuando esté disponible{% endif %}
           </a>
         </div>
 
         <p class="ct-mm-size-error" hidden data-ct-size-error>{% if product_is_available %}Por favor selecciona una talla disponible{% else %}No hay tallas disponibles por ahora{% endif %}</p>
 
+        {% unless product_is_available %}
+          {% assign waitlist_form_id = 'ct-mm-waitlist-' | append: section.id %}
+          {% form 'customer', id: waitlist_form_id, class: 'ct-mm-waitlist' %}
+            <input type="hidden" name="contact[tags]" value="waitlist, waitlist-{{ product_handle }}">
+            <input type="hidden" name="contact[accepts_marketing]" value="true">
+            {% if customer %}
+              <input type="hidden" name="contact[email]" value="{{ customer.email | escape }}">
+              <p class="ct-mm-waitlist__note">Te avisaremos a {{ customer.email }} cuando vuelva a estar disponible.</p>
+            {% else %}
+              <label class="ct-mm-waitlist__label" for="ct-mm-waitlist-email-{{ section.id }}">Avísame cuando esté disponible</label>
+              <input
+                class="ct-mm-waitlist__input"
+                id="ct-mm-waitlist-email-{{ section.id }}"
+                type="email"
+                name="contact[email]"
+                placeholder="Tu email"
+                autocomplete="email"
+                required
+                data-ct-waitlist-email
+              >
+            {% endif %}
+            <button class="ct-mm-waitlist__button" type="submit">Enviar aviso</button>
+            {% if form.posted_successfully? %}
+              <p class="ct-mm-waitlist__status" role="status">Listo, te avisaremos cuando vuelva.</p>
+            {% elsif form.errors %}
+              <p class="ct-mm-waitlist__status ct-mm-waitlist__status--error" role="status">Revisa tu email e inténtalo otra vez.</p>
+            {% endif %}
+          {% endform %}
+        {% endunless %}
+
         <div class="ct-mm-description">
           <p data-ct-description>
             Abrigo suede verde con forro interno y un botón de bronce en el cuello. Cuenta con bolsillos laterales.
           </p>
-          <button type="button" data-ct-description-toggle aria-expanded="false">
+          <button type="button" data-ct-description-toggle aria-expanded="false" hidden>
             <span>... Más</span>
             <span>Menos</span>
           </button>
@@ -569,10 +599,10 @@
   }
 
   #shopify-section-{{ section.id }} .ct-mm-add.is-disabled {
-    border-color: #bdbdb8;
-    background: #bdbdb8;
+    border-color: #1a1a1a;
+    background: #1a1a1a;
     color: #fff;
-    cursor: not-allowed;
+    cursor: pointer;
   }
 
   #shopify-section-{{ section.id }} .ct-mm-size-error {
@@ -580,6 +610,54 @@
     color: #7a1616;
     font-size: 0.86rem;
     text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-waitlist {
+    display: grid;
+    gap: 0.55rem;
+    margin-top: -0.2rem;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-waitlist__label,
+  #shopify-section-{{ section.id }} .ct-mm-waitlist__note,
+  #shopify-section-{{ section.id }} .ct-mm-waitlist__status {
+    margin: 0;
+    color: #343430;
+    font-size: 0.88rem;
+    line-height: 1.35;
+    text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-waitlist__input,
+  #shopify-section-{{ section.id }} .ct-mm-waitlist__button {
+    width: 100%;
+    min-height: 3rem;
+    border-radius: 0;
+    font: inherit;
+    font-size: 0.96rem;
+    line-height: 1.2;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-waitlist__input {
+    padding: 0 1rem;
+    border: 1px solid #d1d1cc;
+    background: #fff;
+    color: #1a1a1a;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-waitlist__input::placeholder {
+    color: rgba(26, 26, 26, 0.52);
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-waitlist__button {
+    border: 1px solid #1a1a1a;
+    background: #fff;
+    color: #1a1a1a;
+    text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .ct-mm-waitlist__status--error {
+    color: #7a1616;
   }
 
   #shopify-section-{{ section.id }} .ct-mm-description {
@@ -977,7 +1055,9 @@
     const addButton = root.querySelector('.ct-mm-add');
     const sizeError = root.querySelector('[data-ct-size-error]');
     const description = root.querySelector('.ct-mm-description');
+    const descriptionText = root.querySelector('[data-ct-description]');
     const descriptionToggle = root.querySelector('[data-ct-description-toggle]');
+    const waitlistEmail = root.querySelector('[data-ct-waitlist-email]');
     const sizeModal = root.querySelector('[data-ct-size-modal]');
     const openSize = root.querySelector('[data-ct-open-size]');
     const closeSize = root.querySelector('[data-ct-close-size]');
@@ -1122,7 +1202,7 @@
       addButton.addEventListener('click', (event) => {
         if (addButton.getAttribute('aria-disabled') === 'true') {
           event.preventDefault();
-          if (sizeError) sizeError.hidden = false;
+          if (waitlistEmail) waitlistEmail.focus();
           return;
         }
         if (selectedSize) return;
@@ -1134,6 +1214,20 @@
     }
 
     if (description && descriptionToggle) {
+      const syncDescriptionToggle = () => {
+        if (!descriptionText) return;
+        const wasOpen = description.classList.contains('is-open');
+        description.classList.remove('is-open');
+        const canExpand = descriptionText.scrollHeight > descriptionText.clientHeight + 2;
+
+        descriptionToggle.hidden = !canExpand;
+        if (canExpand && wasOpen) description.classList.add('is-open');
+        if (!canExpand) descriptionToggle.setAttribute('aria-expanded', 'false');
+      };
+
+      window.requestAnimationFrame(syncDescriptionToggle);
+      window.addEventListener('resize', syncDescriptionToggle);
+
       descriptionToggle.addEventListener('click', () => {
         const isOpen = description.classList.toggle('is-open');
         descriptionToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
