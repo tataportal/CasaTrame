@@ -155,7 +155,6 @@
               <input type="hidden" name="contact[email]" value="{{ customer.email | escape }}">
               <p class="ct-mm-waitlist__note">Te avisaremos a {{ customer.email }} cuando vuelva a estar disponible.</p>
             {% else %}
-              <label class="ct-mm-waitlist__label" for="ct-mm-waitlist-email-{{ section.id }}">Avísame cuando esté disponible</label>
               <input
                 class="ct-mm-waitlist__input"
                 id="ct-mm-waitlist-email-{{ section.id }}"
@@ -633,7 +632,6 @@
     margin-top: -0.2rem;
   }
 
-  #shopify-section-{{ section.id }} .ct-mm-waitlist__label,
   #shopify-section-{{ section.id }} .ct-mm-waitlist__note,
   #shopify-section-{{ section.id }} .ct-mm-waitlist__status {
     margin: 0;
@@ -654,10 +652,13 @@
   }
 
   #shopify-section-{{ section.id }} .ct-mm-waitlist__input {
-    padding: 0 1rem;
-    border: 1px solid #d1d1cc;
-    background: #fff;
+    min-height: 2.4rem;
+    padding: 0 0 0.35rem;
+    border: 0;
+    border-bottom: 1px solid #1a1a1a;
+    background: transparent;
     color: #1a1a1a;
+    outline: 0;
   }
 
   #shopify-section-{{ section.id }} .ct-mm-waitlist__input::placeholder {
