@@ -850,6 +850,8 @@
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
       background: #fff;
+      overscroll-behavior: contain;
+      touch-action: none;
     }
 
     #shopify-section-{{ section.id }} .ct-mm-gallery__track::-webkit-scrollbar {
@@ -866,6 +868,8 @@
       opacity: 1;
       visibility: visible;
       scroll-snap-align: start;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     #shopify-section-{{ section.id }} .ct-mm-pagination {
@@ -960,6 +964,7 @@
     if (!root) return;
 
     const productTitle = {{ product_title | json }};
+    const galleryTrack = root.querySelector('[data-ct-gallery-track]');
     const slides = Array.from(root.querySelectorAll('.ct-mm-slide'));
     const thumbs = Array.from(root.querySelectorAll('.ct-mm-thumb'));
     const dots = Array.from(root.querySelectorAll('.ct-mm-pagination button'));
@@ -980,15 +985,80 @@
     const zoomedImage = root.querySelector('[data-ct-mm-zoomed]');
     const closeZoom = root.querySelector('[data-ct-mm-close]');
 
-    const setActiveImage = (index) => {
-      slides.forEach((slide, slideIndex) => slide.classList.toggle('is-active', slideIndex === index));
-      thumbs.forEach((thumb, thumbIndex) => thumb.classList.toggle('is-active', thumbIndex === index));
-      dots.forEach((dot, dotIndex) => dot.classList.toggle('is-active', dotIndex === index));
+    let activeImageIndex = 0;
+    let suppressZoomUntil = 0;
+    const isMobileGallery = () => window.matchMedia('(max-width: 980px)').matches;
+
+    const setActiveImage = (index, options = {}) => {
+      if (!slides.length) return;
+      activeImageIndex = (index + slides.length) % slides.length;
+      slides.forEach((slide, slideIndex) => slide.classList.toggle('is-active', slideIndex === activeImageIndex));
+      thumbs.forEach((thumb, thumbIndex) => thumb.classList.toggle('is-active', thumbIndex === activeImageIndex));
+      dots.forEach((dot, dotIndex) => dot.classList.toggle('is-active', dotIndex === activeImageIndex));
+
+      if (galleryTrack && isMobileGallery() && !options.skipScroll) {
+        galleryTrack.scrollTo({
+          left: galleryTrack.clientWidth * activeImageIndex,
+          behavior: options.immediate ? 'auto' : 'smooth'
+        });
+      }
     };
 
     root.querySelectorAll('[data-ct-image-index]').forEach((button) => {
       button.addEventListener('click', () => setActiveImage(Number(button.dataset.ctImageIndex || 0)));
     });
+
+    if (galleryTrack && slides.length > 1) {
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchLastX = 0;
+      let touchLastY = 0;
+      let isImageSwipe = false;
+
+      galleryTrack.addEventListener('touchstart', (event) => {
+        const touch = event.touches[0];
+        if (!touch) return;
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        touchLastX = touchStartX;
+        touchLastY = touchStartY;
+        isImageSwipe = false;
+      }, { passive: true });
+
+      galleryTrack.addEventListener('touchmove', (event) => {
+        const touch = event.touches[0];
+        if (!touch) return;
+        touchLastX = touch.clientX;
+        touchLastY = touch.clientY;
+
+        const deltaX = touchLastX - touchStartX;
+        const deltaY = touchLastY - touchStartY;
+        if (Math.abs(deltaY) > 8 || Math.abs(deltaX) > 8) {
+          isImageSwipe = true;
+          event.preventDefault();
+        }
+      }, { passive: false });
+
+      galleryTrack.addEventListener('touchend', () => {
+        if (!isImageSwipe) return;
+        const deltaX = touchLastX - touchStartX;
+        const deltaY = touchLastY - touchStartY;
+        const isVertical = Math.abs(deltaY) >= Math.abs(deltaX);
+        const swipeAmount = isVertical ? deltaY : deltaX;
+
+        suppressZoomUntil = Date.now() + 450;
+        if (Math.abs(swipeAmount) > 42) {
+          const direction = swipeAmount < 0 ? 1 : -1;
+          setActiveImage(activeImageIndex + direction);
+        }
+      });
+
+      galleryTrack.addEventListener('scroll', () => {
+        if (!isMobileGallery() || !galleryTrack.clientWidth) return;
+        const nextIndex = Math.round(galleryTrack.scrollLeft / galleryTrack.clientWidth);
+        if (nextIndex !== activeImageIndex) setActiveImage(nextIndex, { skipScroll: true });
+      }, { passive: true });
+    }
 
     colorButtons.forEach((button) => {
       button.addEventListener('click', () => {
@@ -1081,7 +1151,11 @@
     }
 
     root.querySelectorAll('[data-ct-zoom-image]').forEach((button) => {
-      button.addEventListener('click', () => {
+      button.addEventListener('click', (event) => {
+        if (Date.now() < suppressZoomUntil) {
+          event.preventDefault();
+          return;
+        }
         const image = button.querySelector('img');
         if (!image || !zoomDialog || !zoomedImage || typeof zoomDialog.showModal !== 'function') return;
         zoomedImage.src = image.src;
