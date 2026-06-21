@@ -938,10 +938,10 @@
 
     #shopify-section-{{ section.id }} .ct-mm-gallery__track {
       width: 100%;
-      aspect-ratio: auto;
-      display: flex;
+      aspect-ratio: 2 / 3;
+      position: relative;
+      display: block;
       overflow: hidden;
-      scroll-snap-type: x mandatory;
       scrollbar-width: none;
       background: #fff;
       overscroll-behavior: contain;
@@ -952,16 +952,11 @@
       display: none;
     }
 
-    #shopify-section-{{ section.id }} .ct-mm-slide,
-    #shopify-section-{{ section.id }} .ct-mm-slide.is-active {
-      position: relative;
-      flex: 0 0 100%;
+    #shopify-section-{{ section.id }} .ct-mm-slide {
+      position: absolute;
+      inset: 0;
       width: 100%;
-      height: auto;
-      aspect-ratio: 2 / 3;
-      opacity: 1;
-      visibility: visible;
-      scroll-snap-align: start;
+      height: 100%;
       user-select: none;
       -webkit-user-select: none;
     }
@@ -1083,26 +1078,13 @@
 
     let activeImageIndex = 0;
     let suppressZoomUntil = 0;
-    let isProgrammaticGalleryScroll = false;
-    const isMobileGallery = () => window.matchMedia('(max-width: 980px)').matches;
 
-    const setActiveImage = (index, options = {}) => {
+    const setActiveImage = (index) => {
       if (!slides.length) return;
       activeImageIndex = (index + slides.length) % slides.length;
       slides.forEach((slide, slideIndex) => slide.classList.toggle('is-active', slideIndex === activeImageIndex));
       thumbs.forEach((thumb, thumbIndex) => thumb.classList.toggle('is-active', thumbIndex === activeImageIndex));
       dots.forEach((dot, dotIndex) => dot.classList.toggle('is-active', dotIndex === activeImageIndex));
-
-      if (galleryTrack && isMobileGallery() && !options.skipScroll) {
-        isProgrammaticGalleryScroll = true;
-        galleryTrack.scrollTo({
-          left: galleryTrack.clientWidth * activeImageIndex,
-          behavior: 'auto'
-        });
-        window.setTimeout(() => {
-          isProgrammaticGalleryScroll = false;
-        }, 80);
-      }
     };
 
     root.querySelectorAll('[data-ct-image-index]').forEach((button) => {
@@ -1175,13 +1157,6 @@
           wheelLocked = false;
         }, 520);
       }, { passive: false });
-
-      galleryTrack.addEventListener('scroll', () => {
-        if (isProgrammaticGalleryScroll) return;
-        if (!isMobileGallery() || !galleryTrack.clientWidth) return;
-        const nextIndex = Math.round(galleryTrack.scrollLeft / galleryTrack.clientWidth);
-        if (nextIndex !== activeImageIndex) setActiveImage(nextIndex, { skipScroll: true });
-      }, { passive: true });
     }
 
     colorButtons.forEach((button) => {
