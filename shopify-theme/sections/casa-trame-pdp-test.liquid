@@ -40,24 +40,24 @@
 
     <div class="ct-mm-gallery" aria-live="polite">
       <div class="ct-mm-gallery__track" data-ct-gallery-track>
-        <button class="ct-mm-slide is-active" type="button" data-ct-zoom-image>
+        <div class="ct-mm-slide is-active">
           <img src="{{ 'abrigo-suede-pampa-verde-modelo-01.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 1" width="1200" height="1500" data-ct-gallery-image>
-        </button>
-        <button class="ct-mm-slide" type="button" data-ct-zoom-image>
+        </div>
+        <div class="ct-mm-slide">
           <img src="{{ 'abrigo-suede-pampa-verde-modelo-02.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 2" width="1200" height="1500" data-ct-gallery-image>
-        </button>
-        <button class="ct-mm-slide" type="button" data-ct-zoom-image>
+        </div>
+        <div class="ct-mm-slide">
           <img src="{{ 'abrigo-suede-pampa-verde-modelo-03.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 3" width="1200" height="1500" data-ct-gallery-image>
-        </button>
-        <button class="ct-mm-slide" type="button" data-ct-zoom-image>
+        </div>
+        <div class="ct-mm-slide">
           <img src="{{ 'abrigo-suede-pampa-verde-modelo-04.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 4" width="1200" height="1500" data-ct-gallery-image>
-        </button>
-        <button class="ct-mm-slide" type="button" data-ct-zoom-image>
+        </div>
+        <div class="ct-mm-slide">
           <img src="{{ 'abrigo-suede-pampa-verde-modelo-05.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 5" width="1200" height="1500" data-ct-gallery-image>
-        </button>
-        <button class="ct-mm-slide" type="button" data-ct-zoom-image>
+        </div>
+        <div class="ct-mm-slide">
           <img src="{{ 'abrigo-suede-pampa-verde-modelo-06.webp' | asset_url }}" alt="{{ product_title | escape }} - Imagen 6" width="1200" height="1500" data-ct-gallery-image>
-        </button>
+        </div>
       </div>
       <div class="ct-mm-pagination" aria-label="Fotos">
         <button class="is-active" type="button" aria-label="Foto 1" data-ct-image-index="0"></button>
@@ -280,10 +280,6 @@
     </div>
   </dialog>
 
-  <dialog class="ct-mm-zoom" data-ct-mm-dialog>
-    <button class="ct-mm-modal__close" type="button" data-ct-mm-close aria-label="Cerrar">Cerrar</button>
-    <img src="{{ 'abrigo-suede-pampa-verde-modelo-01.webp' | asset_url }}" alt="" width="1200" height="1500" data-ct-mm-zoomed>
-  </dialog>
 </main>
 
 <style>
@@ -848,8 +844,7 @@
     background: #f7f7f2;
   }
 
-  #shopify-section-{{ section.id }} .ct-mm-modal,
-  #shopify-section-{{ section.id }} .ct-mm-zoom {
+  #shopify-section-{{ section.id }} .ct-mm-modal {
     width: min(92vw, 46rem);
     max-height: 90vh;
     padding: 0;
@@ -859,8 +854,7 @@
     color: #1a1a1a;
   }
 
-  #shopify-section-{{ section.id }} .ct-mm-modal::backdrop,
-  #shopify-section-{{ section.id }} .ct-mm-zoom::backdrop {
+  #shopify-section-{{ section.id }} .ct-mm-modal::backdrop {
     background: rgba(0, 0, 0, 0.68);
   }
 
@@ -901,18 +895,6 @@
     border: 1px solid #d7d7d2;
     text-align: left;
     font-weight: 300;
-  }
-
-  #shopify-section-{{ section.id }} .ct-mm-zoom {
-    width: min(92vw, 56rem);
-    background: #f7f7f2;
-  }
-
-  #shopify-section-{{ section.id }} .ct-mm-zoom img {
-    width: 100%;
-    max-height: 90vh;
-    display: block;
-    object-fit: contain;
   }
 
   @media (max-width: 980px) {
@@ -1073,12 +1055,8 @@
     const sizeModal = root.querySelector('[data-ct-size-modal]');
     const openSize = root.querySelector('[data-ct-open-size]');
     const closeSize = root.querySelector('[data-ct-close-size]');
-    const zoomDialog = root.querySelector('[data-ct-mm-dialog]');
-    const zoomedImage = root.querySelector('[data-ct-mm-zoomed]');
-    const closeZoom = root.querySelector('[data-ct-mm-close]');
 
     let activeImageIndex = 0;
-    let suppressZoomUntil = 0;
 
     const setActiveImage = (index) => {
       if (!slides.length) return;
@@ -1134,7 +1112,6 @@
         const isVertical = Math.abs(deltaY) >= Math.abs(deltaX);
         const swipeAmount = isVertical ? deltaY : deltaX;
 
-        suppressZoomUntil = Date.now() + 450;
         if (Math.abs(swipeAmount) > 42) {
           touchSwipeLocked = true;
           const direction = swipeAmount < 0 ? 1 : -1;
@@ -1149,7 +1126,6 @@
         const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
         if (Math.abs(delta) < 2) return;
         if (event.cancelable) event.preventDefault();
-        suppressZoomUntil = Date.now() + 450;
 
         if (wheelLocked) return;
         wheelLocked = true;
@@ -1261,27 +1237,6 @@
       closeSize.addEventListener('click', () => sizeModal.close());
       sizeModal.addEventListener('click', (event) => {
         if (event.target === sizeModal) sizeModal.close();
-      });
-    }
-
-    root.querySelectorAll('[data-ct-zoom-image]').forEach((button) => {
-      button.addEventListener('click', (event) => {
-        if (Date.now() < suppressZoomUntil) {
-          event.preventDefault();
-          return;
-        }
-        const image = button.querySelector('img');
-        if (!image || !zoomDialog || !zoomedImage || typeof zoomDialog.showModal !== 'function') return;
-        zoomedImage.src = image.src;
-        zoomedImage.alt = image.alt;
-        zoomDialog.showModal();
-      });
-    });
-
-    if (closeZoom && zoomDialog) {
-      closeZoom.addEventListener('click', () => zoomDialog.close());
-      zoomDialog.addEventListener('click', (event) => {
-        if (event.target === zoomDialog) zoomDialog.close();
       });
     }
 
